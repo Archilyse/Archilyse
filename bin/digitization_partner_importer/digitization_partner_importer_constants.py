@@ -1,0 +1,2 @@
+INDEX_HEADER_LENGTH = 3
+SHEET_NAME = "Mietobjekte"

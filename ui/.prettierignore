@@ -1,0 +1,17 @@
+.jscpd/
+coverage/
+dist/
+src/assets/images/
+src/assets/typeface/
+node_modules/
+
+# @TODO: remove these disables as soon as update prettier to new versions ≥ 2.0
+# according to this issue - https://github.com/prettier/prettier/issues/7263
+admin/src/common/roles/index.ts
+common/src/index.ts
+dashboard/src/common/roles/index.ts
+dashboard/src/common/types/index.ts
+react-planner/src/tests/utils/mockAnnotationsResponse.json
+react-planner/src/tests/utils/mockScene.json
+react-planner/src/tests/utils/mockCopyPasteStorage.json
+react-planner/src/tests/utils/mockSceneWithPotentialOrphanOpenings.json

@@ -1,0 +1,36 @@
+.bottomPosition {
+  width: 250px;
+  height: 105px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.helpButton {
+}
+
+.extraButton,
+.saveButton {
+  margin-bottom: 5px;
+  width: 100%;
+}
+
+.secondRow {
+  position: absolute;
+  right: 16px;
+  bottom: 19px;
+}
+
+.halfColumn {
+  margin-top: 10px;
+  width: calc(50% - 3px);
+
+  &:first-child {
+    margin-right: 6px;
+  }
+}
+
+.block {
+  padding-left: 16px;
+  padding-right: 16px;
+}

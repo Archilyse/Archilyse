@@ -1,0 +1,65 @@
+@import 'Common/theme.scss';
+
+.detailed-simulation-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.detailed-simulation-header {
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+
+  padding: $unit * 2;
+
+  .simulation-info-container {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    column-gap: $unit * 2;
+  }
+
+  & > *:not(:first-child) {
+    margin-left: $unit * 2;
+  }
+
+  .navbar {
+    // centers the navbar
+    bottom: 0;
+    margin: auto;
+  }
+}
+
+.simulation-map-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; // to prevent from canvas growing
+}
+
+.simulation-loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  font-size: $large-font-size;
+}
+
+.simulation-result-error-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: $dark_red;
+
+  .material-icons {
+    color: $dark_red !important;
+    font-size: $unit * 3.5 !important;
+    margin-left: 0 !important;
+  }
+
+  .error-message {
+    font-size: $large-font-size;
+  }
+}

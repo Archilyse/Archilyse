@@ -1,0 +1,18 @@
+-r api/requirements.txt
+-r brooks/requirements.txt
+-r celery_workers/requirements.txt
+-r dufresne/requirements.txt
+-r simulations/requirements.txt
+-r handlers/requirements.txt
+-r surroundings/requirements.txt
+-r utils/requirements.txt
+
+-e api
+-e brooks
+-e celery_workers
+-e dufresne
+-e handlers
+-e surroundings
+-e ifc_reader
+-e simulations
+-e utils

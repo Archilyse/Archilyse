@@ -1,0 +1,64 @@
+@import '../common/theme.scss';
+
+.row {
+  width: 100%;
+  height: $unit * 5;
+  padding: $unit * 1.75 $unit * 0;
+  border-left: 3px solid transparent;
+  margin: 0;
+  margin-top: $unit;
+  flex-direction: row;
+  color: $white;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: left;
+  align-items: center;
+
+  #icon {
+    display: block;
+    margin-left: $unit * 2.2;
+
+    span {
+      text-align: center;
+    }
+  }
+
+  #title {
+    display: block;
+    margin-left: $unit * 3;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  &:hover {
+    border-radius: 0;
+    background-color: $davys-grey;
+    width: auto;
+
+    #icon {
+      span {
+        color: $white !important;
+      }
+    }
+  }
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+#sliderButton {
+  margin-top: 0;
+  background-color: $davys-grey;
+  width: auto;
+
+  #icon {
+    span {
+      font-size: $unit * 3.8 !important;
+      height: $unit * 3.8 !important;
+      color: $white !important;
+    }
+  }
+}

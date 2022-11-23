@@ -1,0 +1,53 @@
+@import '../common/theme.scss';
+@import '../common/mixins.scss';
+
+.left-sidebar-container {
+  height: 100%;
+  width: 300px;
+  overflow-y: auto;
+  padding: $unit * 3;
+  padding-bottom: 0;
+  box-sizing: border-box;
+  background-color: white;
+
+  display: flex;
+  flex-direction: column;
+
+  box-shadow: $default-box-shadow;
+
+  transition: width 0.3s;
+
+  .drawer-button {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    cursor: pointer;
+
+    &.collapsed {
+      justify-content: center;
+    }
+  }
+
+  .drawer-button .circle {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: $primary-color;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    border: 1px solid $primary-color;
+    padding: 2px;
+
+    p {
+      @include p-slider;
+      margin-top: 0;
+    }
+  }
+
+  &.collapsed {
+    width: $unit * 9;
+  }
+}

@@ -1,0 +1,31 @@
+@import '../../../assets/scss/shared';
+
+:host {
+  position: fixed;
+  top: 2px;
+  left: 251px;
+}
+
+.navbar {
+  padding: 0;
+
+  .nav-link {
+    padding-bottom: 0;
+    line-height: 22px;
+    color: #a24c00;
+
+    &.disabled {
+      color: $dark-grey;
+    }
+    &.completed {
+      color: #008600;
+      &:hover {
+        color: #004200;
+      }
+    }
+  }
+}
+
+.active {
+  border-bottom: 2px solid $black;
+}

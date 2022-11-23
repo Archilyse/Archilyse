@@ -1,0 +1,60 @@
+{
+  "AreaType.BALCONY": { "children": [], "color_code": "rgb(240, 230, 140)", "level": 2, "sort_order": 3 },
+  "AreaType.BATHROOM": { "children": [], "color_code": "rgb(21, 176, 26)", "level": 2, "sort_order": 2 },
+  "AreaType.BEDROOM": { "children": [], "color_code": "rgb(64, 224, 208)", "level": 2, "sort_order": 14 },
+  "AreaType.CORRIDOR": { "children": [], "color_code": "rgb(100, 149, 237)", "level": 2, "sort_order": 4 },
+  "AreaType.DINING": { "children": [], "color_code": "rgb(154, 205, 50)", "level": 2, "sort_order": 9 },
+  "AreaType.ELEVATOR": { "children": [], "color_code": "rgb(255, 182, 193)", "level": 2, "sort_order": 10 },
+  "AreaType.KITCHEN": { "children": [], "color_code": "rgb(176, 224, 230)", "level": 2, "sort_order": 7 },
+  "AreaType.KITCHEN_DINING": { "children": [], "color_code": "rgb(238, 130, 238)", "level": 2, "sort_order": 8 },
+  "AreaType.LIVING_DINING": { "children": [], "color_code": "rgb(188, 143, 143)", "level": 2, "sort_order": 16 },
+  "AreaType.LIVING_ROOM": { "children": [], "color_code": "rgb(0, 139, 139)", "level": 2, "sort_order": 15 },
+  "AreaType.LOGGIA": { "children": [], "color_code": "rgb(186, 85, 211)", "level": 2, "sort_order": 6 },
+  "AreaType.ROOM": { "children": [], "color_code": "rgb(240, 128, 128)", "level": 2, "sort_order": 1 },
+  "AreaType.SHAFT": { "children": [], "color_code": "rgb(255, 255, 0)", "level": 2, "sort_order": 11 },
+  "AreaType.STAIRCASE": { "children": [], "color_code": "rgb(221, 160, 221)", "level": 2, "sort_order": 12 },
+  "AreaType.STOREROOM": { "children": [], "color_code": "rgb(255, 165, 0)", "level": 2, "sort_order": 5 },
+  "AreaType.VOID": { "children": [], "color_code": "rgb(152, 251, 152)", "level": 0, "sort": 17 },
+  "AreaType.WINTERGARTEN": { "children": [], "color_code": "rgb(218, 165, 32)", "level": 2, "sort_order": 13 },
+  "AreaTypeCollections.BALCONIES": { "children": ["AreaType.BALCONY"], "level": 1 },
+  "AreaTypeCollections.BATHROOMS": { "children": ["AreaType.BATHROOM"], "level": 1 },
+  "AreaTypeCollections.CORRIDORS": { "children": ["AreaType.CORRIDOR"], "level": 1 },
+  "AreaTypeCollections.ELEVATORS": { "children": ["AreaType.ELEVATOR"], "level": 1 },
+  "AreaTypeCollections.KITCHENS": { "children": ["AreaType.KITCHEN_DINING", "AreaType.KITCHEN"], "level": 1 },
+  "AreaTypeCollections.LOGGIAS": { "children": ["AreaType.LOGGIA"], "level": 1 },
+  "AreaTypeCollections.ROOMS": {
+    "children": [
+      "AreaType.ROOM",
+      "AreaType.DINING",
+      "AreaType.LIVING_DINING",
+      "AreaType.BEDROOM",
+      "AreaType.LIVING_ROOM"
+    ],
+    "level": 1
+  },
+  "AreaTypeCollections.SHAFTS": { "children": ["AreaType.SHAFT"], "level": 1 },
+  "AreaTypeCollections.STAIRCASES": { "children": ["AreaType.STAIRCASE"], "level": 1 },
+  "AreaTypeCollections.STORAGE_ROOMS": { "children": ["AreaType.STOREROOM"], "level": 1 },
+  "AreaTypeCollections.SUNROOMS": { "children": ["AreaType.WINTERGARTEN"], "level": 1 },
+  "PostDynamicAreaTypes.ANF": {
+    "children": ["AreaTypeCollections.LOGGIAS", "AreaTypeCollections.BALCONIES"],
+    "level": 0
+  },
+  "PostDynamicAreaTypes.FF": { "children": ["AreaTypeCollections.SHAFTS"], "level": 0 },
+  "PostDynamicAreaTypes.HNF": {
+    "children": [
+      "AreaTypeCollections.CORRIDORS",
+      "AreaTypeCollections.ROOMS",
+      "AreaTypeCollections.KITCHENS",
+      "AreaTypeCollections.SUNROOMS",
+      "AreaTypeCollections.STAIRCASES",
+      "AreaTypeCollections.BATHROOMS"
+    ],
+    "level": 0
+  },
+  "PostDynamicAreaTypes.NNF": { "children": ["AreaTypeCollections.STORAGE_ROOMS"], "level": 0 },
+  "PostDynamicAreaTypes.VF": {
+    "children": ["AreaTypeCollections.ELEVATORS", "AreaTypeCollections.STAIRCASES"],
+    "level": 0
+  }
+}

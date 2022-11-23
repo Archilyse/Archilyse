@@ -1,0 +1,11 @@
+.truncate-overflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.truncate-hidden {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}

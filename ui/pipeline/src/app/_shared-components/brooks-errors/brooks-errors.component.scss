@@ -1,0 +1,29 @@
+@import '../../../assets/scss/colors';
+
+.brooksError.text-blocker {
+  color: $red;
+  div,
+  i,
+  span {
+    color: $dark_red;
+  }
+}
+
+.brooksError {
+  font-size: 12px;
+  color: $black;
+  margin-bottom: 6px;
+
+  &:hover {
+    background-color: $grey;
+  }
+
+  .brooksType {
+    font-size: 9.5px;
+    color: $black;
+
+    span {
+      margin-left: 4px;
+    }
+  }
+}

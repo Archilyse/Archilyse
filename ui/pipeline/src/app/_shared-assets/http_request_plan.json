@@ -1,0 +1,39 @@
+{
+  "annotation_finished": true,
+  "annotations": 1680,
+  "building": 618,
+  "building_id": 618,
+  "created": "2019-11-28T13:48:12.219769",
+  "default_wall_height": 2.6,
+  "default_window_lower_edge": 0.5,
+  "default_window_upper_edge": 2.4,
+  "floors": [
+    {
+      "building": 618,
+      "building_id": 618,
+      "client_unit_mapping_link": "https://storage.googleapis.com/download/storage/v1/b/archilyse-slam-pipeline/o/images%2F310%2F30%2F0%2Ffloor_0-unit-client-mapping.png?generation=1578395457127546&alt=media",
+      "created": "2019-11-28T13:48:12.219769",
+      "floor_number": 0,
+      "georef_z": null,
+      "housenumber": "30",
+      "id": 2560,
+      "plan": 1699,
+      "plan_id": 1699,
+      "units": [9608, 9611],
+      "updated": "2020-01-07T13:54:00.311437"
+    }
+  ],
+  "georef_rot_angle": 21.5,
+  "georef_rot_x": 140.665964560247,
+  "georef_rot_y": -3132.1125470481,
+  "georef_scale": 1.96732901465284e-5,
+  "georef_x": 2637522.6075757,
+  "georef_y": 1240159.0436144,
+  "id": 1699,
+  "image_hash": "c0e6094785a6fd118f774732c9ea407e8fd7748906e9b21d2891b305a8afe9fb",
+  "image_height": 3680,
+  "image_mime_type": "image/jpeg",
+  "image_width": 4532,
+  "site_id": 1,
+  "updated": "2019-12-13T13:08:21.577315"
+}

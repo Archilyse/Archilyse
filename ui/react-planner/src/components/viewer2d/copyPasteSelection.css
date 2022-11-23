@@ -1,0 +1,9 @@
+rect.selectionComplete {
+  animation: dash 5s infinite linear;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 300;
+  }
+}

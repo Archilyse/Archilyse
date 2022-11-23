@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div>
+  <svg
+    viewBox="0 0 200.2 200.3"
+  >
+    <g>
+      <path
+        d="M4.2862637970157365e-15,-70A70,70,0,0,1,0.6108574848861728,-69.99733461449199L0.43719942846853216,-50.09809234551498A50.099999999999994,50.099999999999994,0,0,0,3.0677402318641193e-15,-50.099999999999994Z"
+        role="presentation"
+        shape-rendering="auto"
+        style="fill: green; fill-opacity: 1; stroke: white; stroke-width: 3; padding: 10px;"
+        transform="translate(100.15, 100.1)"
+      />
+      <path
+        d="M0.6108574848861728,-69.99733461449199A70,70,0,0,1,0.8551900584672995,-69.99477587623164L0.6120717418458814,-50.09626101998864A50.099999999999994,50.099999999999994,0,0,0,0.43719942846853216,-50.09809234551498Z"
+        role="presentation"
+        shape-rendering="auto"
+        style="fill: blue; fill-opacity: 1; stroke: white; stroke-width: 3; padding: 10px;"
+        transform="translate(100.15, 100.1)"
+      />
+      <path
+        d="M0.8551900584672995,-69.99477587623164A70,70,0,0,1,0.9773526237401746,-69.9931766806513L0.699505234991182,-50.09511645286614A50.099999999999994,50.099999999999994,0,0,0,0.6120717418458814,-50.09626101998864Z"
+        role="presentation"
+        shape-rendering="auto"
+        style="fill: yellow; fill-opacity: 1; stroke: white; stroke-width: 3; padding: 10px;"
+        transform="translate(100.15, 100.1)"
+      />
+      <path
+        d="M0.9773526237401746,-69.9931766806513A70,70,0,0,1,1.0995122118274454,-69.99136427371624L0.7869365973222143,-50.093819287331186A50.099999999999994,50.099999999999994,0,0,0,0.699505234991182,-50.09511645286614Z"
+        role="presentation"
+        shape-rendering="auto"
+        style="fill-opacity: 1; stroke: white; stroke-width: 3; padding: 10px;"
+        transform="translate(100.15, 100.1)"
+      />
+      <path
+        d="M1.0995122118274454,-69.99136427371624A70,70,0,0,1,1.2216684506098519,-69.98933866094738L0.8743655625079082,-50.092369527335194A50.099999999999994,50.099999999999994,0,0,0,0.7869365973222143,-50.093819287331186Z"
+        role="presentation"
+        shape-rendering="auto"
+        style="fill-opacity: 1; stroke: white; stroke-width: 3; padding: 10px;"
+        transform="translate(100.15, 100.1)"
+      />
+    </g>
+    <text
+      direction="inherit"
+      dx="0"
+      x="100.1"
+      y="107.25"
+    >
+      <tspan
+        dx="0"
+        dy="0"
+        style="font-size: 20px; font-family: Barlow Semi Condensed; font-weight: 300; line-height: 48px; fill: #898989; stroke: transparent;"
+        text-anchor="middle"
+        x="100.1"
+      >
+        50%
+      </tspan>
+    </text>
+  </svg>
+</div>
+`;

@@ -1,0 +1,73 @@
+@import 'Common/theme.scss';
+
+.request-simulation-form {
+  margin-right: $unit;
+
+  .form-row {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .footer-row {
+    display: flex;
+    align-items: center;
+  }
+
+  .form-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: $main-font;
+    margin-bottom: $unit;
+
+    input,
+    select {
+      margin-left: $unit;
+      width: $unit * 20;
+    }
+  }
+
+  .potential-view-button {
+    background-color: $primary-color;
+    border: none;
+    color: white;
+    padding: $unit * 0.8 $unit * 1.6;
+    border-radius: $unit * 0.8;
+    line-height: $large-font-size;
+    height: $base-font-size * 2;
+    font-size: $small-font-size;
+    font-family: $main-font;
+    font-weight: 600;
+
+    display: inline-flex;
+    align-items: center;
+
+    &:active {
+      transform: translateY(1px);
+    }
+
+    &:disabled {
+      pointer-events: none;
+    }
+
+    .loading-indicator {
+      margin-left: $unit;
+    }
+  }
+
+  .error-message {
+    display: flex;
+    align-items: center;
+    margin-top: $unit;
+
+    p {
+      margin: 0;
+      margin-left: $unit * 0.8;
+      color: $dark_red;
+    }
+    span {
+      color: $dark_red !important;
+      margin-left: 0;
+    }
+  }
+}

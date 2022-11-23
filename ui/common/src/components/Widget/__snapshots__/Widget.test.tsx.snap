@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly with two tabs 1`] = `
+<div>
+  <div
+    class="widget-drawer view-drawer"
+    data-testid="widget"
+    style="width: 100%;"
+  >
+    <div
+      class="tabs"
+    >
+      <div
+        class="tab-headers"
+      >
+        <div
+          class="tab selected"
+        >
+          <div
+            class="name"
+          >
+            Tab 1
+          </div>
+        </div>
+        <div
+          class="tab "
+        >
+          <div
+            class="name"
+          >
+            Tab 2
+          </div>
+        </div>
+      </div>
+      <div
+        class="tab-content"
+      >
+        <p>
+          Wonderful tab content 1
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,98 @@
+@import '../../theme.scss';
+
+.widget-drawer {
+  z-index: $z-index-level-1;
+  background-color: $white;
+  position: relative;
+  right: 0;
+  transition: width 0.3s;
+
+  &.collapsed {
+    & * {
+      max-width: 80px;
+    }
+  }
+}
+
+.widget-expanded-space {
+  transition: width 0.3s;
+}
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .tab-headers {
+    display: flex;
+    flex: 0 1 $unit * 5;
+    min-height: $unit * 5;
+    width: fit-content;
+
+    .tab {
+      display: flex;
+      align-items: center;
+      padding: 0 $unit * 2;
+      border-bottom: 2px solid transparent;
+      color: $medium-gray;
+      font-weight: 600;
+      cursor: pointer;
+
+      .name {
+        flex: 1;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        text-align: center;
+      }
+
+      .dots {
+        margin-left: auto;
+      }
+
+      &:hover {
+        color: $outer-space-grey;
+      }
+    }
+
+    .tab.selected {
+      z-index: 10;
+      border-bottom: 2px solid $outer-space-grey;
+      color: $outer-space-grey;
+      font-weight: 600;
+    }
+  }
+
+  .tab-content {
+    flex: 1 1 auto;
+    border-top: 1px solid $bright-gray;
+
+    &.collapsed {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+    }
+  }
+}
+
+.collapse-widget-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  border: none;
+  color: $primary-color;
+  width: $unit * 2;
+  height: $unit * 2;
+
+  margin-left: 4px;
+  margin-right: 4px;
+  outline: none;
+
+  p {
+    margin: 0;
+    position: relative;
+    bottom: 2px;
+    font-weight: 400;
+  }
+}

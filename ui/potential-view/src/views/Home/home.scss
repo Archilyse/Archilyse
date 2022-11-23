@@ -1,0 +1,44 @@
+@import 'Common/theme.scss';
+
+$widget-width: 380px;
+$widget-min-height: 500px;
+
+$left-widget-z-index: 2;
+$map-z-index: 1;
+
+.home-container {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  background-color: white;
+
+  .content-container {
+    position: absolute;
+    width: $widget-width;
+    min-height: $widget-min-height;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: $unit * 15 0;
+    padding-left: $unit;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    z-index: $left-widget-z-index;
+    background-color: white;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+  }
+
+  .home-heading {
+    margin-bottom: $unit * 2;
+  }
+
+  .map-container {
+    height: 100%;
+    width: 100%;
+    z-index: $map-z-index;
+  }
+}

@@ -1,0 +1,36 @@
+$table-background-color: #f0f0f0;
+
+.table {
+  width: 99%;
+  height: 100%;
+  margin-bottom: 1vw;
+
+  background-color: $table-background-color;
+
+  .ag-header-cell,
+  .ag-cell {
+    padding-left: 4px !important;
+    padding-right: 0 !important;
+  }
+
+  .ag-header-cell {
+    background-color: $table-background-color;
+  }
+
+  .ag-row-hover,
+  .ag-row-selected {
+    background-color: white !important;
+  }
+}
+
+.ag-theme-material {
+  .ag-row,
+  .ag-row-odd,
+  .ag-paging-panel {
+    background-color: $table-background-color;
+  }
+}
+
+.ag-root.ag-layout-normal {
+  background-color: $table-background-color;
+}

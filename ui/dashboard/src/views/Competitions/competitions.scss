@@ -1,0 +1,9 @@
+@import '../../common/theme.scss';
+
+$column-width: 319px;
+$column-height: 100px;
+
+.competitions {
+  @include drawer-list-layout();
+  @include grid-layout($column-width, $column-height);
+}

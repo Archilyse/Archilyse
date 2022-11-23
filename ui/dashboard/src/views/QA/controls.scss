@@ -1,0 +1,106 @@
+@import '../../common/theme.scss';
+
+$control-drawer-min-width: 241px;
+
+$error-hover-background: #b71f330f;
+
+.controls {
+  min-width: $control-drawer-min-width;
+  #drawer {
+    display: flex;
+    flex-direction: column;
+    padding: $unit * 2;
+    overflow-x: hidden;
+  }
+
+  .control-dropdown {
+    min-width: $control-drawer-min-width;
+    margin-bottom: $unit * 2;
+
+    .dropdown {
+      margin-top: $unit * 2;
+      width: 100%;
+      background-color: white;
+      border-top: 0;
+      border-left: 0;
+      border-right: 0;
+    }
+  }
+
+  .notes {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-bottom: $unit * 2;
+
+    @include custom-material-input();
+  }
+
+  button {
+    margin: $unit;
+  }
+
+  .buttons-continaer {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+
+    .primary-button {
+      min-height: $unit * 5;
+    }
+  }
+
+  .separator {
+    border-bottom: 1px solid grey;
+    width: 70%;
+    margin: 30px auto 0;
+  }
+
+  .simulation-mode {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    .MuiFormControlLabel-label {
+      font-size: $smaller-font-size;
+      color: $secondary-color;
+    }
+    p {
+      margin-right: $unit * 2;
+    }
+  }
+}
+
+.simulation-validation-list {
+  margin-bottom: $unit * 2;
+  display: flex;
+  flex-direction: column;
+
+  .errors-container {
+    overflow: auto;
+  }
+
+  .errors-list,
+  .unit-errors-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .units-errors-item {
+    padding: $unit $unit * 0.5;
+    color: $dark_red;
+
+    &:hover {
+      border-radius: 4px;
+      background-color: $error-hover-background;
+    }
+
+    .unit-name {
+      margin: 0;
+    }
+
+    .unit-errors-list {
+      padding-left: $unit * 1.5;
+    }
+  }
+}

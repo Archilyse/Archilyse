@@ -1,0 +1,13 @@
+@import 'Common/theme.scss';
+
+.c-empty-data {
+  text-align: center;
+  color: $secondary-color;
+  width: 100%;
+  margin-top: $unit * 10;
+  margin-right: 30%;
+}
+
+.c-empty-data p {
+  margin-top: 0;
+}

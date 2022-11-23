@@ -1,0 +1,75 @@
+@import 'Common/theme.scss';
+
+$font-size: 1.2em;
+$rows-background-color: $white;
+$rows-padding: $unit * 2 $unit * 3 $unit * 2 $unit * 3;
+
+.profile-container {
+  width: 100%;
+  color: $outer-space-grey;
+  padding-right: $unit * 3;
+
+  .manage-user-button {
+    @include base-button-style;
+    width: fit-content;
+    padding: 0 $unit * 2;
+    box-sizing: border-box;
+    border: 0;
+  }
+
+  .user-profile {
+    display: flex;
+    align-items: center;
+    padding: $unit * 2 0;
+
+    .user-profile-info {
+      flex: 1;
+
+      .user-name {
+        font-size: $unit * 2;
+        font-weight: 600;
+      }
+
+      .user-email {
+        color: $spanish-gray;
+      }
+    }
+
+    .edit-profile-button {
+      color: $outer-space-grey;
+      background-color: $anti-flash-white;
+
+      &:hover {
+        background-color: $bright-gray-darker;
+      }
+    }
+  }
+
+  .manage-user-header {
+    display: flex;
+    align-items: center;
+    padding-top: $unit;
+
+    .search-users {
+      flex: 1;
+
+      h4 {
+        font-weight: 600;
+      }
+    }
+
+    .create-user-button {
+      color: $white;
+      background-color: $outer-space-grey;
+
+      &:hover {
+        background-color: $storm-cloud-grey;
+      }
+    }
+  }
+
+  .layout-content {
+    align-items: flex-start;
+    margin-left: $unit * 5;
+  }
+}

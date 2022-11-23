@@ -1,0 +1,24 @@
+@import '../common/theme.scss';
+
+.breadcrumb-link {
+  font-size: $base-font-size;
+  font-family: $main-font;
+  color: $outer-space-grey;
+  font-weight: 600;
+  text-decoration: none;
+  letter-spacing: normal;
+}
+
+.breadcrumb-link:last-of-type {
+  display: inline-flex;
+  align-items: center;
+}
+
+.MuiBreadcrumbs-separator {
+  margin-left: 0 !important; // try to override existing material style
+  margin-right: 0 !important;
+}
+
+.MuiBreadcrumbs-ol {
+  flex-wrap: nowrap !important; // try to override existing material style
+}

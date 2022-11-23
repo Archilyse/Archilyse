@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  slam_tests:
+    image: us.gcr.io/unified-ion-244207/slam_tests:${PR_NUMBER}
+
+  slam_db_migrations:
+    image: us.gcr.io/unified-ion-244207/slam_api:${PR_NUMBER}
+
+  slam_worker:
+    image: us.gcr.io/unified-ion-244207/slam_worker:${PR_NUMBER}
+
+  slam_flower:
+    image: us.gcr.io/unified-ion-244207/slam_worker:${PR_NUMBER}
+
+  slam_router:
+    image: us.gcr.io/unified-ion-244207/slam_router:${PR_NUMBER}
+
+  slam_api:
+    image: us.gcr.io/unified-ion-244207/slam_api:${PR_NUMBER}
+

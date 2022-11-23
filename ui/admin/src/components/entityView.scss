@@ -1,0 +1,25 @@
+@import '../common/theme.scss';
+
+.delete-button {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+
+  /* @TODO: To constant */
+  .secondary-button {
+    color: white;
+    background-color: red;
+    border: 1px solidred;
+  }
+
+  .secondary-button:hover {
+    background-color: red;
+    border: 1px solidred;
+  }
+}
+
+.title {
+  text-align: center;
+  position: relative;
+  bottom: $unit * 2.5;
+}

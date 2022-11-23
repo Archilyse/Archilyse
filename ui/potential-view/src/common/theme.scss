@@ -1,0 +1,7 @@
+@import 'archilyse-ui-components/dist/theme.scss';
+
+html {
+  @media #{$extra-large-screen} {
+    font-size: 16px;
+  }
+}

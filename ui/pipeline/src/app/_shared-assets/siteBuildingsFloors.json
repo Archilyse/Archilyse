@@ -1,0 +1,55 @@
+{
+  "lon": 2561421.8,
+  "lat": 1205125.3,
+  "basic_features_status": "SUCCESS",
+  "buildings": [
+    {
+      "city": "Neuch\u00e2tel",
+      "created": "2019-12-12T10:39:41.345105",
+      "elevation": 483.289489746094,
+      "floors": {
+        "1": {
+          "floor_number": 1,
+          "plan_id": 1
+        }
+      },
+      "housenumber": "37",
+      "id": 666,
+      "site_id": 1,
+      "street": "Rue des Sablons",
+      "updated": "2020-01-10T07:19:05.536931",
+      "zipcode": "2000"
+    },
+    {
+      "city": "Neuch\u00e2tel",
+      "created": "2019-12-12T10:39:41.345105",
+      "elevation": 484.973999023438,
+      "floors": {
+        "1": {
+          "floor_number": 1,
+          "plan_id": 1
+        }
+      },
+      "housenumber": "39",
+      "id": 1,
+      "site_id": 1,
+      "street": "Rue des Sablons",
+      "updated": "2020-01-10T07:19:04.186011",
+      "zipcode": "2000"
+    }
+  ],
+  "client_id": 1,
+  "client_site_id": "2196120",
+  "created": "2019-12-12T10:39:41.345105",
+  "currently_assigned": false,
+  "id": 1,
+  "name": "Rue des Sablons",
+  "pipeline_and_qa_complete": true,
+  "priority": 0,
+  "raw_dir": "https://drive.google.com/drive/folders/10G-I0q8hun5xUjnRTv-VvhJhuXFIqc--",
+  "region": "Neuch\u00e2tel",
+  "results_completed": true,
+  "site_plan_file": null,
+  "updated": "2020-01-10T08:18:15.588348",
+  "validation_notes": null
+}

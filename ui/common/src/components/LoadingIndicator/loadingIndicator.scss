@@ -1,0 +1,7 @@
+@import '../../theme.scss';
+
+.loading-indicator {
+  .MuiCircularProgress-root {
+    color: $primary-color;
+  }
+}

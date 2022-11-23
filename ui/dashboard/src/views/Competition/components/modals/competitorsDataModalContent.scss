@@ -1,0 +1,23 @@
+@import '../../../../common/theme.scss';
+
+.raw-data-uploader-container {
+  margin-bottom: $unit * 4;
+  display: flex;
+  overflow: auto;
+
+  .upload-raw-data-item-cell {
+    display: inline-flex;
+    white-space: break-spaces;
+    max-width: $unit * 60;
+    line-height: $unit * 2;
+    padding: $unit * 0.7 0;
+  }
+
+  .editable-cell-input {
+    max-width: $unit * 8;
+  }
+}
+
+.menu-list-competitiors-raw-data {
+  width: auto;
+}

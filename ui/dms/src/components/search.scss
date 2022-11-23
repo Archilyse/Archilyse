@@ -1,0 +1,33 @@
+@import '../common/theme.scss';
+
+.search-component {
+  width: 98%;
+  padding: $unit;
+  margin: 25px 0 15px 5px;
+  display: flex;
+  justify-content: flex-start;
+  background-color: $white;
+  border: 1px solid $bright-gray;
+
+  &:hover {
+    border: 1px solid $bright-gray-darker;
+  }
+
+  &:focus-within {
+    border: 1px solid $storm-cloud-grey;
+    box-shadow: 0 0 0 3px $silver-sand-grey;
+
+    span {
+      color: $storm-cloud-grey !important;
+    }
+  }
+
+  .MuiInputBase-root {
+    width: 100%;
+  }
+  @include custom-material-input();
+}
+.search-icon {
+  pointer-events: none;
+  margin-right: $unit;
+}

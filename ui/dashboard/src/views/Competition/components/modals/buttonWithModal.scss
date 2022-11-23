@@ -1,0 +1,23 @@
+@import '../../../../common/theme.scss';
+
+.button-with-modal {
+  padding: $unit 0 $unit $unit * 0.5;
+  font-size: $unit * 1.4;
+  line-height: $unit * 2;
+
+  button {
+    @include normalized-button();
+    color: $secondary-color;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    svg {
+      margin-left: $unit;
+    }
+  }
+}

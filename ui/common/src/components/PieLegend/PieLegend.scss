@@ -1,0 +1,23 @@
+@import '../../theme.scss';
+
+.pie-legend {
+  ul {
+    margin-left: auto;
+    padding-left: 0;
+    list-style: none;
+
+    li {
+      color: $secondary-color;
+      margin-bottom: $unit/2;
+      display: flex;
+      font-size: small;
+      justify-content: flex-end;
+      align-items: center;
+      .bar {
+        width: $unit * 0.44;
+        height: $unit * 2.32;
+        margin-left: $unit;
+      }
+    }
+  }
+}

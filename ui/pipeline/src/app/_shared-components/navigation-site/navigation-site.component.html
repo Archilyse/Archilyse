@@ -1,0 +1,31 @@
+<div id="navigationContainer">
+  <div *ngIf="error" id="errorMessage" class="errorMessage">Navigation error:<br/>{{error}}</div>
+  <div *ngIf="loading && !error" id="loadingMessage" class="loadingMessage">Loading data...</div>
+
+  <div *ngIf="!error && !loading">
+    <div *ngIf="client_site_id" class="clientSiteData" [popperPlacement]="'top-start'"  [popper]="clientSiteTooltip">
+      <div class="title">Client Site Id:</div><div class="value link" (click)="linkToSite()" >{{ cutString(client_site_id,25)}}</div>
+    </div>
+    <div class="siteData" [popperPlacement]="'top-start'"  [popper]="siteTooltip">
+      <div class="title">Site:</div><div class="value link" (click)="linkToSite()" >{{ cutString(site.name,25)}} - ({{site.id}})</div>
+    </div>
+    <div class="buildingData" [popperPlacement]="'top-start'"  [popper]="buildingTooltip"><div class="title">Bldn:</div>
+      <div class="value">
+        <select (change)="onChangeBuilding($event)">
+          <option *ngFor="let b of buildings" [value]="b.id" [selected]="b.id === building.id">{{cutString(b.street + " " + b.housenumber, 25)}} - ({{b.id}})</option>
+        </select>
+      </div>
+    </div>
+    <div class="planData" [popperPlacement]="'top-start'"  [popper]="planTooltip"><div class="title">Floor:</div>
+      <div class="value">
+        <select (change)="onChangePlan($event)">
+          <option *ngFor="let f of floorsToDisplay" [value]="f.plan_id" [selected]="f.plan_id+'' === floor.plan_id+''">{{cutString(f.floor_numbers,25)}} - ({{f.plan_id}})</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+<popper-content #siteTooltip >View site in the admin tool.</popper-content>
+<popper-content #clientSiteTooltip >Client site id, check to view site.</popper-content>
+<popper-content #buildingTooltip >Change the building displayed.</popper-content>
+<popper-content #planTooltip >Change the floor displayed.</popper-content>

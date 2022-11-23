@@ -1,0 +1,44 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/ui/admin"
+  schedule:
+    interval: weekly
+    day: "saturday"
+  open-pull-requests-limit: 0
+  target-branch: develop
+  reviewers:
+    - "vovanezha"
+  labels:
+    - "FE"
+  ignore:
+    - dependency-name: "eslint*"
+    - dependency-name: "@typescript-eslint*"
+- package-ecosystem: npm
+  directory: "/ui/dashboard"
+  schedule:
+    interval: weekly
+    day: "saturday"
+  open-pull-requests-limit: 0
+  target-branch: develop
+  reviewers:
+    - "vovanezha"
+  labels:
+    - "FE"
+  ignore:
+    - dependency-name: "eslint*"
+    - dependency-name: "@typescript-eslint*"
+- package-ecosystem: npm
+  directory: "/ui/common"
+  schedule:
+    interval: weekly
+    day: "saturday"
+  open-pull-requests-limit: 0
+  target-branch: develop
+  reviewers:
+    - "vovanezha"
+  labels:
+    - "FE"
+  ignore:
+    - dependency-name: "eslint*"
+    - dependency-name: "@typescript-eslint*"

@@ -1,0 +1,27 @@
+module.exports = [
+  {
+    created: '2021-05-31T07:23:18.296628',
+    id: 1,
+    logo_gcs_link: null,
+    name: 'test_archilyse_client',
+    option_analysis: true,
+    option_competition: false,
+    option_dxf: true,
+    option_ifc: false,
+    option_pdf: true,
+    updated: null,
+  },
+  {
+    created: '2021-05-31T07:23:18.296628',
+    id: 2,
+    logo_gcs_link: null,
+    name: 'wonderful client 3',
+    option_analysis: true,
+    option_competition: false,
+    option_dxf: true,
+    option_ifc: false,
+    option_pdf: false,
+    option_png: true,
+    updated: null,
+  },
+];

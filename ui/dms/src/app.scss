@@ -1,0 +1,29 @@
+@import './common/theme.scss';
+
+body {
+  font-family: $main-font;
+  background-color: $background-color;
+  margin: 0;
+  height: 100%;
+}
+
+h2 {
+  display: block;
+  font-size: 1.4em;
+  margin-block-start: 0.4em;
+  margin-block-end: 0;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
+}
+
+#nprogress .bar {
+  background: $primary-color;
+}
+#nprogress .peg {
+  box-shadow: 0 0 10px $primary-color, 0 0 5px $primary-color;
+}
+
+#nprogress .spinner-icon {
+  border-top-color: $primary-color;
+  border-left-color: $primary-color;
+}

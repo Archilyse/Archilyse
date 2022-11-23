@@ -1,0 +1,38 @@
+@import 'Common/theme.scss';
+
+$folder-width: $unit * 10;
+
+.grid {
+  display: flex;
+  justify-content: flex-start;
+  align-content: flex-start;
+  overflow: auto;
+  flex-wrap: wrap;
+
+  .grid-item-container {
+    cursor: pointer;
+    background-color: transparent;
+    padding: $unit * 2;
+    display: flex;
+    justify-content: flex-start;
+    align-content: flex-start;
+
+    & > .folder,
+    & > .file {
+      &.hover,
+      &.item-cut {
+        background-color: $hovered-color;
+        border-radius: $unit / 2;
+        overflow-wrap: break-word;
+      }
+      p {
+        margin-top: $unit / 5;
+      }
+    }
+
+    .file,
+    .folder {
+      text-align: center;
+    }
+  }
+}

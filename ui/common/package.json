@@ -1,0 +1,34 @@
+{
+  "name": "archilyse-ui-components",
+  "private": "true",
+  "version": "0.1.0",
+  "description": "Set of common components for Archilyse UI",
+  "main": "src/index.js",
+  "module": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "webpack --config webpack.config.js --watch",
+    "test": "TZ=UTC jest",
+    "lint": "eslint src/",
+    "build": "webpack --config webpack.config.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/geojson": "7946.0.7",
+    "d3": "6.2.0",
+    "leaflet-geosearch": "3.6.0",
+    "@geoman-io/leaflet-geoman-free": "2.11.2",
+    "leaflet": "1.7.1",
+    "leaflet-draw": "1.0.4",
+    "swissgrid": "1.0.5",
+    "proj4": "2.7.2"
+  },
+  "devDependencies": {
+    "@types/leaflet": "1.5.19",
+    "sass": "1.27.0",
+    "url-loader": "4.1.1"
+  }
+}

@@ -1,0 +1,191 @@
+version: "3.7"
+
+x-build_args: &build_args
+  args:
+    - GCP_REGISTRY_PROJECT=${GCP_REGISTRY_PROJECT}
+    - BASE_IMAGE_VERSION=${BASE_IMAGE_VERSION}
+    - BASE_FE_IMAGE_VERSION=${BASE_FE_IMAGE_VERSION}
+
+x-worker_common: &worker_common
+  restart: on-failure
+  build:
+    context: ../
+    dockerfile: docker/worker.Dockerfile
+    <<: *build_args
+
+x-api_common: &api_common
+  build:
+    context: ../
+    dockerfile: docker/api.Dockerfile
+    <<: *build_args
+  restart: on-failure
+
+x-env_files: &env_files
+  env_file:
+    - .env
+    - .env.local
+
+services:
+  pgbouncer:
+    image: edoburu/pgbouncer:1.17.0
+    ports:
+      - "${PGBOUNCER_PORT}:${PGBOUNCER_PORT}"
+    environment:
+      DB_HOST: "${POSTGRES_HOST}"
+      DB_NAME: "*"
+      LISTEN_PORT: "${PGBOUNCER_PORT}"
+      POOL_MODE: transaction
+      MAX_DB_CONNECTIONS: 50
+      AUTH_TYPE: "md5"
+      AUTH_FILE: /etc/pgbouncer/conf/userlist.txt
+      LOG_STATS: 0
+      LOG_CONNECTIONS: 0
+      LOG_DISCONNECTIONS: 0
+      VERBOSE: 0
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./configs/pgbouncer/userlist.txt:/etc/pgbouncer/conf/userlist.txt
+
+  postgres:
+    restart: on-failure
+    image: "postgis/postgis:11-2.5"
+    command: postgres -c 'max_connections=20'
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    environment:
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+      PGDATA: "${PGDATA_LOCATION}"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${POSTGRES_USER}" ]
+      interval: 5s
+      retries: 5
+################################################################################
+  rabbitmq:
+    restart: "no"
+    image: "rabbitmq:3.8-management"
+    environment:
+      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VIRTUAL_HOST}
+      RABBITMQ_NODENAME: node@rabbitmq
+    ports:
+      - "${RABBITMQ_MANAGEMENT_PORT}:${RABBITMQ_MANAGEMENT_PORT}"
+      - "${RABBITMQ_PORT}:${RABBITMQ_PORT}"
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+################################################################################
+  redis:
+    image: "bitnami/redis:6.2.7"
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+################################################################################
+  db_migrations: # Init container
+    <<: *api_common
+    <<: *env_files
+    environment:
+      LOGGER_SERVICE_NAME: ${SLAM_API_LOGGER_SERVICE_NAME}
+    command: --migrations
+    depends_on:
+      - pgbouncer
+################################################################################
+  worker:
+    <<: *worker_common
+    <<: *env_files
+    environment:
+      WORKER_NAME: "worker"
+      WORKER_CONCURRENCY: 2
+      LOGGER_SERVICE_NAME: ${WORKER_LOGGER_SERVICE_NAME}
+    command: --worker
+    depends_on:
+      - rabbitmq
+      - pgbouncer
+      - redis
+################################################################################
+  flower:
+    <<: *worker_common
+    <<: *env_files
+    environment:
+      FLOWER_PORT: ${FLOWER_PORT}
+      LOGGER_SERVICE_NAME: ${WORKER_LOGGER_SERVICE_NAME}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "${FLOWER_PORT}:${FLOWER_PORT}"
+    command: --flower
+    healthcheck:
+      test: [ "CMD", "curl", "--fail", "http://localhost:5555/" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+################################################################################
+  tests:
+    build:
+      context: ../
+      dockerfile: docker/tests.Dockerfile
+      <<: *build_args
+    <<: *env_files
+    depends_on:
+      - pgbouncer
+      - router
+      - flower
+      - worker
+      - redis
+    volumes:
+      - /tmp/splinter_images:/src/tests/splinter_images
+      - /tmp/image_differences/:/src/tests/image_differences/
+      - ../tests:/src/tests/
+################################################################################
+#
+# FE is defined here only to allow the parallelization of the build process with
+# docker compose
+#
+################################################################################
+  fe_unittest:
+    build:
+      context: ../
+      dockerfile: docker/fe_unittest.Dockerfile
+      <<: *build_args
+    env_file:
+      - .env
+      - .env.local
+
+################################################################################
+  router:
+    build:
+      context: ../
+      dockerfile: docker/nginx.Dockerfile
+      <<: *build_args
+      target: nginx
+    restart: always
+    <<: *env_files
+    environment:
+      - API_HOST=http://api:8000
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+
+  api:
+    <<: *api_common
+    <<: *env_files
+    command: --api
+    depends_on:
+      - pgbouncer
+    ports:
+      - "8000:8000"

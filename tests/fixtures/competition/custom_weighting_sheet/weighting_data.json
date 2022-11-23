@@ -1,0 +1,429 @@
+[
+ [
+  "Wohnnutzung",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Fl\u00e4chenanteil Wohnen",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Projektentwicklung HNF",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Freifl\u00e4chen Wohnung",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Verkehrsfl\u00e4chenanteil",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Verf\u00fcgbarkeit Fahrradboxen",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Anzahl Fahrradboxen",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Gr\u00f6sse Aufzugkabine",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Verh\u00e4ltnis Innenraum zu Aussenraum",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Verf\u00fcgbarkeit Private Aussenfl\u00e4chen",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Freifl\u00e4chen Private Aussenfl\u00e4chen",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Minimale Aussenfl\u00e4chegr\u00f6sse",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Anschlussm\u00f6glichkeit Waschturm in Abstellraum",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Verf\u00fcgbarkeit Tumbler und Waschmaschine",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Verf\u00fcgbarkeit Abstellraum",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Abgleich Wohnungsmix",
+  0.016666666666666666,
+  "",
+  "",
+  0.5
+ ],
+ [
+  "Vergleich mit den Mindesthauptnutzfl\u00e4chen pro Wohnungstyp",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Verteilung Dusche/Badewanne",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Verf\u00fcgbarkeit Anzahl Nasszellen pro Wohnung",
+  0.016666666666666666,
+  "",
+  "",
+  0.5
+ ],
+ [
+  "Erschliessbarkeit",
+  0.016666666666666666,
+  "",
+  0.25,
+  ""
+ ],
+ [
+  "Gr\u00f6sse Nasszellen",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Minimale Raumgr\u00f6sse",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Minimale Wohnen/Essen/K\u00fcche-gr\u00f6sse",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Gr\u00f6sse Essbereich",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "WC Hauswart B\u00fcro",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Verf\u00fcgbarkeit Hauswart Lager",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Gr\u00f6sse Hauswart B\u00fcro",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Gr\u00f6sse Hauswart Lager ",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "N\u00e4he WC zu Hauswart B\u00fcro",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Wasseranschluss Hauswart Lager",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Analyse Gr\u00fcnraum",
+  0.016666666666666666,
+  "",
+  0.25,
+  ""
+ ],
+ [
+  "Analyse Himmel",
+  0.016666666666666666,
+  "",
+  0.25,
+  ""
+ ],
+ [
+  "Analyse Geb\u00e4ude",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Analyse Gew\u00e4sser",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Analyse Gleise",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Analyse Strassen",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Solare Einstrahlung je Zimmer (Sommer)",
+  0.016666666666666666,
+  0.25,
+  "",
+  ""
+ ],
+ [
+  "Solare Einstrahlung je Zimmer (Winter)",
+  0.016666666666666666,
+  0.25,
+  "",
+  ""
+ ],
+ [
+  "Sonnenstunden Private Aussenfl\u00e4chen (Sommer)",
+  0.016666666666666666,
+  0.25,
+  "",
+  ""
+ ],
+ [
+  "Sonnenstunden Private Aussenfl\u00e4chen (Winter)",
+  0.016666666666666666,
+  0.25,
+  "",
+  ""
+ ],
+ [
+  "Analyse \"L\u00e4rm\"",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "L\u00e4rm abgewandte R\u00e4ume",
+  0.016666666666666666,
+  "",
+  0.25,
+  ""
+ ],
+ [
+  "Anforderungen Trocknungsr\u00e4ume",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Nat\u00fcrliche Belichtung Hauswart B\u00fcro",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Barrierefreier Zugang Abstellraum Kinderwagen/Fahrr\u00e4der",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Gr\u00f6sse Fahrradboxen",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Verf\u00fcgbarkeit Stromanschluss",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "N\u00e4he Hauseingang zum Abstellraum f\u00fcr Kinderwagen/Fahrr\u00e4der",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Verf\u00fcgbarkeit Kellerabteil pro Wohnung",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Gr\u00f6sse Kellerabteil",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Gr\u00f6sse B\u00fcro/G\u00e4stezimmer",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Nummer K\u00fcchenelemente",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Nummer Schrank Elemente Eingang",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Nummer Schrank Elemente Schlafzimmer",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Abmessungen der Sanit\u00e4relemente",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Anzahl Autoabstellpl\u00e4tze",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Anzahl Zweiradabstellpl\u00e4tze",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Anzahl Fahrradabstellpl\u00e4tze",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Verf\u00fcgbarkeit 2tes Untergeschoss",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Ertragsrelevante Fl\u00e4che",
+  0.016666666666666666,
+  "",
+  "",
+  ""
+ ],
+ [
+  "Total",
+  "=SUM(B8:B67)",
+  "=SUM(C8:C67)",
+  "=SUM(D8:D67)",
+  "=SUM(E8:E67)"
+ ]
+]

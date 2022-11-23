@@ -1,0 +1,76 @@
+@import '../../theme.scss';
+
+.public-form-container {
+  display: flex;
+  height: 100%;
+
+  .public-form-logo-container {
+    display: flex;
+    flex: 0.5;
+    color: $white;
+    background-color: $indigo-blue;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    .public-form-logo {
+      display: flex;
+      flex: 1;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      background-image: url('../../../assets/images/login_logo.svg');
+      background-repeat: no-repeat;
+      background-size: 25%;
+      background-position: center;
+    }
+
+    .subtitle {
+      font-size: $unit * 5;
+      font-weight: bold;
+    }
+
+    .subtitle-slogan {
+      font-size: 1.16rem;
+    }
+  }
+
+  .public-form-fields-container {
+    flex: 0.5;
+    background-color: $lotion-white;
+
+    color: $outer-space-grey;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .public-forms-title {
+      font-size: $unit * 5;
+      font-weight: bold;
+    }
+
+    .public-form-fields {
+      display: flex;
+      flex-direction: column;
+      width: 60%;
+      height: 100%;
+
+      > div {
+        margin: 0;
+        flex: 0.95;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+      }
+
+      footer {
+        margin: auto;
+
+        a:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}

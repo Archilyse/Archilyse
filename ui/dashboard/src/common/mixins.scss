@@ -1,0 +1,251 @@
+@mixin table-font {
+  font-family: 'Barlow';
+  font-weight: 600;
+  color: $secondary-color;
+  font-size: $small-font-size;
+}
+
+@mixin unstyle-link($color) {
+  color: $color;
+  text-decoration: none;
+  outline: 0;
+}
+
+@mixin p-slider {
+  margin-bottom: 0;
+  position: relative;
+  bottom: 2px;
+  color: $primary-color;
+}
+
+@mixin large-input($border-color) {
+  border: 1px solid $border-color;
+  box-sizing: border-box;
+  border-radius: 2px;
+  width: 323px;
+  height: $button-heigth;
+  font-size: $base-font-size;
+  line-height: 19px;
+  padding: $unit;
+  margin: $unit;
+  font-family: 'Barlow';
+  @media #{$extra-large-screen} {
+    width: 646px;
+    height: 70px;
+  }
+}
+
+// Needed to abstract material UI logic
+@mixin dropdown-width($dropdown-class, $width) {
+  .#{$dropdown-class} {
+    width: $width;
+  }
+  .menu-list-#{$dropdown-class} {
+    width: $width;
+  }
+}
+
+@mixin basic-layout() {
+  display: flex;
+  margin: 0;
+  height: 100%;
+  .main-content {
+    margin-top: $navbar-height;
+  }
+}
+
+@mixin modal-layout() {
+  $modal-margin: $unit * 8.5;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: $unit;
+  outline: none;
+
+  .title {
+    margin-top: $unit * 3;
+    flex: 1;
+    margin-left: $unit * 8;
+    margin-right: $modal-margin;
+  }
+
+  .content {
+    margin-top: $unit;
+    margin-left: $modal-margin;
+    margin-right: $modal-margin;
+    flex: 2;
+  }
+
+  .actions {
+    flex: 0.5;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    & > button {
+      margin: $unit;
+    }
+  }
+}
+
+@mixin grid-layout($column-width: 319px, $column-height: 480px) {
+  .grid {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+
+    padding: $unit;
+    margin-top: $unit * 3;
+    margin-left: $unit * 3;
+
+    .column {
+      background-color: white;
+      box-shadow: $secondary-box-shadow;
+      border-radius: 2px;
+      margin: $unit;
+      margin-right: $unit * 2;
+      cursor: pointer;
+
+      width: $column-width;
+      height: $column-height; // @TODO: Adjustable
+
+      @media #{$extra-large-screen} {
+        width: $column-width * 2;
+        height: $column-height * 2;
+      }
+    }
+  }
+}
+
+@mixin drawer-list-layout() {
+  display: flex;
+  height: 96%;
+
+  .list-drawer {
+    flex: 0.6;
+
+    .user {
+      flex: 0.1;
+      display: flex;
+      .account-icon {
+        width: 54;
+        min-width: 54;
+        height: 54;
+        margin-right: $unit * 2;
+        background-image: url('../../../assets/images/account_icon.png');
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+      margin-bottom: $unit * 5;
+    }
+
+    @include custom-scrollbar-chrome('#drawer');
+
+    h2 {
+      font-size: $extra-larger-font-size;
+      font-weight: 400;
+    }
+    h3 {
+      font-size: $base-font-size * 1.125;
+      color: $secondary-color;
+      font-weight: 400;
+    }
+
+    .list .item {
+      margin-top: $unit * 2;
+    }
+
+    .list > :first-child {
+      margin-top: 0;
+    }
+
+    .item-info {
+      display: flex;
+      flex-direction: column;
+      padding-left: $unit;
+      cursor: pointer;
+      & > h3 {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        small {
+          margin-right: $unit;
+          color: $light-grey-color;
+        }
+        margin-bottom: $unit / 1.25;
+      }
+    }
+    .selected-item-info h3 {
+      color: $primary-color;
+    }
+  }
+
+  .main-content {
+    flex: 3;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100vh;
+  }
+}
+@mixin custom-material-input-dashboard() {
+  font-family: 'Barlow';
+  color: $secondary-color;
+  font-size: $base-font-size;
+  line-height: 30px;
+
+  /* Override CSS from Material UI, targeting inputs & textfields */
+  .MuiInput-underline:hover:not(.Mui-disabled)::before,
+  &.MuiInput-underline:hover:not(.Mui-disabled)::before {
+    border-bottom: 2px solid $secondary-color;
+  }
+
+  .MuiInput-underline:not(.Mui-error)::after,
+  &.MuiInput-underline:not(.Mui-error)::after {
+    border-bottom: 2px solid $primary-color;
+  }
+}
+// Safari needs fixed height on flex containers
+@mixin safari-flex-layout-hack($fixed-height) {
+  // This target only safari 10.1 +
+  @media not all and (min-resolution: 0.001dpcm) {
+    @supports (-webkit-appearance: none) {
+      height: $fixed-height;
+    }
+  }
+}
+
+// Custom scrollbar for chrome/webkit browsers
+@mixin custom-scrollbar-chrome($element) {
+  #{$element}::-webkit-scrollbar {
+    width: $unit / 2;
+  }
+
+  #{$element}::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px $light-grey-color;
+  }
+
+  #{$element}::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    outline: $unit/ 10 solid slategrey;
+  }
+}
+
+@mixin normalized-button() {
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+}
+
+@mixin expanded-background-button($size) {
+  &::before {
+    width: #{$size};
+    height: #{$size};
+
+    display: block;
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}

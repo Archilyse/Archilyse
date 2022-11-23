@@ -1,0 +1,55 @@
+@import '../../../assets/scss/colors';
+
+#navigationContainer {
+  margin-top: 5px;
+  margin-left: 20px;
+  height: 80px;
+
+  .errorMessage {
+    font-size: 12px;
+    color: $red;
+  }
+
+  .clientSiteData,
+  .siteData,
+  .buildingData,
+  .planData {
+    font-size: 12px;
+
+    .title {
+      display: inline-block;
+      color: $black;
+      font-size: 11px;
+    }
+    .value {
+      display: inline-block;
+      float: right;
+      font-size: 11px;
+      color: $dark-grey;
+      cursor: pointer;
+
+      &.link {
+        margin-right: 26px;
+      }
+
+      option {
+        cursor: pointer;
+      }
+      select {
+        border: none;
+        cursor: pointer;
+        background: $white;
+        margin-right: 10px;
+        text-align-last: right;
+
+        &:hover {
+          color: $dark_blue;
+        }
+      }
+
+      &:hover {
+        color: $dark_blue;
+      }
+    }
+  }
+}

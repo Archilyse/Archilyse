@@ -1,0 +1,52 @@
+@import '../common/theme.scss';
+
+.header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: $background-color;
+  height: $unit * 5;
+  padding: $unit;
+  color: $secondary-color;
+
+  .admin-navbar {
+    a {
+      margin-top: 0;
+      margin-left: $unit;
+      color: $secondary-color;
+      text-decoration: none;
+      padding: $unit/2;
+    }
+
+    a.selected {
+      opacity: 0.5;
+    }
+  }
+}
+
+.dms-navbar {
+  display: flex;
+  width: 93%;
+  align-items: center;
+  justify-content: flex-end;
+
+  a {
+    text-decoration: none;
+    color: $secondary-color;
+  }
+
+  & > * {
+    margin-left: $unit;
+  }
+
+  & small {
+    cursor: pointer;
+    &:hover {
+      color: $primary-color;
+    }
+  }
+
+  .navbar-logo {
+    margin-left: $unit * 2;
+  }
+}

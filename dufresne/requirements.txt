@@ -1,0 +1,2 @@
+pyquaternion==0.9.9
+euclid3==0.1

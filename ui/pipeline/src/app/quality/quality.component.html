@@ -1,0 +1,115 @@
+<div id="quality_app" class="quality base_app">
+  <div class="quality_controls base_app_controls">
+    <div class="block">
+      <h5>Quality Check</h5>
+    </div>
+    <div class="scrollContainer">
+      <div class="block featureTypeContainer">
+        <div class="feedbackNotDefined" [ngStyle]="{ color: numErrors > 0 ? '#a97200' : 'green' }">
+          <span *ngIf="numErrors > 0">Units with warnings: {{ numErrors }}</span>
+          <span *ngIf="numErrors === 0">Units completed&nbsp;<i class="fas fa-check"></i></span>
+        </div>
+      </div>
+      <app-quality-check-box *ngIf="!loading && site_id" [site_id]="site_id"
+                             [always_open]="true"></app-quality-check-box>
+      <div class="block featureTypeContainer">
+        <div class="qa-step step1"> Step 1 (Run Basic features) &nbsp; <i *ngIf="isBasicFeatureReady"
+                                                                          class="fas fa-check"></i></div>
+        <div class="btn-block ">
+          <button (click)="onRunQaAnalysis()" [disabled]="QaAnalysisButtonDisabled" id="QaAnalysisButton"
+                  class="btn" [ngClass]="{'btn-primary': !isBasicFeatureReady, 'btn-info': isBasicFeatureReady}">
+            {{isBasicFeatureReady ? "Regenerate QA analysis." : "Generate QA analysis"}}
+          </button>
+        </div>
+        <div class="qa-step step2"> Step 2 (Request the QA)</div>
+        <div class="form-element">
+        </div>
+        <div *ngIf="client_site_id" id="clientSiteIdBlock">
+          <div>Client site id: <a id="clientSiteIdBlockValue" class="value" (click)="linkToSite()"
+                                  [popperPlacement]="'top-start'" [popper]="clientSiteTooltip">{{client_site_id}}</a>
+          </div>
+        </div>
+      </div>
+      <div class="block sampleSurrContainer">
+      <div class="qa-step"> Sample Surroundings</div>
+      <div class="btn-block">
+        <button (click)="onRunSampleSurr()" [disabled]="sampleSurrButtonDisabled" id="SampleSurrButton"
+                class="btn" [ngClass]="sampleSurrButtonClass" [title]="sampleSurrButtonTitle">
+          {{sampleSurrButtonText}}
+        </button>
+      </div>
+    </div>
+    </div>
+
+    <app-save-and-help
+      [saving]="saving"
+      [saveText]="saveText"
+      [disabled]="saveDisabled"
+      (save)="onValidate()"
+      (openDialog)="openHelpDialog()"
+    ></app-save-and-help>
+  </div>
+
+  <div id="base_app_surface" class="quality_surface base_app_surface">
+    <div *ngIf="error" id="errorMessage" class="errorMessage">{{ error }}</div>
+    <div *ngIf="loading && !error" id="loadingMessage" class="loadingMessage">Loading data...</div>
+
+    <div *ngIf="!loading && !error && runningQAMessage" id="runningQAMessage" class="loadingMessage"
+         [innerHTML]="runningQAMessage"></div>
+    <div *ngIf="!loading && !error && runningQAMessage" id="runningQAMessage2" class="loadingMessage2"
+         [innerHTML]="runningQAMessageLine2"></div>
+
+    <div id="quality" class="quality">
+      <div *ngFor="let item of siteErrors; let i = index">
+        <div *ngIf="i==0" class="key error">
+          Site Errors (Blockers):
+        </div>
+        <div class="values">
+          <div class="value">{{ item }}</div>
+        </div>
+      </div>
+
+      <div *ngFor="let buildingData of dataByBuildingAndPlan | keyvalue">
+        <h4>
+          Building: {{addressPerBuilding[buildingData.key].address}}
+        </h4>
+        <div *ngFor="let planData of buildingData.value | keyvalue" class='plan-info'>
+          <div class="key" [ngClass]="isPlanCorrect(planData.value) ? 'correct' : 'warning'">
+            <h5 class="plan-name">
+              <a href="{{ getPipelineLink(planData.key) }}" target="_blank"> Plan {{ planData.key }}{{ ' ' }}</a>
+              <span><i *ngIf="isPlanCorrect(planData.value)" class="fas fa-check"></i></span>
+            </h5>
+            <small><a href="{{ getPipelineLink(planData.key) }}" target="_blank">(&#8599;)</a></small>
+          </div>
+          <div *ngFor="let client of planData | keyvalue">
+            <div *ngFor="let issues of client.value | keyvalue">
+              <div class="key" [ngClass]="!issues.value.length ? 'correct' : 'warning'">
+                {{ issues.key }}{{ ' ' }}<span><i *ngIf="!issues.value.length" class="fas fa-check"></i></span>
+              </div>
+              <div class="values">
+                <div class="value" *ngFor="let message of issues.value" [innerHTML]="message"></div>
+              </div>
+            </div>
+          </div>
+          <br/>
+        </div>
+
+      </div>
+
+      <h4 *ngIf="siteWarnings?.length > 0">Site warnings</h4>
+      <div *ngFor="let item of siteWarnings" class='site-info'>
+        <div class="key" [ngClass]="{ correct: !item.length, warning: item.length }">
+          Site warnings <span><i *ngIf="!item.length" class="fas fa-check"></i></span>
+        </div>
+        <div class="values">
+          <div class="value">{{ item }}</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <app-footer></app-footer>
+</div>
+
+
+<popper-content #clientSiteTooltip>Client site id, check to view site.</popper-content>

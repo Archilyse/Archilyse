@@ -1,0 +1,16 @@
+{
+  "client_id": 1,
+  "client_site_id": "1",
+  "created": "2020-02-13T15:56:53.188509",
+  "data": {
+    "2103180.01.01.0001": { "HNF": "53", "net_area": "58", "number_of_rooms": "2" },
+    "2103180.01.01.0002": { "HNF": "33", "net_area": "38", "number_of_rooms": "1" },
+    "2103180.01.01.0003": { "HNF": "76", "net_area": "76", "number_of_rooms": "3" },
+    "2103180.01.01.0004": { "HNF": "53", "net_area": "53", "number_of_rooms": "2" },
+    "2103180.01.01.0005": { "HNF": "50", "net_area": "50", "number_of_rooms": "2" },
+    "2103180.01.01.0006": { "HNF": "59", "net_area": "59", "number_of_rooms": "2" }
+  },
+  "id": 1,
+  "site_id": 1,
+  "updated": null
+}

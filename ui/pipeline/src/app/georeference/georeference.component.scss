@@ -1,0 +1,100 @@
+@import '../../assets/scss/shared';
+
+.georeference {
+  .georeference_surface {
+  }
+
+  .georeference_controls {
+    .measuredText {
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    .featureTypeContainer {
+      height: $feature_height;
+      overflow: auto;
+    }
+  }
+
+  .georeference-warnings {
+    color: black;
+    font-size: 12px;
+  }
+  .warningIcon {
+    color: $yellow;
+  }
+}
+
+.closePlansTitle {
+  font-size: 12px;
+  margin: 5px 0;
+
+  .checkPlans {
+    float: right;
+    margin-top: 3px;
+  }
+}
+
+.mode {
+  text-align: center;
+  font-size: 18px;
+
+  &.rotation {
+    color: $dark_blue;
+  }
+  &.movement {
+    color: $dark_green;
+  }
+}
+
+.value {
+  float: right;
+  line-height: 26px;
+}
+.valuesTitle {
+  font-size: 16px;
+}
+
+.modeBox,
+.floorplansBox,
+.coordiantesBox {
+  margin-top: 35px;
+}
+
+.selectMap {
+  margin-bottom: 16px;
+}
+
+.map {
+  width: 100%;
+  height: 100%;
+  background: $white;
+}
+
+.centerMapButton {
+  width: 100%;
+}
+
+.planLink {
+  font-size: 13px;
+  padding: 6px 6px 4px 0;
+  display: inline-block;
+}
+
+.SameBuildingTitle {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.planDelta {
+  float: right;
+  font-size: 13px;
+
+  .correct {
+    color: $dark_green;
+  }
+  .fail {
+    color: $red;
+  }
+}

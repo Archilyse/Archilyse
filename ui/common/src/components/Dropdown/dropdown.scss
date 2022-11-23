@@ -1,0 +1,47 @@
+@import '../../theme.scss';
+
+$dropdown-width: 120px;
+$dropdown-height: 26px;
+
+.common-dropdown {
+  width: $dropdown-width;
+  height: $dropdown-height;
+  background-color: $background-color;
+  border: 1px solid #2a79a1;
+  box-sizing: border-box;
+  font-weight: bold;
+  padding: $unit;
+
+  .MuiSelect-root,
+  .MuiSelect-icon {
+    font-family: 'Barlow';
+    font-weight: 600;
+    line-height: 33px;
+    color: $primary-color !important;
+  }
+
+  @media #{$extra-large-screen} {
+    width: $dropdown-width * 1.5;
+    height: $dropdown-height * 1.5;
+  }
+}
+
+.MuiSelect-select:focus {
+  background-color: transparent !important;
+}
+
+.common-menu-list.MuiList-root {
+  width: auto;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.common-menu-list .MuiMenuItem-root {
+  height: $dropdown-height;
+  font-family: 'Barlow' !important;
+  border-top: 1px solid #ececec !important;
+  color: #787878 !important;
+  @media #{$extra-large-screen} {
+    height: $dropdown-height * 1.5;
+  }
+}

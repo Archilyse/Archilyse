@@ -1,0 +1,11 @@
+<div *ngIf="warningsStr" [popperPlacement]="'top-end'"  [popper]="warnings" class="qaValidation warnings"><i class="fas fa-exclamation-triangle"></i></div>
+<div *ngIf="errorsStr" [popperPlacement]="'top-end'"  [popper]="errors" class="qaValidation errors"><i class="fas fa-exclamation-triangle"></i></div>
+<div *ngIf="loading" [popperPlacement]="'top-end'"  [popper]="loadingPop" class="qaValidation loading"><i class="fas fa-spinner fa-spin"></i></div>
+<div *ngIf="notProvided" [popperPlacement]="'top-end'"  [popper]="notProvidedPop" class="qaValidation notProvided"><i class="far fa-folder-open"></i></div>
+<div *ngIf="correct" [popperPlacement]="'top-end'"  [popper]="correctPop" class="qaValidation correct"><i class="fas fa-check"></i></div>
+
+<popper-content #warnings><div class="customWarningQa" [innerHTML]="warningsStr"></div></popper-content>
+<popper-content #errors><div class="customWarningQa" [innerHTML]="errorsStr"></div></popper-content>
+<popper-content #loadingPop>Loading QA</popper-content>
+<popper-content #correctPop><div class="customWarningQa"><p>QA provided and correct for: {{this.unit.client_id}}</p><p [innerHTML]="correctsStr"></p></div></popper-content>
+<popper-content #notProvidedPop><div class="customWarningQa">QA not provided for: {{this.unit.client_id}}</div></popper-content>

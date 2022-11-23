@@ -1,0 +1,12 @@
+name: Linter
+on: [push]
+
+jobs:
+  lint:
+    name: Docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Code checks
+        shell: bash
+        run: make docker_lint

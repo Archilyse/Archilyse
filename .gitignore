@@ -1,0 +1,129 @@
+.env.local
+.stag_args
+
+.idea/
+.__pycache__/
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+*.cpg
+
+
+# ifc files
+ifcopenshell
+
+
+# Distribution / packaging
+.Python
+dist/
+env/
+build/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+dist/Cython-*macosx*.whl
+dist/numpy-*macosx*.whl
+dist/scipy-*macosx*.whl
+dist/triangle-*macosx*.whl
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage*
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+*.log
+splinter_images/
+tests/image_differences/
+.pytest_cache
+pytest_cache
+test_stats.xml
+
+# Translations
+*.mo
+*.pot
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# celery beat schedule file
+celerybeat-schedule
+
+# SageMath parsed files
+*.sage.py
+
+# virtualenv
+.venv
+venv/
+ENV/
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+
+# OSX shit
+.DS_Store
+
+# VS Code
+.vscode
+
+# profiling
+prof/
+.profiler_out
+
+/ui/src/environments/environment.dev.ts
+/tests/test_stats.xml
+/slam_dataframe.csv
+/potential_switzerland.db
+
+# locust csv results
+tests/load_testing/*.csv
+
+# pycharm configs
+/.run/

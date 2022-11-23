@@ -1,0 +1,35 @@
+@import '../../common/theme.scss';
+
+.editable-table-container {
+  padding-top: $unit * 2;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+
+  table {
+    position: relative;
+    border-collapse: collapse;
+  }
+
+  thead > tr {
+    border-bottom: $unit / 10 solid $secondary-color;
+  }
+
+  th,
+  td {
+    white-space: nowrap;
+    text-align: left;
+    padding: 0 $unit;
+    line-height: 36px;
+  }
+
+  .row {
+    &:not(:last-of-type) {
+      border-bottom: 1px solid $background-color;
+    }
+  }
+
+  .editable-table-add-column {
+    @include normalized-button();
+  }
+}

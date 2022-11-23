@@ -1,0 +1,20 @@
+@import '../../../assets/scss/colors';
+
+.qaValidation {
+  display: inline-block;
+  &.warnings {
+    color: $red;
+  }
+  &.errors {
+    color: $dark_red;
+  }
+  &.loading {
+    color: $dark-grey;
+  }
+  &.notProvided {
+    color: $dark-grey;
+  }
+  &.correct {
+    color: green;
+  }
+}

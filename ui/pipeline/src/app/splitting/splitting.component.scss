@@ -1,0 +1,128 @@
+@import '../../assets/scss/shared';
+
+.splitting {
+  .splitting_surface {
+  }
+  .splitting_controls {
+    .feedbackNotDefined {
+      font-size: 18px;
+    }
+
+    .measuredText {
+      font-size: 14px;
+    }
+
+    .createOneUnit {
+      font-size: 12px;
+    }
+
+    .featureType {
+      cursor: pointer;
+      line-height: 22px;
+      padding: 4px 8px;
+      font-size: 14px;
+
+      &.selected {
+        background-color: $orange;
+      }
+
+      &:hover {
+        background-color: $grey;
+      }
+
+      .btn {
+        float: right;
+      }
+    }
+
+    .featureTypeContainer {
+      height: $feature_height;
+      overflow: auto;
+    }
+
+    .newApartmentButton {
+      margin-top: 10px;
+      width: 100%;
+    }
+
+    .apartmentAutoSplitButton {
+      width: 100%;
+      margin-top: 10px;
+    }
+  }
+}
+
+.prerequisite {
+  color: $red;
+  margin: 20px;
+  font-size: 0.8em;
+}
+
+.correctArea {
+  padding-left: 10px;
+  color: #2da166;
+  font-size: 10px;
+  cursor: pointer;
+  display: inline-block;
+  &:hover {
+    color: $dark_blue;
+  }
+}
+
+.report {
+  padding: 0 10px 10px 10px;
+  background-color: $grey;
+  font-size: 12px;
+
+  .element {
+    .title {
+      display: inline-block;
+      color: $black;
+    }
+    .value {
+      display: inline-block;
+      float: right;
+    }
+
+    &.input,
+    &.FF,
+    &.VF,
+    &.HNF,
+    &.NNF,
+    &.ANF {
+      margin-top: 5px;
+      border-bottom: 1px solid $white;
+    }
+
+    &.input {
+      display: flex;
+
+      .apartmentTypeInput {
+        border: 0;
+        outline: 0;
+        background: transparent;
+        margin-left: 10px;
+        padding-left: 0;
+        width: 100%;
+      }
+    }
+  }
+
+  .areaName {
+    color: $black;
+    font-size: 13px;
+
+    &.anfName {
+      color: $dark_blue !important;
+    }
+    &.nnfName,
+    &.vfName,
+    &.ffName {
+      color: $dark-grey !important;
+    }
+  }
+  .areaValue {
+    margin-right: 3px;
+    color: $dark-grey;
+  }
+}

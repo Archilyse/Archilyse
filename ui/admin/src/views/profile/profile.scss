@@ -1,0 +1,60 @@
+@import 'Common/theme.scss';
+
+$font-size: 1.2em;
+$rows-background-color: white;
+$rows-padding: $unit * 2 $unit * 3 $unit * 2 $unit * 3;
+
+.profile-container .layout-content {
+  align-items: flex-start;
+  margin-left: $unit * 5;
+}
+
+.profile-container .layout-content > div {
+  width: 94%;
+  font-size: $font-size;
+}
+
+.profile-container .form {
+  width: 100%;
+}
+
+.profile-container .form > br,
+.profile-container .form > p {
+  display: none;
+}
+
+.profile-container .form .separated-label label {
+  width: 340px;
+}
+
+.profile-container .form .separated-label label {
+  font-weight: bold;
+  color: $secondary-color;
+}
+
+.profile-container .form .field,
+.profile-container .submit-button {
+  margin-bottom: 0;
+  border: 1px solid $background-color;
+  background-color: $rows-background-color;
+  padding: $rows-padding;
+}
+
+.users-permissions-container th,
+.users-permissions-container td {
+  margin: 1px 0;
+  padding: $rows-padding;
+}
+
+.profile-container .form .MuiFormControl-root {
+  width: 300px;
+  margin-left: $unit * 3;
+}
+
+.profile-container .paper-card-container > .MuiPaper-root {
+  padding: 0;
+}
+
+.profile-container .password-rules {
+  color: grey;
+}

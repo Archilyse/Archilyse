@@ -1,0 +1,26 @@
+@import '../../common/theme.scss';
+
+.scores-table-loading {
+  display: flex;
+  justify-content: center;
+}
+
+.scores-table-not-configured {
+  color: $secondary-color;
+  font-size: $unit * 1.8;
+
+  .button-with-modal {
+    display: inline-flex;
+    padding: 0;
+    font-size: inherit;
+
+    & button {
+      font-family: $main-font;
+      font-size: inherit;
+    }
+
+    & span {
+      display: none;
+    }
+  }
+}

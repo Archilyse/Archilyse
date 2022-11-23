@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Should display a hierarchy of entities from units for admin 1`] = `
+Array [
+  Object {
+    "href": "/clients",
+    "text": "All Clients",
+  },
+  Object {
+    "href": "/sites?client_id=63",
+    "parent": [Function],
+    "text": " A Marvelous Client",
+  },
+  Object {
+    "href": "/buildings?site_id=1455",
+    "parent": [Function],
+    "text": " Site: Office building",
+  },
+  Object {
+    "href": "/floors?building_id=2669",
+    "parent": [Function],
+    "text": " Building: 2669",
+  },
+  Object {
+    "href": "/units?floor_id=12300",
+    "parent": [Function],
+    "text": "Floor 1",
+  },
+]
+`;

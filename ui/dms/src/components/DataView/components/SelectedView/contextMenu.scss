@@ -1,0 +1,11 @@
+@import 'Common/theme.scss';
+
+.context-menu-root {
+  // Ensure material UI modal doesn't take full page, which overrides right-click events
+  max-width: $unit * 50;
+  max-height: $unit * 35;
+}
+
+.context-menu-action-icon {
+  margin-right: $unit;
+}

@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2019",
+    "jsx": "react",
+    "sourceMap": false,
+    "experimentalDecorators": true,
+    "noImplicitUseStrict": true,
+    "removeComments": true,
+    "esModuleInterop": true,
+    "isolatedModules": false,
+    "moduleResolution": "node",
+    "lib": ["es2017", "dom"],
+    "typeRoots": ["../node_modules/@types", "src/@types"],
+    "resolveJsonModule": true
+  },
+  "exclude": ["node_modules", "out", ".next"]
+}

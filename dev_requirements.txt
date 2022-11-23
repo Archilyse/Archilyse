@@ -1,0 +1,8 @@
+-r requirements.txt
+-r ci_requirements.txt
+-r bin/requirements.txt
+-r tests/requirements.txt
+
+--no-binary shapely,pygeos
+
+patch_env==1.0.0

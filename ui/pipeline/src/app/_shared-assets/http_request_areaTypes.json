@@ -1,0 +1,19 @@
+{
+  "BALCONY": 7,
+  "BATHROOM": 5,
+  "COPYROOM": 16,
+  "CORRIDOR": 6,
+  "DINING": 3,
+  "ELEVATOR": 18,
+  "KITCHEN": 2,
+  "KITCHEN_DINING": 4,
+  "LOGGIA": 14,
+  "NOT_DEFINED": 0,
+  "REFERENCED": 13,
+  "ROOM": 1,
+  "SHAFT": 8,
+  "STAIRCASE": 10,
+  "STOREROOM": 9,
+  "WINTERGARTEN": 15,
+  "WORKAREA": 17
+}

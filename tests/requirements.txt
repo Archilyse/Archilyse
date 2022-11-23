@@ -1,0 +1,25 @@
+ipdb==0.13.9
+imagehash==4.2.1
+locust==2.10.1
+more-itertools==8.13.0
+opencv-python==4.6.0.66
+openpyxl==3.0.10
+pathvalidate==2.5.0
+percy-python-selenium==1.0.0
+pytest==7.1.2
+pytest-cov==3.0.0
+pytest-flask==1.2.0
+pytest-freezegun==0.4.2
+pytest-lazy-fixture==0.6.3
+pytest-mock==3.8.2
+pytest-profiling==1.7.0
+pytest-repeat==0.9.1
+pytest-rerunfailures==10.2
+pytest-randomly==3.12.0
+pytest-splinter==3.3.1
+pytest-sugar==0.9.5
+pytest-timeout==2.1.0
+pytest-xdist==2.5.0
+requests-mock==1.9.3
+selenium==4.2.0
+splinter==0.17.0  # Ensure we use this fixed version. New one seems to be flacky on CI.

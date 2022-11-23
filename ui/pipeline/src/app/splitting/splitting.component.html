@@ -1,0 +1,169 @@
+<div id="splitting_app" class="splitting base_app">
+  <div class="splitting_controls base_app_controls">
+    <div class="block">
+      <h5>Floor Splitting</h5>
+    </div>
+    <div class="block featureTypeContainer">
+      <div *ngIf="!error && !loading">
+        <div>
+          Plan without units
+          <input type="checkbox" (change)="savePlanWithoutUnits($event)" [(ngModel)]="planData.without_units" />
+        </div>
+        <br />
+        <p></p>
+        <div *ngIf="!planData.without_units">
+          <div class="feedbackNotDefined" [ngStyle]="{ color: numNotDefined > 0 ? 'red' : 'green' }">
+            Not assigned areas
+            <span *ngIf="numNotDefined > 0">{{ numNotDefined }}</span>
+            <span *ngIf="numNotDefined === 0">&nbsp;<i class="fas fa-check"></i></span>
+          </div>
+          <br />
+
+          <div *ngIf="existingFloorsIds && existingFloorsIds.length > 1" class="measuredText">
+            Splitting {{ existingFloorsIds.length }} floors.
+          </div>
+
+          <div *ngIf="!existingFloorsIds || existingFloorsIds.length <= 1" class="measuredText">
+            Press the numbers 1 to 9 to quickly select the units.
+          </div>
+          <br />
+
+          <div class="featureType" (click)="selectApartment(-1)" [ngClass]="-1 == selectedApartment ? 'selected' : ''">
+            <div class="apartmentColor" [ngStyle]="{ backgroundColor: 'grey' }"></div>
+            <span [popper]="selectApartmentTooltip" [popperPlacement]="'top-start'">Public space</span>
+          </div>
+
+          <div *ngIf="apartments.length <= 0" class="createOneUnit">- Create a unit to start the splitting -</div>
+          <div *ngFor="let apartment of apartments; let i = index" (click)="selectApartment(apartment.id)">
+            <div class="featureType" [ngClass]="apartment.id == selectedApartment ? 'selected' : ''">
+              <div
+                class="apartmentColor"
+                [ngClass]="isModified(apartment) ? 'modified' : 'saved'"
+                [ngStyle]="{ backgroundColor: apartment.color }"
+              ></div>
+              <span [popper]="selectApartmentTooltip" [popperPlacement]="'top-start'"
+                >Unit {{ apartment.id }}&nbsp;<span *ngIf="apartment.rooms > 0" class="rooms"
+                  >Rooms: {{ apartment.rooms | number: '1.0-1' }}</span
+                ></span
+              >
+              <button
+                (click)="removeApartment(apartment.id, true)"
+                type="button"
+                class="btn badge badge-pill badge-secondary"
+                [popperPlacement]="'top-start'"
+                [popper]="deleteApartmentTooltip"
+              >
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+            <div *ngIf="apartment.id == selectedApartment" class="report">
+              <div class="element input">
+                <div class="title areaName">Type:</div>
+                <input
+                  class="apartmentTypeInput"
+                  type="text"
+                  name="{{ apartment.id }}_typeName"
+                  placeholder="Come up with a name..."
+                  [formControl]="unitsType.controls[i]"
+                  (change)="handleUnitTypeChange(i)"
+                  (keydown)="$event.stopPropagation()"
+                />
+              </div>
+              <div *ngIf="apartment.HNF > 0" class="element HNF">
+                <div class="title areaName">HNF:</div>
+                <div class="value areaValue">({{ apartment.HNF | number: '1.0-1' }}m<sup>2</sup>)</div>
+              </div>
+              <div *ngIf="apartment.ANF > 0" class="element ANF">
+                <div class="title areaName anfName">ANF:</div>
+                <div class="value areaValue">({{ apartment.ANF | number: '1.0-1' }}m<sup>2</sup>)</div>
+              </div>
+              <div *ngIf="apartment.FF > 0" class="element FF">
+                <div class="title areaName ffName">FF:</div>
+                <div class="value areaValue">({{ apartment.FF | number: '1.0-1' }}m<sup>2</sup>)</div>
+              </div>
+              <div *ngIf="apartment.NNF > 0" class="element NNF">
+                <div class="title areaName nnfName">NNF:</div>
+                <div class="value areaValue">({{ apartment.NNF | number: '1.0-1' }}m<sup>2</sup>)</div>
+              </div>
+              <div *ngIf="apartment.VF > 0" class="element VF">
+                <div class="title areaName vfName">VF:</div>
+                <div class="value areaValue">({{ apartment.VF | number: '1.0-1' }}m<sup>2</sup>)</div>
+              </div>
+            </div>
+          </div>
+          <button
+            *ngIf="!saving"
+            (click)="newApartment(null)"
+            [popper]="newApartmentTooltip"
+            [popperPlacement]="'top-end'"
+            type="button"
+            class="btn btn-dark newApartmentButton"
+          >
+            New unit
+          </button>
+
+          <button
+            (click)="loadApartmentsAutoSplit(plan_id)"
+            [popperPlacement]="'top-end'"
+            type="button"
+            class="btn btn-dark apartmentAutoSplitButton"
+          >
+            Auto-Split
+          </button>
+        </div>
+      </div>
+    </div>
+    <app-quality-check-box *ngIf="!loading && site_id" [site_id]="site_id"></app-quality-check-box>
+    <app-navigation-site
+      *ngIf="!loading"
+      [planId]="plan_id"
+      [siteId]="site_id"
+      [saveDisabled]="saveDisabled || !saving"
+    ></app-navigation-site>
+    <app-save-and-help
+      [saving]="saving"
+      [saveText]="saveText"
+      [savingText]="savingText"
+      [disabled]="saveDisabled"
+      (save)="save()"
+      (openDialog)="openDialog()"
+    ></app-save-and-help>
+  </div>
+  <app-navigation [saveDisabled]="saveDisabled"></app-navigation>
+  <div id="base_app_surface" class="splitting_surface base_app_surface">
+    <div *ngIf="error" id="errorMessage" class="errorMessage">{{ error }}</div>
+    <div *ngIf="loading && !error" id="loadingMessage" class="loadingMessage">Loading data...</div>
+    <div *ngIf="planData && planData.without_units" id="loadingMessage" class="loadingMessage">
+      This plan has no units
+    </div>
+    <app-brooks-errors
+      *ngIf="!loading && !error && planData && !planData.without_units"
+      [model]="modelStructure"
+    ></app-brooks-errors>
+    <floorplan-editor
+      *ngIf="modelStructure && !error && !loading && planData && !planData.without_units"
+      [(model)]="modelStructure"
+      [logic]="logic"
+      [areaTypes]="areaTypesDefined"
+      [cameraToKeep]="camera"
+      [selectedByDefault]="selectedByDefault"
+      (reloadModel)="reloadModel()"
+      (changedCamera)="changedCamera($event)"
+      [backgroundImg]="backgroundImg"
+      [backgroundImgWidth]="backgroundImgWidth"
+      [backgroundImgHeight]="backgroundImgHeight"
+      [backgroundImgRotation]="backgroundImgRotation" 
+      [backgroundImgScale]="backgroundImgScale" 
+      [backgroundImgShiftX]="backgroundImgShiftX" 
+      [backgroundImgShiftY]="backgroundImgShiftY"
+    ></floorplan-editor>
+  </div>
+  <app-footer></app-footer>
+</div>
+
+<popper-content #deleteApartmentTooltip>Delete this apartment (Key Backspace)</popper-content>
+<popper-content #selectApartmentTooltip>Select this apartment</popper-content>
+<popper-content #newApartmentTooltip>Create a new apartment (Key N)</popper-content>
+<popper-content #resizeTooltip
+  >Changhe the scaling factor based on the m<sup>2</sup> HNF of the apartment</popper-content
+>

@@ -1,0 +1,13 @@
+@import 'Common/theme.scss';
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  width: 20%;
+
+  span#grid-view-title,
+  span#table-view-title {
+    color: $outer-space-grey;
+    font-weight: 600;
+  }
+}

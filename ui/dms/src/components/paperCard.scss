@@ -1,0 +1,23 @@
+@import '../common/theme';
+
+.paper-card-container {
+  margin-bottom: $unit * 3;
+}
+
+.paper-card-container > div:first-of-type {
+  border: 1px solid $bright-gray;
+  border-radius: 0;
+}
+
+.paper-card-container h3 {
+  color: $secondary-color;
+  margin-bottom: $unit * 3;
+  display: block;
+  font-weight: bold;
+  width: auto !important;
+}
+
+.paper-card-container > .MuiPaper-root {
+  padding: $unit * 2;
+  background-color: transparent;
+}

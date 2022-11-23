@@ -1,0 +1,40 @@
+@import '../../common/theme.scss';
+
+.qa {
+  width: 85vw;
+  margin-left: 5vw;
+  text-align: center;
+
+  .table-qa-actions {
+    display: flex;
+    justify-content: center;
+    width: 94%;
+    padding: 5px;
+  }
+
+  .table-qa-container {
+    height: 600px;
+    width: 100%;
+  }
+}
+
+.site-general {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-column-gap: 50px;
+  .site-map {
+    height: 80%;
+  }
+  .title {
+    /* Hack to center title */
+    position: absolute;
+    top: $unit * 3.5;
+    left: $unit * 75;
+    height: 50px;
+  }
+}
+
+.generate-task-button {
+  width: 100%;
+  margin-top: 5% !important;
+}

@@ -1,0 +1,202 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly breadcrumb with hierarchy 1`] = `
+<div>
+  <nav
+    aria-label="breadcrumb"
+    class="MuiTypography-root MuiBreadcrumbs-root MuiTypography-body1 MuiTypography-colorTextSecondary"
+  >
+    <ol
+      class="MuiBreadcrumbs-ol"
+    >
+      <li
+        class="MuiBreadcrumbs-li"
+      >
+        <a
+          class="breadcrumb-link"
+          href="/some-url-1"
+        >
+          <span
+            style="max-width: 0;"
+          >
+            <div
+              class="truncate-overflow"
+              style="max-width: 0;"
+            >
+              All Clients
+            </div>
+            <span
+              class="truncate-hidden"
+            >
+              All Clients
+            </span>
+          </span>
+        </a>
+      </li>
+      <li
+        aria-hidden="true"
+        class="MuiBreadcrumbs-separator"
+      >
+        <span
+          aria-hidden="true"
+          class="material-icons MuiIcon-root"
+          style="font-size: 20px; color: rgb(128, 128, 128); margin-left: 0px;"
+        >
+          navigate_next_rounded
+        </span>
+      </li>
+      <li
+        class="MuiBreadcrumbs-li"
+      >
+        <a
+          class="breadcrumb-link"
+          href="/some-url-2"
+        >
+          <span
+            style="max-width: 0;"
+          >
+            <div
+              class="truncate-overflow"
+              style="max-width: 0;"
+            >
+              Client name
+            </div>
+            <span
+              class="truncate-hidden"
+            >
+              Client name
+            </span>
+          </span>
+        </a>
+      </li>
+      <li
+        aria-hidden="true"
+        class="MuiBreadcrumbs-separator"
+      >
+        <span
+          aria-hidden="true"
+          class="material-icons MuiIcon-root"
+          style="font-size: 20px; color: rgb(128, 128, 128); margin-left: 0px;"
+        >
+          navigate_next_rounded
+        </span>
+      </li>
+      <li
+        class="MuiBreadcrumbs-li"
+      >
+        <a
+          class="breadcrumb-link"
+          href="/some-url-3"
+        >
+          <span
+            style="max-width: 0;"
+          >
+            <div
+              class="truncate-overflow"
+              style="max-width: 0;"
+            >
+              Site: some words here
+            </div>
+            <span
+              class="truncate-hidden"
+            >
+              Site: some words here
+            </span>
+          </span>
+        </a>
+      </li>
+      <li
+        aria-hidden="true"
+        class="MuiBreadcrumbs-separator"
+      >
+        <span
+          aria-hidden="true"
+          class="material-icons MuiIcon-root"
+          style="font-size: 20px; color: rgb(128, 128, 128); margin-left: 0px;"
+        >
+          navigate_next_rounded
+        </span>
+      </li>
+      <li
+        class="MuiBreadcrumbs-li"
+      >
+        <a
+          class="breadcrumb-link"
+          href="/some-url-4"
+        >
+          <span
+            style="max-width: 0;"
+          >
+            <div
+              class="truncate-overflow"
+              style="max-width: 0;"
+            >
+              Building: 23241234
+            </div>
+            <span
+              class="truncate-hidden"
+            >
+              Building: 23241234
+            </span>
+          </span>
+        </a>
+      </li>
+      <li
+        aria-hidden="true"
+        class="MuiBreadcrumbs-separator"
+      >
+        <span
+          aria-hidden="true"
+          class="material-icons MuiIcon-root"
+          style="font-size: 20px; color: rgb(128, 128, 128); margin-left: 0px;"
+        >
+          navigate_next_rounded
+        </span>
+      </li>
+      <li
+        class="MuiBreadcrumbs-li"
+      >
+        <a
+          class="breadcrumb-link"
+        >
+          <span
+            style="max-width: 0;"
+          >
+            <div
+              class="truncate-overflow"
+              style="max-width: 0;"
+            >
+              Folder - 1
+            </div>
+            <span
+              class="truncate-hidden"
+            >
+              Folder - 1
+            </span>
+          </span>
+          <span
+            aria-hidden="true"
+            class="material-icons MuiIcon-root"
+            style="font-size: 20px; color: rgb(128, 128, 128); margin-left: 4px;"
+          >
+            keyboard_arrow_down_rounded
+          </span>
+        </a>
+      </li>
+    </ol>
+  </nav>
+</div>
+`;
+
+exports[`renders correctly empty breadcrumb 1`] = `
+<div>
+  <nav
+    aria-label="breadcrumb"
+    class="MuiTypography-root MuiBreadcrumbs-root MuiTypography-body1 MuiTypography-colorTextSecondary"
+  >
+    <ol
+      class="MuiBreadcrumbs-ol"
+    />
+  </nav>
+</div>
+`;

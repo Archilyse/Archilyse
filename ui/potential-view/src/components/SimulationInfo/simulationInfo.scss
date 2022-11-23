@@ -1,0 +1,33 @@
+@import 'Common/theme.scss';
+
+.simulation-info-section {
+  &:not(:last-of-type) {
+    margin-bottom: $unit * 0.6;
+  }
+
+  &.result {
+    margin-top: $unit;
+  }
+}
+
+.simulation-info-section.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.simulation-info-section.column {
+  display: flex;
+  flex-direction: column;
+
+  margin-bottom: 0;
+}
+
+.simulation-info-line {
+  margin: 0;
+  display: flex;
+  align-items: center;
+
+  .material-icons {
+    color: $dark_red !important;
+  }
+}

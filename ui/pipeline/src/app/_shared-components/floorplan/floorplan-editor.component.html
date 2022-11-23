@@ -1,0 +1,4 @@
+<div id="floorplan" class="floorplan">
+  <div *ngIf="!error"  [id]="'floorplanGraph'+uniqueId" class="floorplanGraph"></div>
+  <div *ngIf="error"  id="errorMessage" class="errorMessage">{{error}}</div>
+</div>

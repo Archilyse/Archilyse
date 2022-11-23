@@ -1,0 +1,180 @@
+@import '../../assets/scss/shared';
+
+.filter {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  clear: both;
+  width: 100%;
+
+  .filterTitle {
+    font-size: 16px;
+    display: inline-block;
+  }
+
+  .filterSelect {
+    font-size: 12px;
+    display: inline-block;
+    width: 160px;
+    float: right;
+    height: 20px;
+    padding: 0;
+    margin: 2px 0 0;
+  }
+}
+
+.classification {
+  .classification_surface {
+  }
+
+  .classification_controls {
+    .tipText {
+      margin: 16px 0 16px 0;
+      font-size: 13px;
+    }
+
+    .feedbackNotDefined {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .featureType {
+      cursor: pointer;
+      line-height: 20px;
+      padding: 1px 8px;
+      font-size: 13px;
+      margin-top: 2px;
+      border-radius: 2px;
+      border: $dark-grey 2px solid;
+      display: flex;
+
+      .Type {
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      &.verySmall {
+        font-size: 8px !important;
+      }
+
+      &.small {
+        font-size: 11px;
+      }
+
+      .btn {
+        float: right;
+      }
+
+      .number {
+        float: right;
+        margin-left: auto;
+        color: $darker-grey;
+      }
+
+      &.selected {
+        border: $orange 2px solid;
+        border-left: $orange 20px solid;
+      }
+
+      .Nr {
+        margin-right: 6px;
+        font-weight: bold;
+        color: $darker-grey;
+      }
+
+      &:hover {
+        background-color: $dark-grey !important;
+      }
+    }
+
+    .featureTypeContainer {
+      height: $feature_height;
+      overflow: auto;
+    }
+
+    .planAutoClassifyButton {
+      margin-top: 10%;
+      width: 100%;
+    }
+
+    .lds-ellipsis {
+      display: inline-block;
+      position: relative;
+      width: 40px;
+      height: 20px;
+    }
+    .lds-ellipsis div {
+      position: absolute;
+      top: 8.25px;
+      width: 6.5px;
+      height: 6.5px;
+      border-radius: 50%;
+      background: #fff;
+      animation-timing-function: cubic-bezier(0, 1, 1, 0);
+    }
+    .lds-ellipsis div:nth-child(1) {
+      left: 4px;
+      animation: lds-ellipsis1 0.6s infinite;
+    }
+    .lds-ellipsis div:nth-child(2) {
+      left: 4px;
+      animation: lds-ellipsis2 0.6s infinite;
+    }
+    .lds-ellipsis div:nth-child(3) {
+      left: 16px;
+      animation: lds-ellipsis2 0.6s infinite;
+    }
+    .lds-ellipsis div:nth-child(4) {
+      left: 28px;
+      animation: lds-ellipsis3 0.6s infinite;
+    }
+    @keyframes lds-ellipsis1 {
+      0% {
+        transform: scale(0);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    @keyframes lds-ellipsis3 {
+      0% {
+        transform: scale(1);
+      }
+      100% {
+        transform: scale(0);
+      }
+    }
+    @keyframes lds-ellipsis2 {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(12px, 0);
+      }
+    }
+  }
+}
+
+.areaTypeCategory {
+  border-left: 1px solid rgb(211, 211, 211);
+  border-top: 1px solid rgb(211, 211, 211);
+  padding: 8px 8px 8px 8px;
+  margin-bottom: 10px;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+
+  h4 {
+    position: relative;
+    left: -8px;
+    top: -8px;
+    padding: 3px;
+    margin-bottom: -8px;
+    font-size: 15px;
+    line-height: 15px;
+    color: rgb(63, 63, 63);
+    background-color: #fff;
+    // border: 1px solid rgb(211, 211, 211);
+  }
+}
+
+.areaTypeCategory:empty {
+  display: none;
+}

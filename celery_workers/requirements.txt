@@ -1,0 +1,6 @@
+celery[redis]==5.2.7
+flower==1.0.0
+geopy==2.2.0
+pydot==1.4.2
+sendgrid==6.9.7
+timezonefinder==6.0.1

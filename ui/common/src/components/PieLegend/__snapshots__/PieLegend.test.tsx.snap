@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div>
+  <div
+    class="pie-legend "
+  >
+    <ul>
+      <li>
+        <p>
+          Hnf
+        </p>
+        <div
+          class="bar"
+          style="background-color: rgb(0, 179, 74);"
+        />
+      </li>
+      <li>
+        <p>
+          Nnf
+        </p>
+        <div
+          class="bar"
+          style="background-color: rgb(46, 255, 140);"
+        />
+      </li>
+      <li>
+        <p>
+          Anf
+        </p>
+        <div
+          class="bar"
+          style="background-color: rgb(255, 60, 46);"
+        />
+      </li>
+      <li>
+        <p>
+          Ff
+        </p>
+        <div
+          class="bar"
+          style="background-color: rgb(255, 179, 173);"
+        />
+      </li>
+      <li>
+        <p>
+          Vf
+        </p>
+        <div
+          class="bar"
+          style="background-color: rgb(158, 25, 12);"
+        />
+      </li>
+    </ul>
+  </div>
+</div>
+`;

@@ -1,0 +1,270 @@
+// Contains the minimum set of shared variables across Dashboard & Admin
+
+/* Colors */
+
+$primary-color: #2a79a1;
+$secondary-color: #898989;
+
+$background-color: #ececec;
+$accent-color: #dad9d9;
+$website-brand-color: #21406c;
+$indigo-blue: #284069;
+
+$white: #ffffff;
+$lotion-white: #fafafa;
+
+$outer-space-grey: #434c50;
+$bright-gray: #edeeee;
+$medium-gray: #808080;
+$light-grey-color: #c4c4c4;
+$lighter-gray: #d1d3d4;
+
+$red: #f25f5c;
+$dark_red: #b71f33;
+
+$yellow: #ffe066;
+$orange: #fbac33;
+$dark_orange: #ba7746;
+
+$green: #3fba8f;
+$dark_green: #008000;
+
+/* Typography */
+
+$main-font: 'Barlow', sans-serif;
+
+/* Size */
+
+$uhd: 3840px;
+$qhd: 2560px;
+$hd: 1920px;
+$sd: 1280px;
+
+$extra-large-screen: '(min-width: #{$uhd})';
+$large-screen: '(min-width: #{$qhd})';
+$medium-screen: '(min-width: #{$hd})';
+$small-screen: '(min-width: #{$sd})';
+
+html {
+  font-size: 16px; // This makes 16px === 1 rem
+
+  @media #{$extra-large-screen} {
+    font-size: 24px;
+  }
+}
+
+$unit: 10px;
+
+$base-font-size: 1rem; // 16px
+
+$small-font-size: 0.875rem; // 14px;
+$smaller-font-size: 0.75rem; // 12px;
+$smallest-font-size: 0.625rem; // 10px;
+
+$large-font-size: 1.125rem; // 18px
+$larger-font-size: 1.25rem; // 20px
+$extra-larger-font-size: 1.5rem; // 24px;
+
+$navbar-height: 82px;
+
+/** Others **/
+
+/* Box shadows */
+
+$default-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+$secondary-box-shadow: 0px 4px 7px rgba(0, 0, 0, 0.16);
+
+/* z-index */
+
+$z-index-level-01: 100;
+$z-index-level-1: 1000;
+$z-index-level-2: 2000;
+$z-index-level-under: -2000;
+
+/* Components */
+
+$button-width: 235px;
+$button-heigth: 51px;
+$drawer-width: 353px;
+
+@mixin base-button-style {
+  width: $button-width;
+  height: $button-heigth;
+  font-family: 'Barlow', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: $base-font-size;
+  line-height: 19px;
+  text-align: center;
+  cursor: pointer;
+}
+
+// .button class is used for stlying links or input as a button
+.button {
+  @include base-button-style;
+  text-decoration: none;
+}
+
+.primary-button {
+  @include base-button-style;
+  background-color: $primary-color;
+  box-shadow: $secondary-box-shadow;
+  border-radius: 2px;
+  color: white;
+
+  &:disabled {
+    background-color: grey;
+    cursor: not-allowed;
+  }
+
+  .loading-indicator {
+    .MuiCircularProgress-root {
+      color: white;
+    }
+  }
+}
+
+.secondary-button {
+  @include base-button-style;
+  background-color: white;
+  box-sizing: border-box;
+  border-radius: 2px;
+  border: 1px solid $primary-color;
+  color: $primary-color;
+}
+
+.secondary-button:hover {
+  background-color: $background-color;
+  border: 1px solid $secondary-color;
+}
+
+.default-button {
+  @include base-button-style;
+  background-color: white;
+  border: 1px solid $secondary-color;
+}
+
+.default-button:hover {
+  background-color: $background-color;
+}
+
+button.small {
+  width: 166.63px;
+}
+button.large {
+  width: 315px;
+}
+
+.common-modal-container {
+  padding: $unit * 3;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  max-height: 60%;
+
+  header > h2 {
+    color: $primary-color;
+  }
+
+  main {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+
+    .table-container {
+      margin-bottom: $unit * 10;
+      overflow: auto;
+    }
+  }
+
+  footer {
+    display: flex;
+    justify-content: flex-end;
+
+    & > button {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+
+      .loading-indicator {
+        margin-right: $unit;
+      }
+    }
+
+    & > button:not(:first-child) {
+      margin-left: $unit * 2;
+    }
+  }
+}
+
+// Material UI switches
+
+$switch-color: #434c50;
+$switch-opacity: 0.2;
+$switch-primary-color-transparent: rgba(42, 121, 161, 0.07);
+
+.MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track {
+  color: $switch-color !important;
+  opacity: $switch-opacity;
+}
+
+.MuiSwitch-colorSecondary.Mui-checked {
+  color: $outer-space-grey !important;
+}
+
+.MuiSwitch-colorSecondary.Mui-checked:hover {
+  background-color: $switch-primary-color-transparent !important;
+}
+
+.MuiSwitch-track {
+  background-color: $lighter-gray !important;
+  opacity: $switch-opacity;
+}
+
+.MuiSwitch-switchBase {
+  color: $lighter-gray !important;
+}
+
+.MuiSwitch-thumb {
+  background-color: white;
+}
+
+/* Mixins */
+
+@mixin custom-material-input() {
+  .MuiInputBase-root {
+    font-family: $main-font;
+  }
+  .MuiInput-underline::after,
+  &.MuiInput-underline::after {
+    border-bottom: 2px solid $primary-color;
+  }
+  .MuiInput-underline:hover:not(.Mui-disabled)::before,
+  &.MuiInput-underline:hover:not(.Mui-disabled)::before {
+    border-bottom: 2px solid $secondary-color;
+  }
+}
+
+.leaflet-pm-toolbar .leaflet-pm-icon-save {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAlhJREFUaEPt2s2rTVEYx/HPzUuSoYGXlIGXjCRTZWTAhIGYSPgDyEBRyluJIX+Al4GBgS4TJkpJMlGMFIVSGGAoRdLSPrXudva+a++zjrPvbe/ZOedZv2d9n/XyrP2sM2WOP1NzvP/mJcBqHMTaMY/Ob3zGUzzCrzb+yiMQOv8Cy9uIjdDmHU7gTlONMsApXGwqktH+DM430SsDXMHRQuAnPkRiK7A0UfwjfpRsl2BV9F3QD8+ikt05nE30888ijgHeYEMkdB87E4TvYU+F3V3sLn4L+ltwvOjwgqhNMkTdCLQFuIpjFQBVAdqHW1gYtbuMk7MFrCsAoZ+tILoE0AqiawCNIboIECAO4AbihT10i+0qQBXE3nKy6zLAMIi32BgfO7oOECBO40K0ne7Aw8HncQA0SWRxoqza8pfhKxYXBjPWwjgAgp+Uo0Q5UdblrGC7rjCYkSibAFzD4dkyY4PfH2N7ov1rrB8VYCueIBzKRn3Cu0DYUaYThbIABF+bsB8rEx0PM/uGsE6eNdDIBtDAZ1bTHiBrOFuI9SPQImhZm/QjMAhnjm20bmg+4TZelYyyjEDORFYHEaoZ2/A8MsoCcB2Hss7sarHg60hugLis8r0oC+bkietOD7BrnABlBzlA4gD1ACGidYWtfgSGzLl+CoWgpBZ3+ynUT6EiAk1e6usWWZ8HkH0XqrtiGvdRoqy/JrqKqq0LTfqSL2Uqhj5eGhiW10C4hHs5gWvWlI4Hmy/YXFT+/rYZdlP/vy66Uzs9sHuPm3HnqwCaCk/Ufl7+V2KiEW3q/A8J4hJAhVJYWAAAAABJRU5ErkJggg==);
+}
+
+.legend {
+  padding: $unit * 0.6 $unit * 0.8;
+  font: $small-font-size/$base-font-size $main-font;
+  background: white;
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 $unit * 1.5 rgba(0, 0, 0, 0.2);
+  border-radius: $unit/2;
+  line-height: $unit * 1.8;
+  color: #555;
+  white-space: nowrap;
+}
+.legend i {
+  width: $unit * 1.6;
+  height: $unit * 1.6;
+  float: left;
+  margin-right: $unit * 0.8;
+  opacity: 0.7;
+}

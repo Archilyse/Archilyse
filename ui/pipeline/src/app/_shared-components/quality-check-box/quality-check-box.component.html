@@ -1,0 +1,33 @@
+<div *ngIf="!open && !always_open"
+     [popperPlacement]="'top-start'"
+     [popper]="qualityFeedback"
+     class="qualityLabel" (click)="toggle()">
+  <span>Quality feedback</span>
+  <div class="clickable editIcon"><i class="fas fa-edit"></i></div>
+  <div *ngIf="validation_notes && validation_notes.length>0"
+       class="warningIcon" ><i class="fas fa-exclamation-triangle"></i></div>
+</div>
+<div *ngIf="open || always_open" [ngClass]="{'overlay':!always_open, 'block-content':always_open}">
+  <textarea
+    class="client-input notes"
+    [(ngModel)]="validation_notes"
+    (ngModelChange)="onChangeNotes($event)"
+    (keydown)="onKeyDown($event)"
+    placeholder="Introduce the reasons for the discrepancies between the client's expected results and Archilyse results (if any)"
+    rows="5"
+  ></textarea>
+  <div class="btn-block ">
+    <button
+      id="save_notes_button"
+      class="btn saveNotesButton"
+      [ngClass]="{'btn-secondary':!changed, 'btn-warning':changed, 'halfColumn':!always_open, 'fullWidth':always_open}"
+      (click)="onSaveNotes()"
+      [disabled]="!changed"
+    >
+      {{ saveNotesText }}
+    </button>
+    <button *ngIf="!always_open" class="btn btn-primary closeButton halfColumn" (click)="toggle()"> Close </button>
+  </div>
+</div>
+
+<popper-content #qualityFeedback >View or edit feedback about this site. <br/> Red warning icon means there's feedback already.</popper-content>

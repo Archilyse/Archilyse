@@ -1,0 +1,44 @@
+@import '../../../../common/theme.scss';
+
+$progress-bar-height: 3px;
+
+.weight {
+  flex: 1;
+  padding: $unit * 1.5 $unit * 2.5 $unit * 1.5 0;
+
+  .weight-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+    margin-bottom: $unit * 1.5;
+
+    p {
+      font-weight: 600;
+      font-size: $unit * 1.4;
+      white-space: pre-line;
+      line-height: $unit * 2;
+      margin: 0;
+    }
+
+    span {
+      font-size: $unit * 2;
+      margin-left: $unit;
+    }
+  }
+
+  .progress-bar {
+    height: $progress-bar-height;
+    border-radius: $unit * 0.25;
+    background-color: $background-color;
+    width: 100%;
+
+    & > span {
+      display: inline-block;
+      height: $progress-bar-height;
+      background-color: $secondary-color;
+
+      transition: width 0.3s;
+    }
+  }
+}

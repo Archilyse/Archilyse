@@ -1,0 +1,41 @@
+@import 'Common/theme.scss';
+
+.current-comments {
+  overflow: auto;
+  height: 80%;
+}
+
+.add-comment {
+  margin-top: $unit;
+  @include custom-material-input();
+
+  .MuiTextField-root {
+    width: 100%;
+  }
+
+  .MuiInputBase-root {
+    min-height: $unit * 6;
+    width: 100%;
+  }
+}
+
+.divider {
+  border-top: 1px solid $background-color;
+  width: 100%;
+}
+
+.comment {
+  max-width: 400px;
+  font-size: $small-font-size;
+
+  .comment-header {
+    display: flex;
+    justify-content: space-between;
+    color: $secondary-color;
+
+    .comment-author {
+      display: flex;
+      align-items: center;
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "potential-view",
+  "version": "1.0.0",
+  "description": "This app helps to request and see simulation of a building on the map",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build --base=/potential-view-assets/",
+    "test": "jest",
+    "lint": "eslint src/"
+  }
+}

@@ -1,0 +1,80 @@
+@import 'Common/theme.scss';
+
+$row-height: $unit * 5.6;
+$cell-padding: $unit * 2;
+$header-color: #d9d9d9;
+
+$masterplan-row-color: #21406c26; // $website-brand-color with opacity at 15%
+
+table.building-pipelines {
+  width: 100%;
+  margin-left: 40px;
+  /* @TODO: Review, not sure about UX/UI here */
+  border-spacing: 0;
+  font-size: 14px;
+
+  thead.building-pipelines-header {
+    th {
+      font-weight: bold;
+      background-color: $background-color;
+      padding-left: $cell-padding;
+      padding-right: $cell-padding;
+      text-align: left;
+    }
+  }
+
+  td {
+    border-top: 1px solid $header-color;
+  }
+
+  // Show a border on top of last "Add row" by:
+  // 1. Erasing its own border
+  tr:last-child td {
+    border-top: 0px;
+  }
+
+  // 2. Setting a border bottom for the previous row
+  tr:nth-last-child(2) td {
+    border-bottom: 1px solid $header-color;
+  }
+
+  td.plan-link {
+    width: 30%;
+  }
+
+  tr.in_progress {
+    color: grey;
+    background-color: lightgrey;
+
+    * {
+      color: grey;
+    }
+  }
+
+  tr.success {
+    background-color: #d6f5d6;
+    color: green;
+
+    * {
+      color: green;
+    }
+  }
+
+  tr.failed {
+    background-color: #ffd6cc;
+    color: red;
+
+    * {
+      color: red;
+    }
+  }
+
+  tr.masterplan-row {
+    background-color: $masterplan-row-color;
+  }
+
+  .status {
+    width: 100%;
+    display: flex;
+  }
+}

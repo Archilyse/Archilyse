@@ -1,0 +1,18 @@
+@import '../common/theme.scss';
+
+.search-component {
+  margin-top: $unit;
+  display: flex;
+  justify-content: flex-start;
+
+  .MuiInputBase-root {
+    width: 310px;
+  }
+  @include custom-material-input();
+}
+.search-icon {
+  // @TODO: On focus input, put the color here as the primary color
+  opacity: 0.7;
+  pointer-events: none;
+  margin-right: $unit;
+}

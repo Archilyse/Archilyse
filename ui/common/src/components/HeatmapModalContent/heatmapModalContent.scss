@@ -1,0 +1,79 @@
+@import '../../theme.scss';
+
+.common-modal-container.heatmap-modal-container {
+  width: 70%;
+  height: 80%;
+  max-height: 80%;
+
+  .heatmap-modal-header {
+    margin-bottom: $unit * 2;
+    display: flex;
+    align-items: center;
+
+    h2 {
+      margin: 0;
+    }
+
+    .loading-indicator {
+      margin-left: $unit * 2;
+    }
+  }
+
+  .heatmap-modal-content {
+    position: relative;
+    margin-top: $unit;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+
+    .dropdowns-container {
+      display: flex;
+      align-items: flex-end;
+      margin-bottom: $unit;
+
+      & .heatmap-dropdown-label {
+        display: flex;
+        flex-direction: column;
+        margin-right: $unit * 2;
+
+        & > p {
+          display: flex;
+          align-items: center;
+          margin-top: 0;
+          margin-bottom: $unit * 0.5;
+          color: $secondary-color;
+          font-weight: 600;
+        }
+      }
+
+      & .common-dropdown {
+        width: auto;
+      }
+    }
+
+    .heatmap-container {
+      flex: 1;
+      overflow: hidden;
+      margin-bottom: $unit * 2;
+
+      .heatmap-canvas-container img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}
+
+.menu-list-heatmap-list {
+  width: auto;
+}
+
+.dimension-loading-placeholder {
+  display: inline-flex;
+  align-items: center;
+
+  .loading-indicator {
+    margin-left: $unit * 0.5;
+  }
+}

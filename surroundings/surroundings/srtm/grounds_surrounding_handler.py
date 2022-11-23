@@ -1,0 +1,6 @@
+from surroundings.base_ground_surrounding_handler import BaseGroundSurroundingHandler
+from surroundings.srtm.raster_window_triangulator import SRTMRasterWindowTriangulator
+
+
+class SRTMGroundSurroundingHandler(BaseGroundSurroundingHandler):
+    raster_window_triangulator_cls = SRTMRasterWindowTriangulator

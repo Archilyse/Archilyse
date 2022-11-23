@@ -1,0 +1,73 @@
+@import '../../common/theme.scss';
+
+$login-button-width: 323px;
+$website-brand-color: #21406c;
+
+.login {
+  min-width: 100vw;
+  min-height: 100vh;
+  background: $website-brand-color;
+  background-size: cover;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  .greeting {
+    display: flex;
+    flex-direction: column;
+    width: 541px;
+
+    h1 {
+      color: white;
+      font-weight: 500;
+      font-size: 3.75rem; // 60px;
+      line-height: 72px;
+    }
+    .subtitle {
+      margin-top: 0;
+      font-weight: 300;
+    }
+  }
+
+  form {
+    position: relative;
+    top: $unit * 4;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    @media #{$extra-large-screen} {
+      margin-left: $unit * 20;
+    }
+  }
+
+  .login-input {
+    @include large-input(white);
+    box-shadow: 0px 4px 7px rgba(0, 0, 0, 0.16);
+    background-color: transparent;
+    color: white;
+
+    & input::placeholder {
+      color: white !important;
+      font-family: 'Barlow';
+    }
+  }
+
+  a {
+    font-size: $smaller-font-size;
+    line-height: 14px;
+    text-align: right;
+    width: $login-button-width;
+    margin-top: $unit;
+    @include unstyle-link(white);
+  }
+
+  button.extra-large {
+    width: $login-button-width;
+    @media #{$extra-large-screen} {
+      width: $login-button-width * 2;
+    }
+  }
+}

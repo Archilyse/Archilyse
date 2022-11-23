@@ -1,0 +1,84 @@
+<div id="classification_app" class="classification base_app">
+  <div class="classification_controls base_app_controls">
+    <div *ngIf="!loading">
+      <div class="block">
+        <h5>Classification</h5>
+      </div>
+      <div *ngIf="statistics && areaTypes" class="block featureTypeContainer">
+        <div>
+          <span>Common Filters:</span>
+          <select id="commonFilters" (change)="setAreaFilter($event)" [(ngModel)]='selectedFilter'>
+            <option value="No filter">No filter </option>
+            <option *ngFor="let filterName of getAreaFilterNames();" [ngValue]="filterName">
+              {{filterName}}
+            </option>
+          </select>
+        </div>
+
+        <div class="autoClassify">
+          <button
+          *ngIf="!saving"
+          (click)="getModelStructure(plan_id, true)"
+          [popperPlacement]="'top-end'"
+          type="button"
+          class="btn btn-dark planAutoClassifyButton">
+          <div *ngIf="!loadingAutoClassify || error">Auto-Classify</div>
+          <div *ngIf="loadingAutoClassify && !error" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+        </button>
+        <div class="alert alert-info alert-white rounded" *ngIf="isAutoClassified">
+            <div class="icon"><i class="fa fa-info-circle"></i></div>
+            <strong>Info!</strong> Please double-check the auto-classified areas!
+        </div>
+        </div>
+        <div class="feedbackNotDefined" [ngStyle]="{color: numNotDefined>0?'red':'green'}"  > Not defined areas
+          <span *ngIf="numNotDefined > 0">{{numNotDefined}}</span>
+          <span *ngIf="numNotDefined === 0">&nbsp;<i class="fas fa-check"></i></span>
+        </div>
+        <div *ngFor="let areaLevel of areaLevels;">
+          <div *ngIf="levelHasAreaTypes(areaLevel)" class="areaTypeCategory">
+            <h4>{{areaLevel.name}}</h4>
+            <div *ngFor="let areaType of areaTypesDefined; let i = index">
+              <div *ngIf="areaTypesFiltered.includes(areaType) && getAreaTypeLevels(areaType).includes(areaLevel.val)"
+                [style.backgroundColor]="areaColors[i]"
+                class="featureType"
+                  [ngClass]="areaType == selectedFeature ? 'selected '+areaType : areaType" (click)="selectFeature(areaType)">
+                <span class="Nr" *ngIf="areaTypesDefined.length < NUM_ITEMS_TO_DISPLAY_INDEX_NR" >{{i+1}}</span>
+                <div class="Type" title="{{areaType}}">{{areaType}}</div>
+                <div class="number">({{statistics[areaType].length}})</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="areaTypeCategory">
+          <h4>Others</h4>
+          <div *ngFor="let areaType of areaTypesDefined; let i = index">
+            <div *ngIf="areaTypesFiltered.includes(areaType) && hasNoAreaLevel(areaType)"
+              [style.backgroundColor]="areaColors[i]"
+              class="featureType"
+                [ngClass]="areaType == selectedFeature ? 'selected '+areaType : areaType" (click)="selectFeature(areaType)">
+              <span class="Nr" *ngIf="areaTypesDefined.length < NUM_ITEMS_TO_DISPLAY_INDEX_NR" >{{i+1}}</span>
+              <div class="Type" title="{{areaType}}">{{areaType}}</div>
+              <div class="number">({{statistics[areaType].length}})</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <app-quality-check-box *ngIf="!loading && site_id" [site_id]="site_id"></app-quality-check-box>
+    <app-navigation-site *ngIf="!loading" [planId]="plan_id" [siteId]="site_id" [saveDisabled]="saveDisabled" ></app-navigation-site>
+    <app-save-and-help [saving]="saving" [saveText]="saveText"
+                       [disabled]="saveDisabled" (save)="save()" (openDialog)="openDialog()"></app-save-and-help>
+  </div>
+  <app-navigation [saveDisabled]="saveDisabled" ></app-navigation>
+  <div id="base_app_surface" class="classification_surface base_app_surface">
+    <div *ngIf="error" id="errorMessage" class="errorMessage">{{error}}</div>
+    <div *ngIf="loading && !error" id="loadingMessage" class="loadingMessage">Loading data...</div>
+    <app-brooks-errors *ngIf="!loading && !error" [model]="modelStructure" ></app-brooks-errors>
+    <floorplan-editor *ngIf="modelStructure && !error && !loading" [(model)]="modelStructure" [logic]="logic" [areaTypes]="areaTypesDefined"
+                      [cameraToKeep]="camera" [selectedByDefault]="selectedByDefault" (reloadModel)=reloadModel() [SCALE]="scale"
+                      (changedCamera)=changedCamera($event) [backgroundImg]="backgroundImg" [backgroundImgWidth]="backgroundImgWidth"
+                      [backgroundImgHeight]="backgroundImgHeight"  [backgroundImgRotation]="backgroundImgRotation" [backgroundImgScale]="backgroundImgScale" [backgroundImgShiftX]="backgroundImgShiftX" [backgroundImgShiftY]="backgroundImgShiftY"></floorplan-editor>
+  </div>
+  <app-footer></app-footer>
+</div>

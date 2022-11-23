@@ -1,0 +1,30 @@
+@import 'Common/theme.scss';
+
+.autocomplete {
+  font-family: $main-font;
+}
+
+.autocomplete-input {
+  min-width: $unit * 35 !important;
+  @include custom-material-input();
+}
+.autocomplete-option {
+  font-family: $main-font;
+}
+
+.tags-add-circle-icon {
+  color: $outer-space-grey !important;
+}
+
+.MuiChip-root {
+  border-radius: 0 !important;
+  margin-right: $unit * 0.5 !important;
+  padding: 0 $unit !important;
+}
+
+.MuiAutocomplete-tag {
+  color: $outer-space-grey !important;
+  background: $bright-gray;
+  padding: $unit * 0.5 !important;
+  font-weight: 600;
+}

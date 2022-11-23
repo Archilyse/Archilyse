@@ -1,0 +1,42 @@
+@import '../common/theme.scss';
+
+$closed-drawer-width: 49px; /* As per figma design, although it may be a little wider than it should */
+
+#drawer {
+  height: 100vh;
+  overflow-y: auto;
+  padding: $unit * 3;
+  box-sizing: border-box;
+  background-color: white;
+
+  box-shadow: $default-box-shadow;
+
+  .drawer-button {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  .drawer-button .circle {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: $primary-color;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    border: 1px solid $primary-color;
+    padding: 2px;
+
+    p {
+      @include p-slider;
+      margin-top: 0;
+    }
+  }
+  button {
+    margin-bottom: $unit;
+  }
+}

@@ -1,0 +1,111 @@
+<div id="linking_app" class="linking base_app">
+  <div class="base_app_controls">
+    <div class="block">
+      <h5>Unit linking</h5>
+    </div>
+    <div class="block featureTypeContainer">
+      <div class="select">
+        <label for="changeFloors">Floor: </label>
+        <select
+          dir="auto"
+          id="changeFloors"
+          (change)="onChangeFloor($event)"
+          class="select-text"
+          [value]="floors[0] && floors[0].id"
+        >
+          <option *ngFor="let floor of floors; let i = index" [value]="floor.id">{{ floorToHuman(floor.number) }}</option>
+        </select>
+      </div>
+      <div class="autoLink">
+        <button
+          *ngIf="!saving && isAdmin && visibleUnits && visibleUnits.length > 0"
+          (click)="linkAutomatically()"
+          [popperPlacement]="'top-end'"
+          [disabled]="loadingAutomaticLinking"
+          type="button"
+          class="btn btn-dark autoLinkButton"
+        >
+          {{ loadingAutomaticLinking ? 'Processing...' : 'Auto-Linking' }}
+        </button>
+      </div>
+      <ul>
+        <li *ngFor="let unit of visibleUnits" class="unit">
+          <div class="unit-description">
+            <h5>
+              <span class="apartmentColor" [ngStyle]="{ backgroundColor: unit.color }"></span>
+              <span (click)="selectUnit(unit.apartment_no)"
+                >Unit {{ unit.apartment_no }} <sub class="rooms">{{ unit.floor_id }} </sub></span
+              >
+            </h5>
+            <span class="text_m2"> HNF+NNF ({{ unit.m2 | number: '1.0-1' }}m<sup>2</sup>)</span>&nbsp;
+            <span *ngIf="unit.rooms > 0" class="rooms">Rooms: {{ unit.rooms | number: '1.0-1' }}</span>&nbsp;
+            <app-unit-qa [unit]="unit" [site_id]="site_id"></app-unit-qa>
+          </div>
+          <input
+            class="client-input"
+            pattern="{{ CLIENT_ID_REGEXP }}"
+            [(ngModel)]="units[unit.floor_id][unit.apartment_no].client_id"
+            [id]="unit.apartment_no"
+            (input)="onInputChange($event, clientValidation)"
+            (change)="onClientIdChange(unit.apartment_no)"
+            #input
+            #clientValidation="ngModel"
+            placeholder="Introduce client id"
+          />
+          <select
+            class="client-unit-usage-input"
+            [(ngModel)]="units[unit.floor_id][unit.apartment_no].unit_usage"
+            [id]="unit.unit_usage"
+            (input)="onInputChange($event, clientValidation)"
+            (change)="onClientIdChange(unit.apartment_no)"
+            #input
+            #clientValidation="ngModel"
+            placeholder="d"
+          >
+            <option>RESIDENTIAL</option>
+            <option>COMMERCIAL</option>
+            <option>JANITOR</option>
+            <option>PLACEHOLDER</option>
+          </select>
+          <span class="bar"></span>
+          <div
+            *ngIf="clientValidation && clientValidation.errors && clientValidation.errors.pattern"
+            class="input-error"
+          >
+          Char `/` is not allowed in client id
+          </div>
+        </li>
+      </ul>
+    </div>
+    <app-quality-check-box *ngIf="!loading && site_id" [site_id]="site_id"></app-quality-check-box>
+    <app-navigation-site *ngIf="!loading" [planId]="plan_id" [siteId]="site_id" [saveDisabled]="saveDisabled" ></app-navigation-site>
+    <app-save-and-help
+      [saving]="saving"
+      [saveText]="saveText"
+      [disabled]="saveDisabled"
+      (save)="onSave()"
+      (openDialog)="openHelpDialog()"
+    ></app-save-and-help>
+  </div>
+  <app-navigation [saveDisabled]="saveDisabled" ></app-navigation>
+  <div id="base_app_surface" class="linking_surface base_app_surface">
+    <div *ngIf="error" id="errorMessage" class="errorMessage">{{ error }}</div>
+    <div *ngIf="loading && !error" id="loadingMessage" class="loadingMessage">
+      Loading data...
+    </div>
+    <app-brooks-errors *ngIf="!loading && !error" [model]="modelStructure" ></app-brooks-errors>
+    <floorplan-editor
+      *ngIf="modelStructure && !error && !loading"
+      [(model)]="modelStructure"
+      [logic]="logic"
+      [cameraToKeep]="camera"
+      (changedCamera)="changedCamera($event)"  [backgroundImg]="backgroundImg" [backgroundImgWidth]="backgroundImgWidth"
+      [backgroundImgHeight]="backgroundImgHeight"
+      [backgroundImgRotation]="backgroundImgRotation" 
+      [backgroundImgScale]="backgroundImgScale" 
+      [backgroundImgShiftX]="backgroundImgShiftX" 
+      [backgroundImgShiftY]="backgroundImgShiftY"
+    ></floorplan-editor>
+  </div>
+  <app-footer></app-footer>
+</div>

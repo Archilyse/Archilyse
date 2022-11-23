@@ -1,0 +1,51 @@
+@import '../../theme.scss';
+
+.simulationViewer {
+  width: 100%;
+  flex: 1 1 auto;
+  overflow: hidden;
+  font-family: 'Fira Sans', sans-serif;
+  position: relative;
+
+  .hexagon-legend {
+    top: $unit;
+    left: $unit;
+  }
+
+  canvas {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    outline: none;
+  }
+
+  .error {
+    position: absolute;
+    border: 0;
+
+    top: $unit * 2;
+    left: $unit * 2;
+    z-index: $z-index-level-1;
+    width: calc(100% - #{$unit * 4});
+    height: $unit * 5;
+
+    text-align: center;
+
+    font-size: $unit * 1.7;
+    line-height: $unit * 5;
+
+    color: white;
+    background-color: $red;
+
+    border-radius: $unit * 2.5;
+  }
+
+  .loading {
+    position: absolute;
+    border: 0;
+
+    top: calc(40% - #{$unit * 4});
+    left: calc(50% - #{$unit * 4});
+    z-index: $z-index-level-1;
+  }
+}

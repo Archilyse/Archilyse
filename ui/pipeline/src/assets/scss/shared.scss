@@ -1,0 +1,74 @@
+@import 'shared_help';
+@import 'colors';
+
+$feature_height: calc(100vh - 290px);
+$feature_height_small: calc(100vh - 240px);
+
+.base_app {
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+}
+
+.base_app_surface {
+  display: inline-block;
+  margin: 40px 16px 0 0;
+  width: calc(100vw - 272px);
+  height: calc(100vh - 72px);
+
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+  position: relative;
+}
+
+.base_app_controls {
+  margin-top: 14px;
+  width: 250px;
+  height: calc(100vh - 14px);
+  display: inline-block;
+  vertical-align: top;
+  position: relative;
+
+  .block {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+.errorMessage {
+  margin: 15px;
+  font-size: 20px;
+  color: $red;
+}
+
+.loadingMessage2 {
+  color: $darker-grey;
+  font-size: 16px;
+  margin-left: 15px;
+}
+.loadingMessage {
+  margin: 15px;
+  font-size: 20px;
+}
+
+/* Apartment shared styles */
+.apartmentColor {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  margin-right: 6px;
+  border: 1px solid black;
+
+  &.modified {
+    border: 2px solid red;
+  }
+}
+
+.text_m2 {
+  color: #4e4e4e;
+  font-size: 12px;
+}
+.rooms {
+  font-size: 10px;
+}

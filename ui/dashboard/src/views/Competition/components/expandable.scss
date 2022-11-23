@@ -1,0 +1,41 @@
+@import '../../../common/theme.scss';
+
+$arrow-icon-size: 12px;
+$base-icon-size: 16px;
+
+.expandable-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .icons-container {
+    display: flex;
+
+    & > span {
+      margin-left: $unit;
+      width: $base-icon-size;
+      height: $base-icon-size;
+      display: inline-flex;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  & button {
+    @include normalized-button();
+    position: relative;
+    cursor: pointer;
+
+    @include expanded-background-button($arrow-icon-size * 2.5);
+  }
+
+  button svg {
+    width: $arrow-icon-size;
+    height: $arrow-icon-size;
+
+    path {
+      stroke: $secondary-color;
+    }
+  }
+}

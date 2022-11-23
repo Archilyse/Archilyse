@@ -1,0 +1,6 @@
+<div *ngIf="model && model.errors"  class="brooksErrors">
+  <div *ngFor="let error of model.errors; index as i;" class="brooksError" [ngClass]="{'text-blocker' : error.is_blocking}" (mouseover)="hoverError(i)" >
+    <div class="brooksType">{{i + 1}}) <i [ngClass]="{'fas fa-exclamation' : error.is_blocking}"></i> <span>{{error.type}}</span></div>
+    <div class="brooksText">{{ error.is_blocking ? 'ERROR:' : 'WARNING:' }} {{ error.text }}</div>
+  </div>
+</div>

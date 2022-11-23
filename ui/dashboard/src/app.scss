@@ -1,0 +1,94 @@
+@import './common/theme.scss';
+
+html,
+body {
+  margin: 0;
+  height: 100vh;
+}
+
+#table {
+  .ag-header-viewport {
+    background-color: $background-color;
+  }
+
+  .ag-header-cell,
+  .ag-cell {
+    padding-left: 4px !important;
+    padding-right: 0 !important;
+  }
+
+  .ag-header-icon {
+    margin-left: 4px !important;
+  }
+}
+
+/* barlow-300 - latin */
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 300;
+  src: url('../assets/fonts/barlow-v4-latin-300.eot'); /* IE9 Compat Modes */
+  src: local('Barlow Light'), local('Barlow-Light'),
+    url('../assets/fonts/barlow-v4-latin-300.eot?#iefix') format('embedded-opentype'),
+    /* IE6-IE8 */ url('../assets/fonts/barlow-v4-latin-300.woff2') format('woff2'),
+    /* Super Modern Browsers */ url('../assets/fonts/barlow-v4-latin-300.woff') format('woff'),
+    /* Modern Browsers */ url('../assets/fonts/barlow-v4-latin-300.ttf') format('truetype'),
+    /* Safari, Android, iOS */ url('../assets/fonts/barlow-v4-latin-300.svg#Barlow') format('svg'); /* Legacy iOS */
+}
+
+/* barlow-regular - latin */
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../assets/fonts/barlow-v4-latin-regular.eot'); /* IE9 Compat Modes */
+  src: local('Barlow Regular'), local('Barlow-Regular'),
+    url('../assets/fonts/barlow-v4-latin-regular.eot?#iefix') format('embedded-opentype'),
+    /* IE6-IE8 */ url('../assets/fonts/barlow-v4-latin-regular.woff2') format('woff2'),
+    /* Super Modern Browsers */ url('../assets/fonts/barlow-v4-latin-regular.woff') format('woff'),
+    /* Modern Browsers */ url('../assets/fonts/barlow-v4-latin-regular.ttf') format('truetype'),
+    /* Safari, Android, iOS */ url('../assets/fonts/barlow-v4-latin-regular.svg#Barlow') format('svg'); /* Legacy iOS */
+}
+
+/* barlow-500 - latin */
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 500;
+  src: url('../assets/fonts/barlow-v4-latin-500.eot'); /* IE9 Compat Modes */
+  src: local('Barlow Medium'), local('Barlow-Medium'),
+    url('../assets/fonts/barlow-v4-latin-500.eot?#iefix') format('embedded-opentype'),
+    /* IE6-IE8 */ url('../assets/fonts/barlow-v4-latin-500.woff2') format('woff2'),
+    /* Super Modern Browsers */ url('../assets/fonts/barlow-v4-latin-500.woff') format('woff'),
+    /* Modern Browsers */ url('../assets/fonts/barlow-v4-latin-500.ttf') format('truetype'),
+    /* Safari, Android, iOS */ url('../assets/fonts/barlow-v4-latin-500.svg#Barlow') format('svg'); /* Legacy iOS */
+}
+
+/* barlow-600 - latin */
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 600;
+  src: url('../assets/fonts/barlow-v4-latin-600.eot'); /* IE9 Compat Modes */
+  src: local('Barlow SemiBold'), local('Barlow-SemiBold'),
+    url('../assets/fonts/barlow-v4-latin-600.eot?#iefix') format('embedded-opentype'),
+    /* IE6-IE8 */ url('../assets/fonts/barlow-v4-latin-600.woff2') format('woff2'),
+    /* Super Modern Browsers */ url('../assets/fonts/barlow-v4-latin-600.woff') format('woff'),
+    /* Modern Browsers */ url('../assets/fonts/barlow-v4-latin-600.ttf') format('truetype'),
+    /* Safari, Android, iOS */ url('../assets/fonts/barlow-v4-latin-600.svg#Barlow') format('svg'); /* Legacy iOS */
+}
+
+/* barlow-semi-condensed-300 - latin */
+@font-face {
+  font-family: 'Barlow Semi Condensed';
+  font-style: normal;
+  font-weight: 300;
+  src: url('../assets/fonts/barlow-semi-condensed-v5-latin-300.eot'); /* IE9 Compat Modes */
+  src: local('Barlow Semi Condensed Light'), local('BarlowSemiCondensed-Light'),
+    url('../assets/fonts/barlow-semi-condensed-v5-latin-300.eot?#iefix') format('embedded-opentype'),
+    /* IE6-IE8 */ url('../assets/fonts/barlow-semi-condensed-v5-latin-300.woff2') format('woff2'),
+    /* Super Modern Browsers */ url('../assets/fonts/barlow-semi-condensed-v5-latin-300.woff') format('woff'),
+    /* Modern Browsers */ url('../assets/fonts/barlow-semi-condensed-v5-latin-300.ttf') format('truetype'),
+    /* Safari, Android, iOS */ url('../assets/fonts/barlow-semi-condensed-v5-latin-300.svg#BarlowSemiCondensed')
+      format('svg'); /* Legacy iOS */
+}

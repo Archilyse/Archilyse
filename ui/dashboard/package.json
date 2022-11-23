@@ -1,0 +1,16 @@
+{
+  "name": "dashboard",
+  "private": "true",
+  "version": "0.1.0",
+  "description": "Dashboard for Archilyse simulated data",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build --base=/dashboard-assets/",
+    "test": "jest",
+    "lint": "eslint src/",
+    "update-snapshots": "npm run test -- -u"
+  },
+  "author": "",
+  "license": "ISC"
+}

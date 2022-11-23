@@ -1,0 +1,13 @@
+@import '../common/theme.scss';
+
+.tab-panel {
+  margin-top: 20px;
+
+  &.hidden {
+    display: none;
+  }
+}
+
+.MuiTabs-indicator {
+  background-color: $website-brand-color !important;
+}

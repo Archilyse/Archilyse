@@ -1,0 +1,73 @@
+@import 'Common/theme.scss';
+
+$data-container-width: 95%;
+$data-container-height: 95%;
+$right-sidebar-width: 393px;
+$collapse-button-width: $unit * 4;
+$collapse-button-height: $unit * 4;
+
+.selected-view {
+  background-color: inherit;
+  height: 100%;
+  align-self: stretch;
+  display: flex;
+  width: 100%;
+  border-bottom: 1px solid $bright-grey;
+
+  overflow: hidden;
+
+  & > .dms-table,
+  .grid {
+    height: 100%;
+    transition: width ease-out 0.3s;
+
+    width: 100%;
+    overflow-x: hidden;
+  }
+}
+
+.main-layout {
+  background-color: inherit;
+  height: $data-container-height;
+  display: flex;
+  flex-direction: column;
+  width: 75%;
+  overflow: hidden;
+  margin-right: $unit * 2;
+  padding-right: $unit * 2;
+}
+
+.selected-view.compacted {
+  & > .dms-table,
+  .grid {
+    height: 100%;
+    overflow-x: hidden;
+
+    width: 100%;
+  }
+}
+
+.selected-view.no-data {
+  width: $data-container-width;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.right-sidebar {
+  border-left: 1px solid $bright-grey;
+  border-bottom: 1px solid $bright-grey;
+  width: 25%;
+  overflow: auto;
+  overflow-x: hidden;
+  height: $data-container-height;
+}
+
+.widgets-container {
+  display: flex;
+  flex-direction: column;
+
+  @media #{$small-screen} {
+    position: initial;
+  }
+}

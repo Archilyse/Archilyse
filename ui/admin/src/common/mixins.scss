@@ -1,0 +1,8 @@
+@import './theme';
+
+@mixin p-slider {
+  margin-bottom: 0;
+  position: relative;
+  bottom: 2px;
+  color: $primary-color;
+}

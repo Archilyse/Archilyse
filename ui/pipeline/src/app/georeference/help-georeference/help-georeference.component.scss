@@ -1,0 +1,15 @@
+@import '../../../assets/scss/shared';
+
+:host {
+  width: 500px;
+}
+
+.blue {
+  color: $blue;
+}
+.yellow {
+  color: $yellow;
+}
+.black {
+  color: $black;
+}

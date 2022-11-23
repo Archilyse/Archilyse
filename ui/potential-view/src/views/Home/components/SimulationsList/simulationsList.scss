@@ -1,0 +1,99 @@
+@import 'Common/theme.scss';
+
+$card-width: 360px;
+
+.simulations-list {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  margin-bottom: $unit * 2;
+  flex: 1;
+
+  .simulation-info-card {
+    display: flex;
+    flex-direction: column;
+    padding: $unit $unit * 0.8 $unit * 0.4 0;
+    position: relative;
+
+    &:not(:last-of-type) {
+      margin-bottom: $unit * 2;
+    }
+
+    &:not(:last-of-type)::after {
+      content: '';
+      display: inline-block;
+      position: absolute;
+      left: 0;
+      bottom: -15px;
+      height: 1px;
+      width: 100%;
+      background-color: $background-color;
+    }
+  }
+
+  .simulation-info-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    &:not(:last-of-type) {
+      margin-bottom: $unit * 0.6;
+    }
+
+    &.result {
+      margin-top: $unit;
+    }
+  }
+
+  .simulation-info-line {
+    margin: 0;
+    display: flex;
+    align-items: center;
+
+    .material-icons {
+      color: $dark_red !important;
+    }
+  }
+
+  .simulation-error-message {
+    color: $dark_red;
+  }
+
+  .simulation-view-link {
+    text-decoration: none;
+    display: inline-flex;
+    color: $primary-color;
+  }
+
+  .simulation-status {
+    margin-left: $unit * 0.4;
+    font-weight: 600;
+
+    &.red {
+      color: $dark_red;
+    }
+
+    &.green {
+      color: $dark_green;
+    }
+
+    &.orange {
+      color: $orange;
+    }
+
+    &.pending {
+      color: $secondary-color;
+    }
+  }
+}
+
+.simulations-list.loading {
+  width: $card-width;
+  align-items: center;
+
+  .simulations-loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: $unit * 6;
+  }
+}

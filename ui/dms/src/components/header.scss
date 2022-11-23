@@ -1,0 +1,42 @@
+@import '../common/theme.scss';
+
+.header {
+  display: flex;
+  align-items: center;
+  min-height: 50px;
+  justify-content: flex-start;
+  background-color: $white;
+  padding: 17.5px $unit;
+  color: $secondary-color;
+  border-bottom: 1px solid $bright-grey;
+
+  .dms-navbar {
+    display: flex;
+    width: 93%;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: $unit * 3;
+
+    span {
+      text-decoration: none;
+      color: $outer-space-grey;
+      font-weight: 600;
+      font-size: $unit * 2.3;
+    }
+
+    & > * {
+      margin-left: $unit;
+    }
+  }
+
+  .add-icon {
+    display: none;
+    align-items: flex-end;
+    justify-content: flex-end;
+
+    .MuiFab-root {
+      background-color: $indigo-blue !important;
+      box-shadow: none !important;
+    }
+  }
+}

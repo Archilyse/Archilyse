@@ -1,0 +1,18 @@
+{
+  "georef_x": 8.719533156777974,
+  "image_width": 3136,
+  "georef_y": 47.49779768237654,
+  "georef_scale": 6.9681498961445e-05,
+  "image_hash": "83fe8522c87f54f2998fb4e31308fcb46d96502be58f8ba38103dfad0add3171",
+  "annotation_finished": true,
+  "created": "2020-05-15T15:37:40.013869",
+  "georef_rot_x": 1751.0,
+  "georef_rot_y": -2180.0,
+  "georef_rot_angle": 193.975210408071,
+  "default_wall_height": 2.6,
+  "image_height": 4032,
+  "image_mime_type": "image/jpeg",
+  "default_window_lower_edge": 0.5,
+  "default_window_upper_edge": 2.4,
+  "updated": "2020-06-23T10:02:43.187713"
+}

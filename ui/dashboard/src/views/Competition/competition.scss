@@ -1,0 +1,59 @@
+@import '../../common/theme.scss';
+
+$top-distance: $unit * 5;
+
+.competition-tool {
+  @include basic-layout();
+
+  #drawer {
+    width: 300px;
+    flex: 0 0 auto;
+    position: relative;
+    padding-top: $top-distance;
+
+    header h3 {
+      margin-top: 0;
+    }
+
+    button {
+      margin: 0;
+    }
+
+    .expandable-field > button {
+      margin-left: $unit;
+    }
+
+    .categories-container > .primary-button {
+      margin-top: $unit * 5;
+    }
+  }
+
+  main {
+    margin: $top-distance 147px $unit * 6 56px; // Figma
+
+    // these needed to make table scrollable vertically
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    header {
+      margin-bottom: $unit * 7;
+      color: $secondary-color;
+
+      .title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      h1,
+      p {
+        margin: 0;
+      }
+
+      p {
+        font-size: 36px;
+      }
+    }
+  }
+}

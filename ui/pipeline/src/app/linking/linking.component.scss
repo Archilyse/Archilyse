@@ -1,0 +1,118 @@
+@import '../../assets/scss/shared';
+
+$input-width: 200px;
+$underline-color: $dark-grey;
+$hover-color: $grey;
+
+.featureTypeContainer {
+  height: $feature_height;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.select {
+  position: relative;
+  width: $input-width;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-around;
+  label {
+    margin-right: 1vw;
+  }
+}
+
+.select-text {
+  position: relative;
+  background-color: transparent;
+  width: $input-width;
+  font-size: 18px;
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid $hover-color;
+}
+
+/* Hide browser default arrow on <select> */
+.select .select-text {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* Draw a new arrow */
+.select:after {
+  position: absolute;
+  top: 9px;
+  right: 10px;
+  width: 0;
+  height: 0;
+  padding: 0;
+  content: '';
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid rgba(0, 0, 0, 0.12);
+  pointer-events: none;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.unit {
+  margin-top: 25px;
+
+  .unit-description h5 {
+    margin-bottom: 0;
+  }
+
+  .unit-description:hover {
+    background-color: $hover-color;
+    cursor: pointer;
+  }
+
+  .client-input {
+    margin-top: 5px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    border-bottom: 1px solid $hover-color;
+    width: $input-width;
+  }
+}
+
+.bar {
+  position: relative;
+  display: block;
+  width: calc(#{$input-width} * 2);
+}
+
+.bar:before,
+.bar:after {
+  content: '';
+  height: 2px;
+  width: 0;
+  bottom: 1px;
+  position: absolute;
+  background: $underline-color;
+  transition: 0.2s ease all;
+}
+
+.bar:before {
+  left: 50%;
+}
+.bar:after {
+  right: 50%;
+}
+
+input:focus ~ .bar:after {
+  width: 50%;
+}
+
+.input-error {
+  color: $red;
+  font-size: small;
+}
+
+.autoLinkButton {
+  margin-top: 10%;
+  width: 100%;
+}

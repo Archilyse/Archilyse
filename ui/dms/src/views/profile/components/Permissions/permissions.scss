@@ -1,0 +1,113 @@
+@import 'Common/theme.scss';
+
+.user-profile-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .MuiSelect-select.MuiSelect-select {
+    border: 1px solid $bright-grey;
+    padding: $unit * 1.5 $unit * 2;
+    font-family: $main-font;
+  }
+}
+
+.users-permissions-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  background: $white;
+
+  .search-component {
+    margin: $unit 0;
+    width: auto;
+
+    &:focus-within {
+      border: 1px solid $storm-cloud-grey;
+      box-shadow: 0 0 0 3px $silver-sand-grey;
+
+      span {
+        color: $storm-cloud-grey !important;
+      }
+    }
+  }
+
+  .add-permissions-button {
+    width: fit-content;
+    padding: 0 $unit * 2;
+    margin: $unit/2 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: center;
+    border: 0;
+    color: $outer-space-grey;
+    background-color: $anti-flash-white;
+    box-shadow: none;
+
+    &:hover {
+      border: 0;
+      background-color: $bright-gray-darker;
+    }
+  }
+}
+
+.permissions-input {
+  width: 100%;
+}
+
+.users-permissions-container > div:first-child {
+  background-color: transparent !important;
+  box-shadow: none;
+}
+
+.users-permissions-container .no-users-message {
+  color: $secondary-color;
+}
+
+.users-permissions-container td {
+  font-weight: 600;
+  color: $outer-space-grey;
+
+  p {
+    color: $secondary-color;
+    font-weight: 400;
+  }
+}
+
+.users-permissions-container .MuiChip-root {
+  border-radius: 8px;
+}
+
+.users-permissions-container {
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  .custom-tag {
+    margin: $unit / 2;
+  }
+
+  thead {
+    height: $unit * 7;
+  }
+
+  th {
+    text-align: left;
+    color: $outer-space-grey;
+    font-weight: 600;
+  }
+
+  tr {
+    border-bottom: 1px solid $background-color;
+  }
+
+  td.add-permissions {
+    text-align: right;
+  }
+
+  .user-name {
+    display: flex;
+    align-items: center;
+  }
+}

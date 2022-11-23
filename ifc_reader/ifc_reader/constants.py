@@ -1,0 +1,69 @@
+# IFC Reader constants
+
+# standard element names
+
+IFC_ANNOTATION = "IfcAnnotation"
+IFC_WALL_STANDARD_CASE = "IfcWallStandardCase"
+IFC_CURTAIN_WALL = "IfcCurtainWall"
+IFC_WALL = "IfcWall"
+IFC_SLAB = "IfcSlab"
+IFC_SLAB_STANDARD_CASE = "IfcSlabStandardCase"
+IFC_DOOR = "IfcDoor"
+IFC_WINDOW = "IfcWindow"
+IFC_BUILDING = "IfcBuilding"
+IFC_STOREY = "IfcBuildingStorey"
+IFC_GEOMETRIC_REPR_CONTEXT = "IfcGeometricRepresentationContext"
+IFC_SITE = "IfcSite"
+IFC_UNIT = "IfcSiUnit"
+IFC_SPACE = "IfcSpace"
+IFC_RAILING = "IfcRailing"
+IFC_COLUMN = "IfcColumn"
+IFC_STAIR = "IfcStair"
+IFC_TRANSPORT_ELEMENT = "IfcTransportElement"
+IFC_MEMBER = "IfcMember"
+IFC_BEAM = "IfcBeam"
+IFC_BUILDING_ELEMENT = "IfcBuildingElement"
+IFC_COVERING = "IfcCovering"
+IFC_SANITARY_ELEMENT = "IfcSanitaryTerminal"
+IFC_DISTRIBUTION_FLOW_ELEMENT = "IfcDistributionFlowElement"
+IFC_FLOW_CONTROLLER = "IfcFlowController"
+IFC_FURNISHING_ELEMENT = "IfcFurnishingElement"
+IFC_FURNITURE_TYPE = "IfcFurnitureType"
+IFC_FURNITURE = "IfcFurniture"
+
+# predefined type names
+IFC_DEF_FLOOR = "FLOOR"
+IFC_DEF_BASESLAB = "BASESLAB"
+IFC_DEF_NOTDEFINED = "NOTDEFINED"
+IFC_DEF_LENGTHUNIT = "LENGTHUNIT"
+
+SUPPORTED_IFC_TYPES = {
+    IFC_ANNOTATION,
+    IFC_WALL_STANDARD_CASE,
+    IFC_CURTAIN_WALL,
+    IFC_WALL,
+    IFC_SLAB,
+    IFC_SLAB_STANDARD_CASE,
+    IFC_DOOR,
+    IFC_WINDOW,
+    IFC_BUILDING,
+    IFC_STOREY,
+    IFC_GEOMETRIC_REPR_CONTEXT,
+    IFC_SITE,
+    IFC_UNIT,
+    IFC_SPACE,
+    IFC_RAILING,
+    IFC_COLUMN,
+    IFC_STAIR,
+    IFC_TRANSPORT_ELEMENT,
+    IFC_MEMBER,
+    IFC_BEAM,
+    IFC_BUILDING_ELEMENT,
+    IFC_COVERING,
+    IFC_SANITARY_ELEMENT,
+    IFC_DISTRIBUTION_FLOW_ELEMENT,
+    IFC_FLOW_CONTROLLER,
+    IFC_FURNISHING_ELEMENT,
+    IFC_FURNITURE_TYPE,
+    IFC_FURNITURE,
+}

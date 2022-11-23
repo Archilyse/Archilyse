@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "sourceMap": true,
+    "target": "es2019",
+    "module": "es2015",
+    "moduleResolution": "node",
+    "lib": ["es5", "es6", "dom"],
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true
+  },
+  "exclude": ["node_modules", "webpack"]
+}

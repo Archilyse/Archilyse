@@ -1,0 +1,80 @@
+<div id="georeference_app" class="georeference base_app">
+  <div class="georeference_controls base_app_controls">
+    <div class="block">
+      <h5>Georeference</h5>
+    </div>
+    <div class="block featureTypeContainer">
+      <div *ngIf="!loading">
+        <div [popper]="selectMap" class="selectMap">
+          <app-map-mode (changeMap)="changeMap($event)" [mapStyle]="mapStyle" [labelText]="'Map mode:'" ></app-map-mode>
+        </div>
+        <button
+          type="button"
+          class="btn btn-info centerMapButton"
+          (click)="centerMap()">
+          Center map
+        </button>
+
+        <div class="modeBox">
+          <div *ngIf="!isRotationMode" class="mode movement">Movement mode</div>
+          <div *ngIf="!isRotationMode" class="measuredText"> * Drag and drop the building to move it.  </div>
+          <div *ngIf="!isRotationMode" class="measuredText"> * Press control rotate the building.  </div>
+
+          <div *ngIf="isRotationMode" class="mode rotation">Rotation mode</div>
+          <div *ngIf="isRotationMode" class="measuredText"> * Drag and rotate the building to rotate it.  </div>
+        </div>
+
+        <div class="coordiantesBox">
+          <div *ngIf="!isRotationMode && basePosition" class="measuredText"> <span class="valuesTitle">Latitude: </span> <span class="value">{{basePosition[0] + this.dragDeltaX}}</span></div>
+          <div *ngIf="!isRotationMode && basePosition" class="measuredText"> <span class="valuesTitle">Longitude: </span> <span class="value">{{basePosition[1] + this.dragDeltaY}}</span></div>
+          <div *ngIf="isRotationMode" class="measuredText"><span class="valuesTitle">Degrees: </span> <span class="value">{{toSaveAngleDegrees | number:'0.3'}}</span></div>
+          <div *ngIf="isRotationMode" class="measuredText"><span class="valuesTitle">Radians: </span> <span class="value">{{toSaveAngleRadians | number:'0.3'}}</span></div>
+        </div>
+
+        <div *ngIf="buildingsFootprintsPlanIds.length" class="floorplansBox">
+          <div class="otherPlansTitle">Other georeferenced plans for the current site:</div>
+          <div class="closePlansTitle">Display only close plans: <input type="checkbox"
+                                                                        class="checkPlans"
+                                                                        (change)="changeDisplayed($event)"
+                                                                        [(ngModel)]="displayClose"></div>
+
+          <div class="SameBuildingTitle">Same building plans: </div>
+          <div *ngFor="let planId of buildingsFootprintsPlanIds$ | async">
+            <div  *ngIf="planIdDelta && planIdDelta[planId]" >
+              <a [routerLink]="['/georeference', planId]" class="planLink" [popper]="planFeedback">{{planId}}</a>
+              <div class="planDelta" [popper]="alignmentFeedback" > <i class="fas fa-ruler-combined"></i> [
+                <span [ngClass]="getClassDeltaX(planIdDelta[planId])">{{planIdDelta[planId].deltaX | number:'0.2'}}</span>,
+                <span [ngClass]="getClassDeltaY(planIdDelta[planId])">{{planIdDelta[planId].deltaY | number:'0.2'}}</span>]
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br />
+      <div *ngIf="warnings && warnings.length > 0" ><i class="warningIcon fas fa-exclamation-triangle"></i> Warnings: 
+      <ul>
+        <li *ngFor="let warning of warnings;" class="georeference-warnings">
+          {{warning}}
+        </li>
+      </ul>
+    </div>
+    <br />
+
+    </div>
+    <app-quality-check-box *ngIf="!loading && site_id" [site_id]="site_id"></app-quality-check-box>
+    <app-navigation-site *ngIf="!loading" [planId]="plan_id" [siteId]="site_id" [saveDisabled]="saveDisabled" ></app-navigation-site>
+    <app-save-and-help [saving]="saving" [saveText]="saveText" [disabled]="saveDisabled" (save)="save()" (openDialog)="openDialog()" ></app-save-and-help>
+  </div>
+  <app-navigation [saveDisabled]="saveDisabled" ></app-navigation>
+  <div id="base_app_surface" class="georeference_surface base_app_surface">
+    <div *ngIf="error" id="errorMessage" class="errorMessage">{{error}}</div>
+    <div *ngIf="loading && !error" id="loadingMessage" class="loadingMessage">Loading data...</div>
+    <div *ngIf="loadingPlansGeoreferenced && !error" id="loadingMessageFootprints" class="loadingMessage">Loading site footprints... you can already make changes</div>
+    <div id="map" class="map"></div>
+  </div>
+  <app-footer></app-footer>
+</div>
+
+<popper-content #selectMap >Change the map displayed.</popper-content>
+<popper-content #alignmentFeedback >Top left corner alignment feedback.</popper-content>
+<popper-content #planFeedback >This is the plan id of another plan in the same site. <br> Click to see it's georeference screen.</popper-content>

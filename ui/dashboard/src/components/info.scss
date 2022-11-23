@@ -1,0 +1,14 @@
+@import '../common/theme.scss';
+
+.info-tooltip {
+  color: white;
+  background-color: $light-grey-color;
+  border-radius: 50%;
+  cursor: default;
+  font-weight: 600;
+  opacity: 0.8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 0 0 auto;
+}

@@ -1,0 +1,31 @@
+@import '../../../assets/scss/shared';
+@import '../../../assets/scss/colors';
+
+:host {
+  height: 100%;
+  width: 100%;
+  background-color: $red;
+}
+
+.floorplan {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.floorplanGraph {
+  width: 100%;
+  height: 100%;
+  background-color: $white;
+
+  //transform: rotateX(30deg)rotateZ(-45deg);
+
+  // This line avoid jagged edges in chrome
+  // https://stackoverflow.com/questions/6492027/css-transform-jagged-edges-in-chrome
+  -webkit-backface-visibility: hidden;
+}
+
+.errorMessage {
+  padding: 20px;
+  color: red;
+}

@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "Common/*": ["src/common/*"],
+      "Providers/*": ["src/providers/*"],
+      "Components/*": ["src/components/*"],
+      "Common": ["src/common"],
+      "Providers": ["src/providers"],
+      "Components": ["src/components"]
+    },
+    "module": "commonjs",
+    "target": "es2019",
+    "jsx": "react",
+    "sourceMap": false,
+    "experimentalDecorators": true,
+    "noImplicitUseStrict": true,
+    "removeComments": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "lib": ["es2017", "dom"],
+    "resolveJsonModule":true,
+    "typeRoots": ["../node_modules/@types", "src/@types"]
+  },
+  "exclude": ["node_modules", "out", ".next"]
+}

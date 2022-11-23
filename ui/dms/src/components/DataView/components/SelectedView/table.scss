@@ -1,0 +1,127 @@
+@import 'Common/theme.scss';
+
+$row-height: $unit * 6.2; // Size item defined react-window (60) minus a border (7px)
+
+.dms-table {
+  overflow: hidden;
+
+  .table {
+    width: 100%;
+    text-align: left;
+    color: $outer-space-grey;
+    font-weight: normal;
+    display: flex;
+    flex-direction: column;
+
+    .thead {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: $row-height;
+      border-bottom: 1px solid $bright-grey;
+
+      .th {
+        color: $outer-space-grey;
+        background-color: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        font-weight: 600 !important;
+      }
+    }
+
+    .tbody {
+      .tr {
+        padding: 0;
+        background-color: $lotion-white;
+        border-bottom: 1px solid $bright-grey;
+
+        &.hover {
+          background-color: $cultured-white;
+        }
+        &.item-cut {
+          background-color: $hovered-color;
+        }
+      }
+
+      .tr ~ .tr {
+        border-top: 1px solid $bright-grey;
+      }
+    }
+
+    .tbody > div {
+      overflow-x: hidden !important;
+    }
+
+    .tr {
+      width: 100%;
+      display: flex;
+    }
+
+    .td {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .th.clientSiteId,
+    .td.clientSiteId {
+      font-weight: 600;
+      flex: 1;
+    }
+
+    .th.name > span.column-header-name {
+      padding-left: $unit * 2;
+    }
+
+    .th.name,
+    .td.name {
+      font-weight: 600;
+      flex: 1;
+    }
+
+    .folder-name-data {
+      display: flex;
+      align-items: center;
+
+      .folder-type-icon {
+        margin-right: $unit;
+      }
+    }
+
+    .th.type,
+    .td.type {
+      flex: 0.3;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 0 $unit;
+    }
+    .th.created,
+    .td.created {
+      flex: 0.7;
+    }
+
+    .th.phPrice,
+    .td.phPrice {
+      flex: 0.8;
+    }
+
+    .th.expiryDate,
+    .td.expiryDate {
+      flex: 0.6;
+    }
+
+    .th.phFactor,
+    .td.phFactor {
+      flex: 0.6;
+    }
+
+    .th.tags,
+    .td.tags {
+      width: $unit * 50;
+      padding-left: $unit * 2;
+    }
+  }
+}

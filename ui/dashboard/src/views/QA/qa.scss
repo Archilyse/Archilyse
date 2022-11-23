@@ -1,0 +1,66 @@
+@import '../../common/theme';
+
+.qa {
+  @include basic-layout();
+
+  .qa-loading-indicator {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .main-content {
+    flex: 2;
+    margin-top: $unit * 2;
+    margin-bottom: $unit * 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 95%;
+    width: 90%;
+
+    .site-title {
+      height: $unit * 2;
+      margin: $unit;
+      margin-bottom: $unit * 2;
+      margin-left: $unit * 2;
+    }
+
+    .threed-viewer {
+      box-shadow: $secondary-box-shadow;
+      background-color: white;
+      height: 30%;
+      margin: $unit * 2;
+    }
+    .heatmaps {
+      box-shadow: $secondary-box-shadow;
+      background-color: white;
+      flex: 1;
+      max-height: 70%;
+      margin: $unit * 2;
+      overflow: auto;
+      padding: $unit;
+
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: 1fr;
+      grid-column-gap: $unit * 2;
+      grid-row-gap: $unit * 2;
+
+      & > * {
+        margin-top: $unit;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .heatmap-canvas-container {
+        width: 100%;
+        height: 400px;
+      }
+    }
+  }
+}

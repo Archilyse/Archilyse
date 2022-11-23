@@ -1,0 +1,36 @@
+@import '../../../../common/theme.scss';
+
+$icon-size: 12px;
+
+.input-with-icon {
+  display: flex;
+  position: relative;
+
+  button {
+    @include normalized-button();
+    margin-left: $unit;
+    cursor: pointer;
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -$icon-size * 2;
+
+    @include expanded-background-button($icon-size * 2.5);
+  }
+}
+
+.weight-input {
+  max-width: $unit * 5.5;
+  height: $icon-size * 2;
+  margin-left: 0;
+  padding: 0;
+  border: unset;
+  border-bottom: 1px solid $background-color;
+  font-family: 'Barlow';
+  font-size: $unit * 2;
+  color: inherit;
+  outline: none;
+  white-space: nowrap;
+  overflow: hidden;
+}

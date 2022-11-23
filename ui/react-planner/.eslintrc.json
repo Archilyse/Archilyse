@@ -1,0 +1,6 @@
+{
+  "extends": [
+    "../common/.eslintrc.json"
+  ],
+  "ignorePatterns": ["custom.d.ts"]
+}

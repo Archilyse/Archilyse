@@ -1,0 +1,78 @@
+@import '../../common/theme.scss';
+
+.selected-view-left-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.categories-container {
+  color: $secondary-color;
+  margin-top: $unit * 7;
+
+  & > .weight-container {
+    &::before,
+    &::after {
+      content: '';
+      display: inline-block;
+      position: absolute;
+      left: 0;
+      height: 1px;
+      width: 100%;
+      background-color: $background-color;
+    }
+  }
+
+  & .loading-indicator {
+    display: flex;
+    justify-content: center;
+    padding-top: $unit * 7;
+  }
+
+  & .weights-error-text {
+    margin: 0;
+  }
+}
+
+.sidebar-buttons-container {
+  & > .primary-button:first-child {
+    margin-top: $unit * 3 !important; // @TODO: #drawer sets margin to all buttons, should be reviewd in order to get rid of !important
+  }
+
+  .primary-button {
+    margin-bottom: $unit * 2 !important; // @TODO: #drawer sets margin to all buttons, should be reviewd in order to get rid of !important
+  }
+}
+
+.sidebar-navigation-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  padding-bottom: $unit * 2;
+
+  margin-left: -($unit * 2.5);
+  margin-right: -($unit * 2.5);
+
+  a {
+    padding: 0 $unit * 2.5;
+    text-decoration: none;
+    color: $secondary-color;
+    line-height: $unit * 5;
+
+    display: flex;
+    align-items: center;
+
+    transition: background-color 0.2s;
+
+    &:hover {
+      border-radius: 8px;
+      background-color: $background-color;
+    }
+
+    svg {
+      margin-right: $unit;
+      margin-left: 0;
+    }
+  }
+}

@@ -1,0 +1,57 @@
+@import '../../../theme.scss';
+
+.hexagon-legend {
+  position: absolute;
+
+  &.medium {
+    top: $unit * 2;
+    left: $unit * 4;
+  }
+
+  &.small {
+    top: $unit;
+    left: $unit * 0.5;
+  }
+
+  z-index: $z-index-level-1;
+
+  .legend-values {
+    position: absolute;
+    top: 0;
+
+    .legend-value {
+      font-family: 'Barlow', sans-serif;
+      width: $unit * 2.7;
+      margin-top: $unit * -0.5;
+      text-align: right;
+      font-size: 11px;
+      position: absolute;
+      left: 0;
+      color: $secondary-color;
+    }
+  }
+
+  .unit-values {
+    color: $secondary-color;
+    font-family: 'Barlow', sans-serif;
+    font-size: 11px;
+    margin-top: $unit * 0.8;
+  }
+}
+
+.northArrow {
+  position: absolute;
+
+  &.medium {
+    top: $unit * 2;
+    right: $unit * 4;
+  }
+
+  &.small {
+    top: $unit * 0.5;
+    right: $unit * 0.5;
+  }
+
+  // Note that the dropdown is 1300 and should go under.
+  z-index: $z-index-level-1;
+}

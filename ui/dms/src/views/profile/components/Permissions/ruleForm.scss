@@ -1,0 +1,21 @@
+@import 'Common/theme.scss';
+
+.users-permissions-container {
+  .permissions-input {
+    width: 100%;
+  }
+}
+
+label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: $outer-space-grey;
+}
+
+.site-permissions-field {
+  margin: $unit * 3 0;
+
+  label {
+    margin-bottom: $unit * 2;
+  }
+}

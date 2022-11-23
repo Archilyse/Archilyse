@@ -1,0 +1,491 @@
+version: 2.1
+orbs:
+  gcp-cli: circleci/gcp-cli@1.8.4
+  slack: circleci/slack@4.10.1
+
+parameters:
+  slack-status-branch:
+    type: string
+    default: 'develop'
+  python-image-tag:
+    type: string
+    default: 'cimg/python:3.10.5'
+  docker_version:
+    type: string
+    default: '20.10.11'
+  ubuntu_image:
+    type: string
+    default: 'ubuntu-2004:current'
+  percy_parallelism:
+    type: integer
+    default: 3
+
+# The tests are running in machine executors because the volumes to have artifacts or to store test results
+# for the distribution based on previous times etc, doesn't work with docker executors.
+executors:
+  archilyse-medium-ci-machine:
+    machine:
+      image: << pipeline.parameters.ubuntu_image >>
+      docker_layer_caching: true
+    resource_class: medium
+  archilyse-large-ci-machine:
+    machine:
+      image: << pipeline.parameters.ubuntu_image >>
+    resource_class: large
+
+dockerhub_auth: &dockerhub_auth
+  auth:
+    username: ${DOCKERHUB_USERNAME}
+    password: ${DOCKERHUB_PASSWORD}
+
+develop_only: &develop_only
+  filters:
+    branches:
+      only: develop
+
+ignore_develop: &ignore_develop
+  filters:
+    branches:
+      ignore:
+        - develop
+
+slack_error_message: &slack_error_message
+  slack/notify:
+    event: fail
+    channel: ${SLACK_STATUS_CHANNEL_ID}
+    branch_pattern: << pipeline.parameters.slack-status-branch >>
+
+commands:
+  step_auth_gcloud:
+    description: Authenticate against gcloud
+    steps:
+      - run: export CLOUDSDK_PTHON=$(which python2) && bash .circleci/auth_gcloud.sh
+
+  step_copy_env_vars:
+    description: Copying variables to env file
+    steps:
+      - run: bash .circleci/env_vars_to_docker_env.sh
+
+  step_pull_or_build_base_image:
+    description: Pull or build base image
+    steps:
+      - run: bash .circleci/pull_or_build_base_image.sh
+
+  step_bump_up_base_fe_version:
+    description: Bump up base fe version if needed
+    steps:
+      - run: bash .circleci/bump_up_base_fe_version.sh
+
+  step_pull_or_build_base_fe_image:
+    description: Pull or build base image
+    steps:
+      - run: bash .circleci/pull_or_build_base_fe_image.sh
+
+  step_docker_compose_pull:
+    description: Docker compose pull
+    steps:
+      - run: |
+          docker login -u ${DOCKERHUB_USERNAME} -p ${DOCKERHUB_PASSWORD}
+          cd docker && docker-compose pull
+
+  step_docker_pull_pr_images:
+    description: Pull PR images from the build step
+    steps:
+      - run: bash .circleci/docker_tag_pull.sh
+
+  split_tests:
+    description: 'Reusable command to split tests'
+    parameters:
+      type_of_test:
+        type: string
+    steps:
+      - run: |
+          source docker/.env && \
+          circleci tests glob "tests/<< parameters.type_of_test >>/test_*" | circleci tests split --split-by=timings --timings-type=classname > $TEST_SPLITTING_FILE
+
+  step_docker_logs_to_tmp:
+    description: Dump docker logs into a file for later push as artifact
+    steps:
+      - run:
+          command: |
+            make docker_logs_full >> /tmp/docker_logs.txt
+          when: always
+
+  python_ci_requirements:
+    steps:
+      - run:
+          name: install ci requirements
+          command: pip3 install -r ci_requirements.txt
+jobs:
+  ansible_slam:
+    docker:
+      - image: << pipeline.parameters.python-image-tag >>
+        <<: *dockerhub_auth
+
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: << pipeline.parameters.docker_version >>
+      - gcp-cli/install
+      - step_auth_gcloud
+      - step_copy_env_vars
+      - run:
+          command: bash .circleci/deploy_slam.sh
+      - slack/notify:
+          channel: "engineering, circle-ci"
+          event: pass
+          custom: |
+            {
+            	"blocks": [
+            		{
+            			"type": "header",
+            			"text": {
+            				"type": "plain_text",
+            				"text": "Deployment Successful!!! :tada:",
+            				"emoji": true
+            			}
+            		},
+            		{
+            			"type": "section",
+            			"fields": [
+            				{
+            					"type": "mrkdwn",
+            					"text": "*Project*: $CIRCLE_PROJECT_REPONAME"
+            				},
+            				{
+            					"type": "mrkdwn",
+            					"text": "*When*: $(date +'%m/%d/%Y %T')"
+            				},
+            				{
+            					"type": "mrkdwn",
+            					"text": "*PR*: $SLAM_VERSION"
+            				},
+            				{
+            					"type": "mrkdwn",
+            					"text": "*COMMIT*: $SLAM_COMMIT_VERSION"
+            				},
+            				{
+            					"type": "mrkdwn",
+            					"text": "*Author*: $CIRCLE_USERNAME"
+            				}
+            			],
+            			"accessory": {
+            				"type": "image",
+            				"image_url": "https://assets.brandfolder.com/otz5mn-bw4j2w-6jzqo8/original/circle-logo-badge-black.png",
+            				"alt_text": "CircleCI logo"
+            			}
+            		},
+            		{
+            			"type": "actions",
+            			"elements": [
+            				{
+            					"type": "button",
+            					"text": {
+            						"type": "plain_text",
+            						"text": "View Job"
+            					},
+            					"url": "${CIRCLE_BUILD_URL}"
+            				}
+            			]
+            		}
+            	]
+            }
+      - slack/notify:
+          channel: ${SLACK_STATUS_CHANNEL_ID}
+          event: fail
+          mentions: '@tech'
+          template: basic_fail_1
+
+  docker_registry_housekeeping:
+    docker:
+      - image: << pipeline.parameters.python-image-tag >>
+        <<: *dockerhub_auth
+    resource_class: small
+    steps:
+      - checkout
+      - gcp-cli/install
+      - step_auth_gcloud
+      - run:
+          command: make housekeeping_docker_registry || true
+
+  gcs_bucket_housekeeping:
+    docker:
+      - image: << pipeline.parameters.python-image-tag >>
+        <<: *dockerhub_auth
+    resource_class: small
+    steps:
+      - checkout
+      - gcp-cli/install
+      - step_auth_gcloud
+      - run:
+          command: gsutil ls -p $(< docker/.env.local grep GCP_PROJECT_ID | cut -d "=" -f 2)  | grep gs://test_*  | xargs -n 1 gsutil rm -r
+
+  python_static_analysis:
+    docker:
+      - image: << pipeline.parameters.python-image-tag >>
+        <<: *dockerhub_auth
+    steps:
+      - checkout
+      - python_ci_requirements
+      - run:
+          name: Code checks
+          command: make static_analysis
+
+  js_static_analysis:
+    docker:
+      - image: node:14.20.0
+        <<: *dockerhub_auth
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: install ci requirements fe
+          command: make install_lint_requirements
+      - run:
+          name: Code checks FE
+          command: make static_analysis_fe
+
+  build:
+    machine:
+      image: << pipeline.parameters.ubuntu_image >>
+      docker_layer_caching: true
+    resource_class: xlarge
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - b4:5f:a6:2d:61:77:13:e8:e8:82:66:fe:25:02:d2:39
+      - gcp-cli/install
+      - step_auth_gcloud
+      - step_copy_env_vars
+      - step_pull_or_build_base_image
+      - step_bump_up_base_fe_version
+      - step_pull_or_build_base_fe_image
+      - run:
+          command: bash .circleci/docker_tag_pull.sh || true
+      - python_ci_requirements
+      - run:
+          name: Build containers
+          command: make build
+      - run: bash .circleci/docker_tag_push.sh
+
+  ci_feunittests:
+    docker:
+      - image: << pipeline.parameters.python-image-tag >>
+        <<: *dockerhub_auth
+    resource_class: medium
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: << pipeline.parameters.docker_version >>
+          docker_layer_caching: true
+      - gcp-cli/install
+      - step_auth_gcloud
+      - step_copy_env_vars
+      - step_docker_compose_pull
+      - step_docker_pull_pr_images
+      - run:
+          name: Run FE unittests
+          command: make ci_fe_all_unittests
+      - *slack_error_message
+
+  ci_e2e_browser_tests:
+    executor: archilyse-medium-ci-machine
+    parallelism: 5
+    steps:
+      - checkout
+      - split_tests:
+          type_of_test: 'e2e_browser'
+      - gcp-cli/install
+      - step_auth_gcloud
+      - run:
+          name: Overwrite gcloud bucket name
+          command: |
+            echo "export GCLOUD_BUCKET=test_${CIRCLE_SHA1}_${CIRCLE_NODE_INDEX} GCLOUD_CLIENT_BUCKET_PREFIX=test_client_${CIRCLE_SHA1}_${CIRCLE_NODE_INDEX}_">> $BASH_ENV && \
+            echo "export GCLOUD_BUCKET=test_${CIRCLE_SHA1}_${CIRCLE_NODE_INDEX} GCLOUD_CLIENT_BUCKET_PREFIX=test_client_${CIRCLE_SHA1}_${CIRCLE_NODE_INDEX}_"
+      - step_copy_env_vars
+      - step_docker_compose_pull
+      - step_docker_pull_pr_images
+      - run:
+          name: Run tests
+          command: make ci_e2e_browser_tests
+      - step_docker_logs_to_tmp
+      - store_artifacts:
+          path: /tmp/splinter_images
+      - store_artifacts:
+          path: /tmp/docker_logs.txt
+      - store_test_results:
+          path: tests/
+      - *slack_error_message
+
+  ci_e2e_python_tests:
+    executor: archilyse-medium-ci-machine
+    parallelism: 1
+    steps:
+      - checkout
+      - split_tests:
+          type_of_test: 'e2e_python'
+      - gcp-cli/install
+      - step_auth_gcloud
+      - run:
+          name: Overwrite gcloud bucket name
+          command: |
+            echo "export GCLOUD_BUCKET=test_python_${CIRCLE_SHA1}_${CIRCLE_NODE_INDEX} GCLOUD_CLIENT_BUCKET_PREFIX=test_python_client_${CIRCLE_SHA1}_${CIRCLE_NODE_INDEX}_">> $BASH_ENV && \
+            echo "export GCLOUD_BUCKET=test_python_${CIRCLE_SHA1}_${CIRCLE_NODE_INDEX} GCLOUD_CLIENT_BUCKET_PREFIX=test_python_client_${CIRCLE_SHA1}_${CIRCLE_NODE_INDEX}_"
+      - step_copy_env_vars
+      - step_docker_compose_pull
+      - step_docker_pull_pr_images
+      - run:
+          name: Run tests
+          command: make ci_e2e_python_tests
+      - step_docker_logs_to_tmp
+      - store_artifacts:
+          path: /tmp/docker_logs.txt
+      - store_test_results:
+          path: tests/
+      - *slack_error_message
+
+  ci_percytests:
+    executor: archilyse-medium-ci-machine
+    parallelism: << pipeline.parameters.percy_parallelism >>
+    steps:
+      - checkout
+      - split_tests:
+          type_of_test: 'percy_tests'
+      - gcp-cli/install
+      - step_auth_gcloud
+      - run:
+          name: Overwrite gcloud bucket name
+          command: |
+            echo "export GCLOUD_BUCKET=test_percy_${CIRCLE_SHA1}_${CIRCLE_NODE_INDEX} GCLOUD_CLIENT_BUCKET_PREFIX=test_percy_client_${CIRCLE_SHA1}_${CIRCLE_NODE_INDEX}_" >> $BASH_ENV && \
+            echo "export GCLOUD_BUCKET=test_percy_${CIRCLE_SHA1}_${CIRCLE_NODE_INDEX} GCLOUD_CLIENT_BUCKET_PREFIX=test_percy_client_${CIRCLE_SHA1}_${CIRCLE_NODE_INDEX}_" &&
+            echo "export PERCY_PARALLEL_TOTAL=<< pipeline.parameters.percy_parallelism >> PERCY_PARALLEL_NONCE=${CIRCLE_BUILD_NUM}" >> $BASH_ENV
+      - step_copy_env_vars
+      - step_docker_compose_pull
+      - step_docker_pull_pr_images
+      - run:
+          name: Run tests
+          command: make ci_percytests
+      - step_docker_logs_to_tmp
+      - store_artifacts:
+          path: /tmp/splinter_images
+      - store_artifacts:
+          path: /tmp/docker_logs.txt
+      - store_test_results:
+          path: tests/
+      - *slack_error_message
+
+  ci_integrationtests:
+    executor: archilyse-large-ci-machine
+    parallelism: 1
+    steps:
+      - checkout
+      - split_tests:
+          type_of_test: 'integration'
+      - gcp-cli/install
+      - step_auth_gcloud
+      - step_copy_env_vars
+      - step_docker_compose_pull
+      - step_docker_pull_pr_images
+      - run:
+          name: Run integration tests
+          command: make ci_integrationtests
+      - store_artifacts:
+          path: /tmp/image_differences
+      - store_test_results:
+          path: tests/
+      - *slack_error_message
+
+  ci_unittests:
+    executor: archilyse-large-ci-machine
+    parallelism: 1
+    steps:
+      - checkout
+      - split_tests:
+          type_of_test: 'unittests'
+      - gcp-cli/install
+      - step_auth_gcloud
+      - step_copy_env_vars
+      - step_docker_compose_pull
+      - step_docker_pull_pr_images
+      - run:
+          name: Run unittests
+          command: make ci_unittests
+      - run:
+          name: Run migration tests
+          command: make ci_migration_tests
+      - store_artifacts:
+          path: /tmp/image_differences
+      - store_test_results:
+          path: tests/
+      - *slack_error_message
+
+workflows:
+  version: 2
+  ci_checks:
+    jobs:
+      - python_static_analysis:
+          <<: *ignore_develop
+      - js_static_analysis:
+          <<: *ignore_develop
+      - build:
+          <<: *ignore_develop
+      - ci_feunittests:
+          requires:
+            - build
+          <<: *ignore_develop
+      - ci_unittests:
+          requires:
+            - build
+          <<: *ignore_develop
+      - ci_integrationtests:
+          requires:
+            - build
+          <<: *ignore_develop
+      - ci_e2e_python_tests:
+          requires:
+            - build
+          <<: *ignore_develop
+      - ci_e2e_browser_tests:
+          requires:
+            - build
+          <<: *ignore_develop
+      - ci_percytests:
+          requires:
+            - build
+            - ci_unittests
+            - ci_integrationtests
+            - ci_feunittests
+          <<: *ignore_develop
+
+  nightly:
+    triggers:
+      - schedule:
+          cron: '0 0 * * 1-5'
+          <<: *develop_only
+    jobs:
+      - docker_registry_housekeeping
+      - gcs_bucket_housekeeping
+  deploy:
+    jobs:
+      - approve_deployment:
+          type: approval
+          <<: *develop_only
+      - ansible_slam:
+          requires:
+            - approve_deployment
+          <<: *develop_only
+  coverage_develop:
+    jobs:
+      - ci_feunittests:
+          <<: *develop_only
+      - ci_unittests:
+          <<: *develop_only
+      - ci_integrationtests:
+          <<: *develop_only
+      - ci_e2e_python_tests:
+          <<: *develop_only
+      - ci_e2e_browser_tests:
+          <<: *develop_only
+      - ci_percytests:
+          <<: *develop_only

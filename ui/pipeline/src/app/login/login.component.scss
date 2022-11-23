@@ -1,0 +1,26 @@
+.app-login {
+  min-width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.loginFormForm {
+  margin-top: 50px;
+}
+
+.userInput,
+.passwordInput {
+  display: inline-block;
+  width: 300px;
+}
+
+.formLine {
+  margin-top: 20px;
+}
+
+button,
+label {
+  width: 300px;
+}

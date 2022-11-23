@@ -1,0 +1,19 @@
+ignore:
+  - "tests"
+  - "bin"
+  - "docker"
+  - "ifc_reader/ifcopenshell"
+
+comment:
+  layout: "reach, diff"
+  behavior: default
+  require_changes: false
+  after_n_builds: 13 # 7 of FE + BE (1 unitest, 1 integration, 4 e2e)
+
+coverage:
+  precision: 2
+  round: down
+  range: "70...100"
+  status:
+    project: off
+    patch: off

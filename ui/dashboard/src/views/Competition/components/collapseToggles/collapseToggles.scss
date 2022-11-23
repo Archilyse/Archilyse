@@ -1,0 +1,31 @@
+@import '../../../../common/theme.scss';
+
+$dark-grey: #e4e4e4;
+
+.collapse-toggles-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: $unit;
+
+  .MuiToggleButtonGroup-root {
+    display: flex;
+    flex: 1;
+  }
+
+  .MuiToggleButton-root {
+    flex-grow: 1;
+    padding: $unit * 0.8 $unit * 1.5;
+    border: none;
+    border-bottom: 2px solid $accent-color;
+    border-radius: 0;
+    text-transform: none;
+
+    &:hover {
+      background-color: $dark-grey;
+    }
+
+    &.Mui-selected {
+      border-bottom-color: $secondary-color;
+    }
+  }
+}

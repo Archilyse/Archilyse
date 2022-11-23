@@ -1,0 +1,11 @@
+@import '../common/theme.scss';
+
+.delete-dialog {
+  #alert-dialog-description {
+    padding: $unit;
+    font-family: $main-font;
+  }
+  .delete-button {
+    width: $unit * 15;
+  }
+}

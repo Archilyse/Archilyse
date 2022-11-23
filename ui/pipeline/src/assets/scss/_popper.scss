@@ -1,0 +1,29 @@
+@import 'colors';
+
+.ngxp__container {
+  text-transform: none !important;
+
+  &.arch {
+    border: 1px solid $blue;
+    background: $blue;
+    color: $white;
+    font-weight: 400;
+    font-size: 13px;
+    box-shadow: none;
+    padding: 8px 16px;
+    z-index: 20;
+
+    .ngxp__arrow {
+      border-color: $blue;
+    }
+  }
+}
+
+.mat-snack-bar-container {
+  margin: 0 0 24px 0 !important;
+  background: rgba(0, 0, 0, 0.75) !important;
+}
+
+.customWarningQa {
+  width: 400px;
+}

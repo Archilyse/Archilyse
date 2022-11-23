@@ -1,0 +1,48 @@
+@import '../common/theme.scss';
+@import '../common/mixins.scss';
+
+$left-sidebar-width: 240px;
+$left-sidebar-width-collapsed: 90px;
+
+@keyframes hide {
+  0% {
+    display: block;
+    opacity: 1;
+  }
+  99% {
+    display: block;
+  }
+  100% {
+    display: none;
+    opacity: 0;
+  }
+}
+
+.left-sidebar-container {
+  height: 100%;
+  width: $left-sidebar-width;
+  box-sizing: border-box;
+  background-color: $outer-space-grey;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.5s;
+
+  .drawer-button {
+    display: flex;
+    padding: $unit * 3;
+    color: $white;
+    justify-content: left;
+    cursor: pointer;
+  }
+
+  &.collapsed {
+    width: $left-sidebar-width-collapsed;
+
+    #title {
+      span {
+        animation: hide 0.2s linear;
+        animation-fill-mode: forwards;
+      }
+    }
+  }
+}

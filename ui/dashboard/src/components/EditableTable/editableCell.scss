@@ -1,0 +1,47 @@
+@import '../../common/theme.scss';
+
+.editable-cell {
+  > .editable-cell-remove {
+    @include normalized-button();
+    vertical-align: middle;
+    opacity: 0;
+  }
+
+  &:hover > .editable-cell-remove {
+    opacity: 1;
+  }
+}
+
+.editable-cell-value {
+  &:empty:after {
+    content: 'Double click to edit';
+    color: $light-grey-color;
+    font-size: $smaller-font-size;
+    font-weight: 400;
+  }
+
+  .placeholder {
+    color: $light-grey-color;
+    font-size: $smaller-font-size;
+    font-weight: 400;
+    max-width: $unit * 10;
+    display: inline-flex;
+    white-space: normal;
+    line-height: $unit * 2;
+  }
+}
+
+.editable-cell-input {
+  display: inline-block;
+  background-color: transparent;
+  border: none;
+  border-bottom: $unit / 10 solid black;
+  color: black;
+  font-size: $base-font-size;
+  font-weight: 400;
+  font-family: Barlow, sans-serif;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+  white-space: nowrap;
+}

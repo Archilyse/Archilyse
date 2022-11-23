@@ -1,0 +1,11 @@
+{
+  "threshold": 0.1,
+  "reporters": ["console"],
+  "format": ["typescript","scss"],
+  "source": "src",
+  "blame": true,
+  "absolute": true,
+  "gitignore": true,
+  "minTokens": 50,
+  "minLines": 30
+}

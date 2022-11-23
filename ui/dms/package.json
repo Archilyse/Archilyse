@@ -1,0 +1,16 @@
+{
+  "name": "dms",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build --base=/dms-assets/",
+    "test": "jest",
+    "lint": "eslint src/",
+    "update-snapshots": "npm run test -- -u"
+  },
+  "dependencies": {
+    "react-virtualized-auto-sizer": "1.0.5",
+    "react-window": "1.8.6"
+  }
+}

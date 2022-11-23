@@ -1,0 +1,16 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/app",
+    "types": []
+  },
+  "exclude": [
+    "test.ts",
+    "**/*.spec.ts",
+    "**/*.mock.ts",
+    "environments/environment.prod.ts",
+    "app/_shared-libraries/TestingConstants.ts",
+    "app/_shared-libraries/TestingHelpers.ts"
+  ],
+  "include": ["**/*.ts", "./polyfills.ts", "./custom.d.ts"]
+}

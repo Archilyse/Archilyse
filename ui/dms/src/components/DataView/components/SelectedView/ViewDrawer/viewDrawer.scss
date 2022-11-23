@@ -1,0 +1,71 @@
+@import 'Common/theme.scss';
+
+$view-drawer-width: 393px;
+$view-drawer-height: 460px; //Increased to accommodate the map switch at the bottom
+$view-drawer-min-height: 400px;
+
+// as <Map /> takes full height of a container we should specify a value
+// for not overlapping a widget's tab
+$view-map-height: 400px;
+
+.view-drawer {
+  height: $view-drawer-height;
+  min-height: $view-drawer-min-height;
+  overflow: hidden;
+
+  .tabs .tab-content {
+    padding: $unit;
+  }
+
+  .map-container {
+    height: $view-map-height;
+  }
+
+  .view-drawer-simulation-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .toggles {
+      display: flex;
+      width: 100%;
+
+      .map-switch-container {
+        border-bottom: 1px solid $bright-gray;
+        padding: $unit * 2 0;
+        color: $outer-space-grey;
+        font-size: 1em;
+        font-weight: 600;
+
+        #switch-title {
+          padding-left: $unit * 0.5;
+        }
+      }
+    }
+  }
+
+  @media #{$large-screen} {
+    height: 650px;
+    width: 100% !important;
+
+    .map-container {
+      height: 610px;
+    }
+  }
+
+  .unit-floorplan img {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+  }
+
+  .loading-indicator {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}

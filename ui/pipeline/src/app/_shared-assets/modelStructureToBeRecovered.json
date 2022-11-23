@@ -1,0 +1,261 @@
+{
+  "scale_factor": 0.02,
+  "basic_features": {},
+  "children": [
+    {
+      "children": [
+        {
+          "angle": 0.0,
+          "children": [
+            {
+              "angle": 0.0,
+              "children": [],
+              "footprint": {
+                "coordinates": [
+                  [
+                    [-1.53, 1.4],
+                    [-1.53, -1.4],
+                    [1.53, -1.4],
+                    [1.53, 1.4],
+                    [-1.53, 1.4]
+                  ]
+                ],
+                "type": "Polygon"
+              },
+              "height": [0.0, 25],
+              "id": "20e7876a-07bd-11ea-83f4-0242ac120005",
+              "position": { "coordinates": [0.0, 0.0], "type": "Point" },
+              "type": "AreaType.NOT_DEFINED"
+            }
+          ],
+          "footprint": {
+            "coordinates": [
+              [
+                [-1.53, 1.4],
+                [1.53, 1.4],
+                [1.53, -1.4],
+                [-1.53, -1.4],
+                [-1.53, 1.4]
+              ]
+            ],
+            "type": "Polygon"
+          },
+          "has_passage_entrance": null,
+          "id": "20d779e2-07bd-11ea-83f4-0242ac120005",
+          "is_public": 0,
+          "position": { "coordinates": [3.37, -3.26], "type": "Point" },
+          "room_shapes": {},
+          "sun_simulation": {},
+          "type": "SpaceType.NOT_DEFINED",
+          "view_simulation": {}
+        },
+        {
+          "angle": 0.0,
+          "children": [
+            {
+              "angle": 0.0,
+              "children": [],
+              "footprint": {
+                "coordinates": [
+                  [
+                    [-1.74, -1.4],
+                    [1.74, -1.4],
+                    [1.74, 1.4],
+                    [-1.74, 1.4],
+                    [-1.74, -1.4]
+                  ]
+                ],
+                "type": "Polygon"
+              },
+              "height": [0.0, 25],
+              "id": "20e7a4ca-07bd-11ea-83f4-0242ac120005",
+              "position": { "coordinates": [0.0, 0.0], "type": "Point" },
+              "type": "AreaType.NOT_DEFINED"
+            }
+          ],
+          "footprint": {
+            "coordinates": [
+              [
+                [-1.74, -1.4],
+                [-1.74, 1.4],
+                [1.74, 1.4],
+                [1.74, -1.4],
+                [-1.74, -1.4]
+              ]
+            ],
+            "type": "Polygon"
+          },
+          "has_passage_entrance": null,
+          "id": "20d77c08-07bd-11ea-83f4-0242ac120005",
+          "is_public": 0,
+          "position": { "coordinates": [6.69, -3.26], "type": "Point" },
+          "room_shapes": {},
+          "sun_simulation": {},
+          "type": "SpaceType.NOT_DEFINED",
+          "view_simulation": {}
+        },
+        {
+          "angle": 0.0,
+          "children": [],
+          "footprint": {
+            "coordinates": [
+              [
+                [0.018002581165774245, 1.4495297998118986],
+                [0.018002581165774245, -1.4495297998117849],
+                [-0.018002581165774245, -1.4495297998117849],
+                [-0.018002581165774245, 1.4495297998118986],
+                [0.018002581165774245, 1.4495297998118986]
+              ]
+            ],
+            "type": "Polygon"
+          },
+          "height": [0.0, 25],
+          "id": "20c5c9ea-07bd-11ea-83f4-0242ac120005",
+          "is_outside": 1,
+          "is_supporting": 1,
+          "position": { "coordinates": [1.81, -3.29], "type": "Point" },
+          "type": "SeparatorType.WALL"
+        },
+        {
+          "angle": 0.0,
+          "children": [
+            {
+              "angle": 0.0,
+              "footprint": {
+                "coordinates": [
+                  [
+                    [0.01890271022421075, 0.40000000000009095],
+                    [-0.018902710223983377, 0.40000000000009095],
+                    [-0.018902710223983377, -0.39999999999997726],
+                    [0.01890271022421075, -0.39999999999997726],
+                    [0.01890271022421075, 0.40000000000009095]
+                  ]
+                ],
+                "type": "Polygon"
+              },
+              "height": [0.0, 180528592051777700000000000000000000000],
+              "id": "20c5f014-07bd-11ea-83f4-0242ac120005",
+              "is_public": 0,
+              "opening_points": [],
+              "position": { "coordinates": [0.0, -0.23], "type": "Point" },
+              "type": "OpeningType.DOOR"
+            }
+          ],
+          "footprint": {
+            "coordinates": [
+              [
+                [0.018002581165774245, 1.4495297998120122],
+                [0.018002581165774245, -1.4495297998116712],
+                [-0.018002581165774245, -1.4495297998116712],
+                [-0.018002581165774245, 1.4495297998120122],
+                [0.018002581165774245, 1.4495297998120122]
+              ]
+            ],
+            "type": "Polygon"
+          },
+          "height": [0.0, 25],
+          "id": "20c5d4da-07bd-11ea-83f4-0242ac120005",
+          "is_outside": 1,
+          "is_supporting": 1,
+          "position": { "coordinates": [8.46, -3.27], "type": "Point" },
+          "type": "SeparatorType.WALL"
+        },
+        {
+          "angle": 0.0,
+          "children": [
+            {
+              "angle": 0.0,
+              "footprint": {
+                "coordinates": [
+                  [
+                    [-0.47740435246373636, 0.01890271022421075],
+                    [-0.47740435246373636, -0.018902710223983377],
+                    [0.4774043524632816, -0.018902710223983377],
+                    [0.4774043524632816, 0.01890271022421075],
+                    [-0.47740435246373636, 0.01890271022421075]
+                  ]
+                ],
+                "type": "Polygon"
+              },
+              "height": [81237866423299960000000000000000000000, 225660740064722130000000000000000000000],
+              "id": "20d6225e-07bd-11ea-83f4-0242ac120005",
+              "is_public": 0,
+              "opening_points": [],
+              "position": { "coordinates": [-1.21, 0.0], "type": "Point" },
+              "type": "OpeningType.WINDOW_ENVELOPE"
+            }
+          ],
+          "footprint": {
+            "coordinates": [
+              [
+                [-3.3520806130675282, 0.018002581165774245],
+                [3.3520806130675282, 0.018002581165774245],
+                [3.3520806130675282, -0.018002581165774245],
+                [-3.3520806130675282, -0.018002581165774245],
+                [-3.3520806130675282, 0.018002581165774245]
+              ]
+            ],
+            "type": "Polygon"
+          },
+          "height": [0.0, 25],
+          "id": "20c5bfd6-07bd-11ea-83f4-0242ac120005",
+          "is_outside": 1,
+          "is_supporting": 1,
+          "position": { "coordinates": [5.1, -4.68], "type": "Point" },
+          "type": "SeparatorType.WALL"
+        },
+        {
+          "angle": 0.0,
+          "children": [],
+          "footprint": {
+            "coordinates": [
+              [
+                [0.01800258116554687, 1.4495297998120122],
+                [0.01800258116554687, -1.4495297998117849],
+                [-0.01800258116600162, -1.4495297998117849],
+                [-0.01800258116600162, 1.4495297998120122],
+                [0.01800258116554687, 1.4495297998120122]
+              ]
+            ],
+            "type": "Polygon"
+          },
+          "height": [0.0, 25],
+          "id": "20c5ddfe-07bd-11ea-83f4-0242ac120005",
+          "is_outside": 1,
+          "is_supporting": 1,
+          "position": { "coordinates": [4.93, -3.27], "type": "Point" },
+          "type": "SeparatorType.WALL"
+        },
+        {
+          "angle": 0.0,
+          "children": [],
+          "footprint": {
+            "coordinates": [
+              [
+                [-3.3520806130675282, 0.01800258116566056],
+                [3.3520806130675282, 0.01800258116566056],
+                [3.3520806130675282, -0.018002581165887932],
+                [-3.3520806130675282, -0.018002581165887932],
+                [-3.3520806130675282, 0.01800258116566056]
+              ]
+            ],
+            "type": "Polygon"
+          },
+          "height": [0.0, 25],
+          "id": "20c5e6fa-07bd-11ea-83f4-0242ac120005",
+          "is_outside": 1,
+          "is_supporting": 1,
+          "position": { "coordinates": [5.14, -1.84], "type": "Point" },
+          "type": "SeparatorType.WALL"
+        }
+      ],
+      "floor_number": "20d77e88-07bd-11ea-83f4-0242ac120005",
+      "height": null,
+      "is_complete": 1,
+      "position": { "coordinates": [1260.38, -614.19], "type": "Point" },
+      "type": "floor"
+    }
+  ],
+  "id": "20d77dca-07bd-11ea-83f4-0242ac120005",
+  "type": "LayoutType.NOT_DEFINED"
+}

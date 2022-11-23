@@ -1,0 +1,63 @@
+<div class="block bottomPosition">
+  <div class="btn-block ">
+    <button
+      id="save_button"
+      *ngIf="!saving"
+      (click)="save_parent()"
+      [popper]="saveButtonTooltip"
+      [disabled]="disabled"
+      type="button"
+      [ngClass]="extraText && !extraTextNextColumn ? 'halfColumn' : ''"
+      class="btn btn-success saveButton"
+    >
+      {{saveText}}
+    </button>
+    <button
+      *ngIf="saving"
+      type="button"
+      [ngClass]="extraText && !extraTextNextColumn ? 'halfColumn' : ''"
+      class="btn btn-dark saveButton"
+      [disabled]="saving"
+    >
+      {{savingText?savingText:'Saving...'}}
+    </button>
+
+
+    <button
+      id="validate_button"
+      *ngIf="!saving && extraText"
+      (click)="extra_parent()"
+      [popper]="extraButtonTooltip"
+      [disabled]="validateDisabled"
+
+      type="button"
+      class="btn btn-secondary extraButton halfColumn"
+      [ngClass]="extraTextNextColumn ? 'secondRow' : ''"
+    >
+      {{extraText}}
+    </button>
+    <button
+      *ngIf="saving && extraText"
+      type="button"
+      class="btn btn-dark extraButton halfColumn"
+      [ngClass]="extraTextNextColumn ? 'secondRow' : ''"
+      [disabled]="saving"
+    >
+      Saving...
+    </button>
+
+
+  </div>
+  <button
+    id="help_button"
+    type="button"
+    class="btn btn-info half-column helpButton"
+    (click)="openDialog_parent()"
+    [popper]="helpButtonTooltip"
+  >
+    Help
+  </button>
+</div>
+<popper-content #saveButtonTooltip >Save current status</popper-content>
+<popper-content #extraButtonTooltip >{{extraTextToolTip}}</popper-content>
+<popper-content #helpButtonTooltip >Instructions and tooltips</popper-content>

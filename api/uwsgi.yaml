@@ -1,0 +1,15 @@
+uwsgi:
+  module: slam_api.wsgi:app
+  processes: $(SLAM_API_UWSGI_PROCESSES)
+  enable-threads: true
+  threads: 2
+  protocol: http
+  max-worker-lifetime: 350 # seconds
+  disable-logging: true
+  #
+  # NOTE: wsgi.file_wrapper is an optimization of the WSGI standard. In some corner
+  # case it can raise an error. For example when returning an in-memory bytes buffer
+  # (io.Bytesio) in Python 3.5. See this issue. You can disable it by setting the option
+  # wsgi-disable-file-wrapper to true
+  #
+  wsgi-disable-file-wrapper: true

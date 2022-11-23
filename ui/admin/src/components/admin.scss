@@ -1,0 +1,58 @@
+@import 'Common/theme.scss';
+
+.admin-view {
+  width: 99%;
+  height: 100%;
+
+  .data-header {
+    display: flex;
+    width: 70%;
+    align-self: flex-start;
+    .controls {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: baseline;
+    }
+  }
+
+  h2 {
+    align-self: start;
+    width: 10% !important;
+  }
+
+  .table-top {
+    display: flex;
+    width: 99%;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: baseline;
+  }
+
+  .add-icon,
+  .expand-icon {
+    position: absolute;
+    top: $unit * 15; /* Put it better at the top...In small screens, this breaks the test because it is placed just in front of the actions */
+    right: $unit * 6;
+    z-index: 9999;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+
+    .MuiFab-root {
+      background-color: $website-brand-color;
+      color: white;
+    }
+  }
+
+  .expand-icon {
+    right: $unit * 13;
+  }
+
+  .table-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: $unit * 2;
+  }
+}

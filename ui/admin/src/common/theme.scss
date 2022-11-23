@@ -1,0 +1,35 @@
+@import 'archilyse-ui-components/dist/theme.scss';
+
+$hovered-color: rgba(42, 121, 161, 0.1);
+
+html {
+  @media #{$extra-large-screen} {
+    font-size: 16px;
+  }
+}
+
+button,
+.button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+}
+
+button.small {
+  width: 166.63px;
+}
+button.large {
+  width: 315px;
+}
+
+.slider-separator {
+  border-top: 1px solid $background-color;
+  width: 125%;
+  margin-left: -30px;
+  margin-right: -30px;
+
+  &.last-separator {
+    margin-bottom: $unit;
+  }
+}

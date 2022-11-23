@@ -1,0 +1,242 @@
+@import '../../../../common/theme.scss';
+
+$medium-row-height: 44px;
+$large-row-height: 52px;
+$field-column-min-width: 120px;
+$field-column-max-width: 300px;
+$data-column-min-width: 80px;
+$data-column-width: 128px;
+$data-column-max-width: 160px;
+
+$base-padding: $unit * 1.6;
+$left-padding: $unit * 2.5;
+$right-border: 1;
+
+$light-grey: #f1f1f1;
+$dark-grey: #e4e4e4;
+$yellow: #f7cc46;
+
+$darker-text: #3d3d3d;
+$dark-text: #636363;
+
+.competition-tool-table-container {
+  overflow: auto;
+}
+
+// BASE LAYOUT
+.competition-tool-table {
+  position: relative;
+  width: 100%;
+
+  thead > tr:first-child {
+    height: $large-row-height;
+  }
+
+  tr {
+    height: $medium-row-height;
+  }
+
+  .cell {
+    // applied only for Firefox since <table> has 'content-box' box model by defualt
+    @supports (-moz-appearance: none) {
+      // 20 is unknown value, Firefox adds it for some reasons
+      min-width: $data-column-min-width - $right-border - 20;
+      width: $data-column-max-width - $right-border - 20;
+      max-width: $data-column-max-width - $right-border - 20;
+    }
+
+    min-width: $data-column-min-width;
+    width: $data-column-width;
+    max-width: $data-column-max-width;
+
+    text-align: center;
+  }
+
+  .cell.field {
+    @supports (-moz-appearance: none) {
+      min-width: $field-column-max-width - ($base-padding * 2) - $right-border;
+      max-width: $field-column-max-width - ($base-padding * 2) - $right-border;
+    }
+
+    min-width: $field-column-max-width;
+    max-width: $field-column-max-width;
+
+    text-align: left;
+    padding-left: $base-padding;
+    padding-right: $base-padding;
+    white-space: pre-line;
+
+    position: sticky;
+    left: 0;
+  }
+
+  .cell.sub-subfield {
+    position: relative;
+  }
+
+  tr > .cell.sub-subfield-title {
+    @supports (-moz-appearance: none) {
+      min-width: $field-column-max-width - $left-padding - $base-padding - $right-border;
+      max-width: $field-column-max-width - $left-padding - $base-padding - $right-border;
+    }
+
+    padding: $unit $base-padding $unit $unit * 2.5;
+    line-height: $unit * 2;
+  }
+
+  th.cell {
+    position: sticky;
+    top: 0;
+  }
+  tr > th:first-child {
+    left: 0;
+  }
+  tr:last-child > th {
+    top: $large-row-height;
+  }
+  tr:last-child > th:not(:first-child) {
+    padding: 0 $unit;
+  }
+
+  .flag-container {
+    position: relative;
+  }
+
+  .data-feature-button-to-modal {
+    display: inline;
+  }
+}
+
+// LAYERS
+.competition-tool-table {
+  tr > th:first-child {
+    z-index: 2;
+  }
+  tr > td:first-child {
+    z-index: 1;
+  }
+  th.cell {
+    z-index: 1;
+  }
+}
+
+// BORDERS
+.competition-tool-table {
+  $dark-border-style: 1px solid black;
+  $light-border-style: 1px solid $accent-color;
+
+  border-collapse: separate;
+  border-spacing: 0;
+
+  * {
+    box-sizing: border-box;
+  }
+
+  td {
+    border-bottom: $light-border-style;
+  }
+
+  tr:first-child > td {
+    border-top: $light-border-style;
+  }
+  tr:last-child > td {
+    border-bottom: $light-border-style;
+  }
+  td:first-child {
+    border-right: $light-border-style;
+    border-left: $light-border-style;
+  }
+  td:last-child {
+    border-right: $light-border-style;
+  }
+}
+
+// BACKGROUND COLORS
+.competition-tool-table {
+  background-color: white;
+
+  thead {
+    tr:not(:first-child) th:first-child {
+      background-color: $dark-grey;
+    }
+
+    tr:first-child > .cell {
+      background-color: white;
+    }
+
+    .ranking {
+      th {
+        background-color: $dark-grey;
+      }
+      .winner {
+        background-color: $yellow;
+      }
+    }
+  }
+
+  .cell {
+    background-color: white;
+  }
+
+  .cell.field {
+    background-color: $dark-grey;
+  }
+
+  .cell.field.subfield {
+    background-color: $light-grey;
+  }
+
+  .cell.sub-subfield-title {
+    background-color: white;
+  }
+}
+
+// TEXT STYLES
+.competition-tool-table {
+  .cell {
+    color: $secondary-color;
+  }
+
+  .cell.sub-subfield-title {
+    font-weight: 400;
+  }
+
+  .cell.price {
+    padding: 0 $unit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  th:first-child,
+  td:first-child {
+    font-size: $unit * 1.4;
+  }
+
+  thead th:not(:first-child) {
+    color: $dark-text;
+    font-size: $unit * 1.4;
+  }
+
+  .position {
+    font-weight: 700;
+    font-size: $unit * 2;
+  }
+
+  td.subfield {
+    font-weight: 400;
+  }
+
+  td.bold {
+    font-weight: 600;
+  }
+
+  .data-feature-button-to-modal {
+    color: $secondary-color;
+    font-size: $unit * 1.4;
+    font-weight: 400;
+    font-family: inherit;
+    text-align: left;
+    text-decoration: underline;
+  }
+}

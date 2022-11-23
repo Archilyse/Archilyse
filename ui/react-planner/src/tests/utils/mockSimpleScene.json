@@ -1,0 +1,137 @@
+{
+  "layers": {
+    "layer-1": {
+      "lines": {
+        "1": {
+          "prototype": "lines",
+          "vertices": ["a", "b"],
+          "properties": {
+            "referenceLine": "OUTSIDE_FACE",
+            "height": { "value": 10.0, "unit": "cm" },
+            "width": { "value": 10.0, "unit": "cm" }
+          },
+          "selected": false,
+          "id": "1",
+          "coordinates": [
+            [
+              [9.071067811865476, -4.071067811865474],
+              [2.0, 3.0000000000000004],
+              [0.9999999999999999, 1.9999999999999998],
+              [8.071067811865476, -5.071067811865475],
+              [9.071067811865476, -4.071067811865474]
+            ]
+          ],
+          "type": "wall",
+          "name": "Wall",
+          "auxVertices": [
+            "62147675-c83e-4ed6-a3e4-0cbac31275ae",
+            "74b21dc4-471f-4cdb-92d8-83e365ac66f3",
+            "10a7af1a-8b94-4786-ae1f-968934a5f25d",
+            "681b8cf9-dfff-4748-a6c9-2654d35ec9ee"
+          ],
+          "holes": []
+        }
+      },
+      "areas": {},
+      "vertices": {
+        "10a7af1a-8b94-4786-ae1f-968934a5f25d": {
+          "lines": ["1"],
+          "prototype": "vertices",
+          "properties": {},
+          "x": 9.071067811865476,
+          "selected": false,
+          "y": -4.071067811865475,
+          "id": "10a7af1a-8b94-4786-ae1f-968934a5f25d",
+          "type": "",
+          "name": "Vertex"
+        },
+        "62147675-c83e-4ed6-a3e4-0cbac31275ae": {
+          "lines": ["1"],
+          "prototype": "vertices",
+          "properties": {},
+          "x": 5.535533905932738,
+          "selected": false,
+          "y": -0.5355339059327373,
+          "id": "62147675-c83e-4ed6-a3e4-0cbac31275ae",
+          "type": "",
+          "name": "Vertex"
+        },
+        "681b8cf9-dfff-4748-a6c9-2654d35ec9ee": {
+          "lines": ["1"],
+          "prototype": "vertices",
+          "properties": {},
+          "x": 8.071067811865476,
+          "selected": false,
+          "y": -5.071067811865475,
+          "id": "681b8cf9-dfff-4748-a6c9-2654d35ec9ee",
+          "type": "",
+          "name": "Vertex"
+        },
+        "74b21dc4-471f-4cdb-92d8-83e365ac66f3": {
+          "lines": ["1"],
+          "prototype": "vertices",
+          "properties": {},
+          "x": 4.535533905932738,
+          "selected": false,
+          "y": -1.5355339059327373,
+          "id": "74b21dc4-471f-4cdb-92d8-83e365ac66f3",
+          "type": "",
+          "name": "Vertex"
+        },
+        "a": {
+          "lines": ["1"],
+          "prototype": "vertices",
+          "properties": {},
+          "x": 1.0,
+          "selected": false,
+          "y": 2.0,
+          "id": "a",
+          "type": "",
+          "name": "Vertex"
+        },
+        "b": {
+          "lines": ["1"],
+          "prototype": "vertices",
+          "properties": {},
+          "x": 2.0,
+          "selected": false,
+          "y": 3.0,
+          "id": "b",
+          "type": "",
+          "name": "Vertex"
+        }
+      },
+      "opacity": 1,
+      "selected": { "vertices": [], "areas": [], "lines": [], "holes": [], "items": [] },
+      "id": "layer-1",
+      "name": "default",
+      "order": 0,
+      "items": {},
+      "holes": {}
+    }
+  },
+  "scaleRatio": null,
+  "meta": {},
+  "unit": "cm",
+  "width": 3000,
+  "groups": {},
+  "background": { "height": 2000, "rotation": 0.0, "width": 3000, "shift": { "x": 0.0, "y": 0.0 } },
+  "selectedLayer": "layer-1",
+  "version": "V19",
+  "grids": {
+    "h1": {
+      "properties": { "step": 20, "colors": ["#808080", "#ddd", "#ddd", "#ddd", "#ddd"] },
+      "type": "horizontal-streak",
+      "id": "h1"
+    },
+    "v1": {
+      "properties": { "step": 20, "colors": ["#808080", "#ddd", "#ddd", "#ddd", "#ddd"] },
+      "type": "vertical-streak",
+      "id": "v1"
+    }
+  },
+  "scale": 1.0,
+  "height": 2000,
+  "paperFormat": "",
+  "guides": { "horizontal": {}, "circular": {}, "vertical": {} }
+}
