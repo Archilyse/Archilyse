@@ -34,6 +34,7 @@ from handlers.db import (
     UserDBHandler,
 )
 from slam_api.apis.site import (
+    CopySiteView,
     NetAreaDistributionView,
     QAValidationTask,
     SampleSurroundings,
@@ -810,6 +811,28 @@ class TestQAValidationTask:
         assert SiteDBHandler.get_by(id=site["id"]) == site
 
     @login_as(["TEAMMEMBER"])
+    def test_post_returns_400_when_simulations_are_running(self, site, client, login):
+        site = SiteDBHandler.update(
+            item_pks=dict(id=site["id"]),
+            new_values=dict(
+                basic_features_status=ADMIN_SIM_STATUS.SUCCESS.name,
+                full_slam_results=ADMIN_SIM_STATUS.PROCESSING.name,
+            ),
+        )
+
+        response = client.post(
+            get_address_for(
+                blueprint=site_app, view_function=QAValidationTask, site_id=site["id"]
+            )
+        )
+
+        assert response.status_code == HTTPStatus.BAD_REQUEST, response.json
+        assert response.json == {
+            "msg": f"Cannot start QA task while simulations for {site['id']} are running."
+        }
+        assert SiteDBHandler.get_by(id=site["id"]) == site
+
+    @login_as(["TEAMMEMBER"])
     def test_post_returns_400_when_qa_data_is_missing(
         self, site, client, plan, login, qa_db_empty
     ):
@@ -1491,3 +1514,45 @@ class TestSiteTaskView:
         )
 
         assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY, response.json
+
+
+class TestCopySiteView:
+    def test_copy_site_launch_copy_site_task(self, mocker, client, site):
+        from api.slam_api.apis.site import copy_site_task
+
+        copy_site_task_mocked = mocker.patch.object(
+            copy_site_task,
+            "delay",
+            return_value=None,
+        )
+
+        response = client.post(
+            get_address_for(
+                blueprint=site_app, view_function=CopySiteView, site_id=site["id"]
+            ),
+            json={"client_target_id": 12},
+        )
+        assert response.status_code == HTTPStatus.OK
+
+        copy_site_task_mocked.assert_called_once_with(
+            target_client_id=12, site_id_to_copy=site["id"], copy_area_types=True
+        )
+
+    def test_copy_site_bad_params(self, mocker, client, site):
+        from api.slam_api.apis.site import copy_site_task
+
+        copy_site_task_mocked = mocker.patch.object(
+            copy_site_task,
+            "delay",
+            return_value=None,
+        )
+
+        response = client.post(
+            get_address_for(
+                blueprint=site_app, view_function=CopySiteView, site_id=site["id"]
+            ),
+            json={"foo": 12},
+        )
+        assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
+
+        copy_site_task_mocked.assert_not_called()

@@ -102,7 +102,11 @@ const BuildingPipelines = ({
         </thead>
         <tbody>
           {pipelines
-            .sort((a, b) => Number(a.floor_numbers[0] > b.floor_numbers[0]))
+            .sort((a, b) =>
+              Number(
+                a.floor_numbers.sort((a, b) => Number(a - b))[0] - b.floor_numbers.sort((a, b) => Number(a - b))[0]
+              )
+            )
             .map(pipeline => (
               <PipelineRow
                 masterPlanSelected={enforceMasterplan ? Boolean(masterPlanId) : true}

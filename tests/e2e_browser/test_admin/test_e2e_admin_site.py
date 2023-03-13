@@ -525,6 +525,41 @@ class TestAsAdmin:
         assert len(browser.find_by_xpath(XPATH_FEATURES_GENERATION_BUTTON)) == num_sites
         assert browser.is_element_present_by_xpath(XPATH_DROP_DOWN_GROUP, wait_time=1)
 
+    def test_copy_site_link(
+        self, browser: BaseWebDriver, admin_url, site, navigate_to_sites_table
+    ):
+        num_sites = 1
+        navigate_to_sites_table(site["client_id"], expected_sites=num_sites)
+        with expand_screen_size(browser=browser):
+
+            safe_wait_for_table_and_expand_columns(
+                browser, "sites_table", expected_rows=num_sites
+            )
+
+            # Click on the Copy site link
+            browser.find_by_text("Copy site", wait_time=TIME_TO_WAIT).click()
+            assert browser.url == f"{admin_url}/site/{site['id']}/copy"
+
+            # Identify dropdown and click on it
+            target_id_dropdown = browser.find_by_xpath(
+                "//*[contains(@class, 'client_target_id')]",
+                wait_time=TIME_TO_WAIT,
+            ).first
+            target_id_dropdown.click()
+
+            # Select the first option
+            first_option = browser.find_by_xpath(
+                "//*[contains(@role, 'option')]",
+                wait_time=TIME_TO_WAIT,
+            ).first
+            first_option.click()
+
+            # Click on the Copy site button
+            browser.find_by_css(".save-button", wait_time=TIME_TO_WAIT).first.click()
+
+            # Match snackbar text to ascertain that the site is actually copied
+            assert browser.find_by_text("Copied succesfully", wait_time=TIME_TO_WAIT)
+
     def test_classification_scheme_change(
         self, browser: BaseWebDriver, client_db, site, navigate_to_sites_table
     ):
@@ -807,7 +842,7 @@ def test_admin_panel_start_feature_generation(
         == 1
     )
 
-    num_tasks_expected = 6
+    num_tasks_expected = 7
     # run_digitize_analyze_client_tasks, the basic features ones (2),
     # update_site_location, run_buildings_elevation_task + celery chord
 

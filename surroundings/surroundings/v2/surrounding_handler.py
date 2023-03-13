@@ -210,8 +210,8 @@ class SlamSurroundingHandler(SurroundingHandler, ABC):
             elevation_handler=self._small_items_elevation_handler,
         ).get_triangles()
 
-    def _generate_items_triangles(self) -> Iterator[SurrTrianglesType]:
-        yield from super(SlamSurroundingHandler, self)._generate_items_triangles()
+    def generate_view_surroundings(self) -> Iterator[SurrTrianglesType]:
+        yield from super(SlamSurroundingHandler, self).generate_view_surroundings()
         yield from self._generate_manual_surroundings_triangles()
 
 

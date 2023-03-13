@@ -73,16 +73,49 @@ class TestEnergyReferenceArea:
     @staticmethod
     def test_energy_area_in_layout(simple_layout):
         energy_area_stats = EnergyAreaStatsLayout.energy_area_in_layout(
-            layout=simple_layout, area_ids_part_of_residential_units=set()
+            layout=simple_layout, area_ids_part_of_units=set()
         )
 
         assert energy_area_stats.total_era_area == pytest.approx(
             expected=21.28, abs=0.01
         )
+        assert energy_area_stats.total_era_volume == pytest.approx(
+            expected=55.328, abs=0.01
+        )
         assert energy_area_stats.era_wall_area == pytest.approx(expected=6.28, abs=0.01)
         assert energy_area_stats.era_areas == {AreaType.ROOM.name: [15.0]}
         assert energy_area_stats.total_non_era_area == pytest.approx(
             expected=31.93, abs=0.01
+        )
+        assert energy_area_stats.non_era_areas == {
+            AreaType.WASH_AND_DRY_ROOM.name: [25.000000000000004]
+        }
+
+    @staticmethod
+    def test_energy_void_in_layout(simple_layout):
+        from copy import deepcopy
+
+        void_layout = deepcopy(simple_layout)
+        void = list(void_layout.areas_by_type[AreaType.ROOM])[0]
+        void._type = AreaType.VOID
+        void.db_area_id = 1
+
+        energy_area_stats = EnergyAreaStatsLayout.energy_area_in_layout(
+            layout=void_layout, area_ids_part_of_units={void.db_area_id}
+        )
+
+        # NOTE: Since the only ERA area was a room, when becoming a VOID, the room is only counted to the volume.
+        #       Additionally, the walls around the VOID also do only count in the volume.
+        #       Thus, the volume does not change while era_area and era_wall_area drop to 0.
+        assert energy_area_stats.total_era_area == pytest.approx(expected=0.0, abs=0.01)
+        assert energy_area_stats.total_era_volume == pytest.approx(
+            expected=55.328, abs=0.01
+        )
+        assert energy_area_stats.era_wall_area == pytest.approx(expected=0.0, abs=0.01)
+        assert energy_area_stats.era_areas == {}
+        assert energy_area_stats.era_areas_volume_only == {AreaType.VOID.name: [15.0]}
+        assert energy_area_stats.total_non_era_area == pytest.approx(
+            expected=38.21, abs=0.01
         )
         assert energy_area_stats.non_era_areas == {
             AreaType.WASH_AND_DRY_ROOM.name: [25.000000000000004]
@@ -118,15 +151,59 @@ class TestEnergyReferenceArea:
         (
             era_areas_by_type,
             non_era_areas_by_type,
+            era_areas_volume_only,
         ) = EnergyAreaStatsLayout._areas_by_era_and_type(
-            layout=simple_layout,
+            layout=simple_layout, area_ids_part_of_units=set()
         )
         if area_footprint_smaller_than_10:
             assert len(non_era_areas_by_type[AreaType.STOREROOM]) == 0
             assert len(era_areas_by_type[AreaType.STOREROOM]) == 1
+            assert len(era_areas_volume_only) == 0
         else:
             assert len(era_areas_by_type[AreaType.STOREROOM]) == 0
             assert len(non_era_areas_by_type[AreaType.STOREROOM]) == 1
+            assert len(era_areas_volume_only) == 0
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "in_unit,size,expected_era_area,expected_non_era_heated",
+        [
+            (False, 4, True, False),  # small voids should be ERA area
+            (False, 6, False, False),
+            (True, 4, True, False),  # small voids should be ERA area
+            (True, 6, False, True),  # large voids only if inside unit
+        ],
+    )
+    def test_areas_voids(
+        simple_layout, in_unit, size, expected_era_area, expected_non_era_heated
+    ):
+        from math import sqrt
+
+        from shapely.geometry import box
+
+        area: SimArea = sorted(
+            simple_layout.areas, key=lambda area: area.footprint.area
+        )[0]
+        area._type = AreaType.VOID
+        area.footprint = box(0, 0, sqrt(size), sqrt(size))
+        area.db_area_id = 1
+
+        (
+            era_areas_by_type,
+            non_era_areas_by_type,
+            era_areas_volume_only,
+        ) = EnergyAreaStatsLayout._areas_by_era_and_type(
+            layout=simple_layout,
+            area_ids_part_of_units={area.db_area_id} if in_unit else set(),
+        )
+
+        assert len(non_era_areas_by_type[AreaType.VOID]) == (
+            0 if expected_era_area or expected_non_era_heated else 1
+        )
+        assert len(era_areas_by_type[AreaType.VOID]) == (1 if expected_era_area else 0)
+        assert len(era_areas_volume_only[AreaType.VOID]) == (
+            1 if expected_non_era_heated else 0
+        )
 
 
 class TestEnergyAreaReport:
@@ -158,6 +235,7 @@ class TestEnergyAreaReport:
                 era_wall_area=10,
                 era_areas={},
                 non_era_areas={},
+                era_areas_volume_only={},
                 floor_height=2.6,
             ),
         )
@@ -171,7 +249,7 @@ class TestEnergyAreaReport:
         )
         mocker.patch.object(
             EnergyAreaReportForSite,
-            "_area_ids_part_of_residential_units",
+            "_area_ids_part_of_units",
             return_value=set(),
         )
         data = EnergyAreaReportForSite._data_per_floor(site_id=None)
@@ -203,6 +281,7 @@ class TestEnergyAreaReport:
                 era_wall_area=10,
                 era_areas={},
                 non_era_areas={},
+                era_areas_volume_only={},
                 building_client_id="1",
                 floor_number=0,
                 floor_height=2.6,
@@ -214,6 +293,7 @@ class TestEnergyAreaReport:
                 era_wall_area=10,
                 era_areas={},
                 non_era_areas={},
+                era_areas_volume_only={},
                 building_client_id="2",
                 floor_number=0,
                 floor_height=2.6,
@@ -225,6 +305,7 @@ class TestEnergyAreaReport:
                 era_wall_area=10,
                 era_areas={},
                 non_era_areas={},
+                era_areas_volume_only={},
                 building_client_id="1",
                 floor_number=1,
                 floor_height=2.6,

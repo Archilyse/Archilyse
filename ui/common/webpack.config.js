@@ -40,12 +40,8 @@ module.exports = {
         exclude: [path.resolve(__dirname, '../node_modules'), path.resolve(__dirname, 'node_modules')],
       },
       {
-        test: /\.(png|jpe?g|gif|svg)$/i,
-        use: [
-          {
-            loader: 'url-loader',
-          },
-        ],
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: 'asset/inline',
       },
     ],
   },

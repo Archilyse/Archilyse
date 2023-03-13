@@ -384,7 +384,8 @@ class TestSpacesConnectedValidator:
         (UNIT_USAGE.RESIDENTIAL.name, AreaType.ROOM.name, False),
         (UNIT_USAGE.COMMERCIAL.name, AreaType.CORRIDOR.name, True),
         (UNIT_USAGE.COMMERCIAL.name, AreaType.OFFICE.name, False),
-    ],
+    ]
+    + [(UNIT_USAGE.PLACEHOLDER.name, area_type.name, False) for area_type in AreaType],
 )
 def test_unit_linking_validator(mocker, unit_usage, unit_area_type, expect_violation):
     mocker.patch.object(ReactPlannerHandler, "plan_scale", return_value=0)

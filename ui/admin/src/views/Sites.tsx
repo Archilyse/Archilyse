@@ -40,7 +40,7 @@ const onTableReady = params => {
 
 const isColumnHiddenNonAdmin = (data, roles) => data.delivered === true && !roles.includes(C.ROLES.ADMIN);
 
-const getColumns = (cellRenderers, roles) => {
+export const getColumns = (cellRenderers, roles) => {
   const {
     GenerateFeaturesRenderer,
     MarkAsDeliveredRenderer,
@@ -193,6 +193,7 @@ const getColumns = (cellRenderers, roles) => {
       },
       {
         headerName: 'P. Hubble',
+        field: 'p_hubble',
         filter: false,
         sortable: false,
         minWidth: 200,
@@ -210,6 +211,16 @@ const getColumns = (cellRenderers, roles) => {
       },
       {
         headerName: '',
+        field: 'copy_site',
+        filter: false,
+        sortable: false,
+        cellRendererFramework: ({ data }) => (
+          <LinkRenderer id={`${data.id}-action`} href={`/site/${data.id}/copy`} text={'Copy site'} />
+        ),
+        maxWidth: 100,
+      },
+      {
+        headerName: '',
         field: 'surroundings',
         filter: false,
         sortable: false,
@@ -219,6 +230,17 @@ const getColumns = (cellRenderers, roles) => {
         maxWidth: 100,
       }
     );
+  } else if (roles.includes(C.ROLES.TEAMMEMBER)) {
+    columns.push({
+      headerName: '',
+      field: 'actions',
+      filter: false,
+      sortable: false,
+      cellRendererFramework: ({ data }) => (
+        <LinkRenderer id={`[data.id]-action`} href={`/site/${data.id}`} text={'Edit'} />
+      ),
+      maxWidth: 50,
+    });
   }
   columns = columns.map(c => ({
     filter: true,

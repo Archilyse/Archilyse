@@ -21,6 +21,21 @@ export enum BUILDING_STATUS {
   NOT_STARTED = '-',
 }
 
+const SORT_ICON_COLOR = '#8C9294';
+
+const STYLE = {
+  fontSize: '20px',
+  marginLeft: '5px',
+  verticalAlign: 'bottom',
+  color: SORT_ICON_COLOR,
+};
+
+const NAME = 'name';
+const STATUS = 'status';
+
+const ASCENDING = 1;
+const DESCENDING = -1;
+
 export const getBuildingName = (building: Building): string =>
   `Building: ${building.client_building_id || ''} (${building.street}, ${building.housenumber})`;
 
@@ -36,6 +51,13 @@ const getBuildingStatus = (building: Building, pipelines: PipelineType[], buildi
   );
   if (allPipelinesCompleted) return BUILDING_STATUS.COMPLETED;
   return BUILDING_STATUS.IN_PROGRESS;
+};
+
+const getBuildingStatusScore = (status: String): number => {
+  if (status === BUILDING_STATUS.FAILED) return 1;
+  else if (status === BUILDING_STATUS.IN_PROGRESS) return 2;
+  else if (status === BUILDING_STATUS.COMPLETED) return 3;
+  return 4;
 };
 
 type expandedBuildings = { [id: number]: boolean };
@@ -58,6 +80,9 @@ const Pipelines = () => {
   const [buildingFailed, setBuildingFailed] = useState<number>();
   const hierarchy = useHierarchy();
 
+  const [sortedBy, setSortedBy] = useState<string>(STATUS);
+  const [sortOrder, setSortOrder] = useState<number>(ASCENDING);
+
   const onClickBuildingRow = buildingId => {
     const newExpanded = { ...expandedBuildings, [buildingId]: !expandedBuildings[buildingId] };
     setExpandedBuldings(newExpanded);
@@ -73,6 +98,27 @@ const Pipelines = () => {
     reloadBuildings();
   };
 
+  const sortBuildingsByNameOrStatus = (a: Building, b: Building) => {
+    if (sortedBy === NAME) {
+      const buildingA = getBuildingName(a);
+      const buildingB = getBuildingName(b);
+      if (sortOrder === ASCENDING) return buildingA.localeCompare(buildingB);
+      else return buildingB.localeCompare(buildingA);
+    }
+    const scoreA = getBuildingStatusScore(getBuildingStatus(a, pipelines, buildingFailed));
+    const scoreB = getBuildingStatusScore(getBuildingStatus(b, pipelines, buildingFailed));
+    return sortOrder === ASCENDING ? scoreA - scoreB : scoreB - scoreA;
+  };
+
+  const getSortArrow = sortOrder => {
+    return sortOrder === DESCENDING ? <Icon style={STYLE}>south</Icon> : <Icon style={STYLE}>north</Icon>;
+  };
+
+  const sortRowsBy = field => {
+    setSortedBy(field);
+    sortOrder === ASCENDING ? setSortOrder(DESCENDING) : setSortOrder(ASCENDING);
+  };
+
   // This key forces header row to re-render and adjust when we have new buildings/pipelines, otherwise the user could see a wrong header size
   const headerKey = `key-${buildings.length}-${pipelines.length}`;
   return (
@@ -84,13 +130,19 @@ const Pipelines = () => {
       <table className="building-list" data-testid="building-list">
         <thead className="building-list-header">
           <tr key={headerKey}>
-            <th>Building</th>
-            <th>Status</th>
+            <th className="building-sortable-header" data-testid="building-name" onClick={() => sortRowsBy(NAME)}>
+              Building
+              {sortedBy === NAME ? getSortArrow(sortOrder) : null}
+            </th>
+            <th className="building-sortable-header" data-testid="building-status" onClick={() => sortRowsBy(STATUS)}>
+              Status
+              {sortedBy === STATUS ? getSortArrow(sortOrder) : null}
+            </th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          {buildings.map(building => {
+          {buildings.sort(sortBuildingsByNameOrStatus).map(building => {
             const buildingStatus = getBuildingStatus(building, pipelines, buildingFailed);
             const cellClass = buildingStatus.toLowerCase().replace(' ', '_');
             const hideIfNotExpanded = expandedBuildings[building.id] ? {} : { display: 'none' };

@@ -125,7 +125,12 @@ const Dropdown = ({ field, value, control }) => {
         rules={{ required: field.required }}
         defaultValue={value[field.name] || (field.multiple ? [] : '')}
         as={
-          <Select className={`form-select-${field.name}`} multiple={field.multiple} renderValue={renderValue}>
+          <Select
+            className={`form-select-${field.name}`}
+            multiple={field.multiple}
+            required={field.required}
+            renderValue={renderValue}
+          >
             {field.options.map(option => (
               <MenuItem key={`${option.value} - ${option.label}`} value={option.value}>
                 <div>{option.label}</div>

@@ -289,7 +289,10 @@ class SiteHandler:
 
     @classmethod
     def generate_view_surroundings(
-        cls, site_info: dict, sample: bool = False
+        cls,
+        site_info: dict,
+        sample: bool = False,
+        simulation_version: SIMULATION_VERSION = None,
     ) -> Iterator[SurrTrianglesType]:
         from surroundings.surrounding_handler import generate_view_surroundings
 
@@ -303,7 +306,8 @@ class SiteHandler:
             site_id=site_info["id"],
             region=REGION[site_info["georef_region"]],
             location=cls.get_projected_location(site_info=site_info),
-            simulation_version=SIMULATION_VERSION(site_info["simulation_version"]),
+            simulation_version=simulation_version
+            or SIMULATION_VERSION(site_info["simulation_version"]),
             building_footprints=building_footprints,
             sample=sample,
         )

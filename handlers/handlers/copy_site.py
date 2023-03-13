@@ -9,6 +9,7 @@ from db_models import (
     BuildingDBModel,
     ExpectedClientDataDBModel,
     FloorDBModel,
+    ManualSurroundingsDBModel,
     PlanDBModel,
     ReactPlannerProjectDBModel,
     SiteDBModel,
@@ -19,6 +20,7 @@ from handlers.db import (
     AreaDBHandler,
     BuildingDBHandler,
     FloorDBHandler,
+    ManualSurroundingsDBHandler,
     PlanDBHandler,
     QADBHandler,
     ReactPlannerProjectsDBHandler,
@@ -99,6 +101,9 @@ required_units_areas_column = ["labels"]
 required_qa_columns = [
     ExpectedClientDataDBModel.data.name,
 ]
+required_manual_surr_columns = [
+    ManualSurroundingsDBModel.surroundings.name,
+]
 
 
 class CopySite:
@@ -120,8 +125,9 @@ class CopySite:
     ) -> int:
         """
         target_client_id: client id to which the copy of the site should be added
-        site_id_to_cop: Id of site which should be copied
+        site_id_to_cop: ID of site which should be copied
         copy_area_types: If set to False, area_type of copied areas is set to not defined
+        target_existing_site_id (optional): If set, the buildings of the site_id_to_copy are added to the target_existing_site_id
         """
         with get_db_session_scope():
             if target_existing_site_id is not None:
@@ -131,6 +137,9 @@ class CopySite:
                     target_client_id=target_client_id, site_id=site_id_to_copy
                 )["id"]
                 self._copy_qa_data(
+                    target_client_id=target_client_id, site_id=site_id_to_copy
+                )
+                self._copy_manual_surroundings(
                     target_client_id=target_client_id, site_id=site_id_to_copy
                 )
 
@@ -170,6 +179,15 @@ class CopySite:
             QADBHandler.add(
                 site_id=self.new_site_id, client_id=target_client_id, **qa_data
             )
+        except DBNotFoundException:
+            pass
+
+    def _copy_manual_surroundings(self, target_client_id, site_id):
+        try:
+            manual_surr = ManualSurroundingsDBHandler.get_by(
+                site_id=site_id, output_columns=required_manual_surr_columns
+            )
+            ManualSurroundingsDBHandler.add(site_id=self.new_site_id, **manual_surr)
         except DBNotFoundException:
             pass
 

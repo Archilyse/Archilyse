@@ -18,6 +18,7 @@ jest.mock('archilyse-ui-components', () => {
   const React = require('react');
 
   return {
+    // @ts-ignore
     ...jest.requireActual('archilyse-ui-components'),
     Heatmap: () => <div>Heatmap</div>,
     SimulationViewer: () => <div />,

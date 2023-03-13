@@ -1,10 +1,13 @@
 import * as React from 'react';
-import { screen, waitFor, within } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithRouter } from '../../../tests/utils';
 import MOCK_BUILDINGS_BY_SITE from '../../../__mocks__/entities/buildings_by_site';
 
 import Pipelines, { BUILDING_STATUS } from './Pipelines';
+
+const getBuildingName = (building): string =>
+  `Building: ${building.client_building_id || ''} (${building.street}, ${building.housenumber})`;
 
 describe('Pipeline component', () => {
   let props;
@@ -23,6 +26,20 @@ describe('Pipeline component', () => {
     MOCK_BUILDINGS_BY_SITE.forEach(building => {
       expect(screen.getByText(`Building: ${building.client_building_id || ''}`, { exact: false })).toBeInTheDocument();
     });
+  });
+
+  it('Clicking on the header building name field sorts the buildings in either descending or ascending order', async () => {
+    // Sort by building name, in descending order
+    fireEvent.click(screen.getByTestId('building-name'));
+    const buildingNameA = getBuildingName(MOCK_BUILDINGS_BY_SITE[0]);
+    const buildingNameB = getBuildingName(MOCK_BUILDINGS_BY_SITE[1]);
+    expect(buildingNameA.localeCompare(buildingNameB) === 1).toBeTruthy();
+
+    // Sort by building name, in ascending order
+    fireEvent.click(screen.getByTestId('building-name'));
+    const buildingNameC = getBuildingName(MOCK_BUILDINGS_BY_SITE[0]);
+    const buildingNameD = getBuildingName(MOCK_BUILDINGS_BY_SITE[1]);
+    expect(buildingNameC.localeCompare(buildingNameD) === -1).toBeTruthy();
   });
 
   it('Clicking on a building name expand its contents', () => {

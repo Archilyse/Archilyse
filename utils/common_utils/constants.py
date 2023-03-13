@@ -799,6 +799,9 @@ CURRENCY_REGION = {
 }
 
 
+COUNTRY_CODE = {REGION.CH: "CH"}
+
+
 class ManualSurroundingTypes(Enum):
     BUILDINGS = 1
     EXCLUSION_AREA = 2

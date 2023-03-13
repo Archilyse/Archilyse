@@ -9,6 +9,7 @@ const MOCK_PROJECTED_POSITION = new THREE.Vector3(20989845.681845035, 26047539.5
 
 jest.mock('@here/harp-geoutils', () => {
   return {
+    // @ts-ignore
     ...jest.requireActual('@here/harp-geoutils'),
     mercatorProjection: {
       projectPoint: (anchor, pos) => {

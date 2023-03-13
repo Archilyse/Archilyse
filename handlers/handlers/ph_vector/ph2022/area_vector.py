@@ -378,7 +378,7 @@ class AreaVector:
             for floor_id, floor_info in self._floors_info.items()
         }
 
-    def get_vector(self, representative_units_only: bool):
+    def get_vector(self, representative_units_only: bool) -> list[AreaVectorSchema]:
         vector_stats = AreaVectorStats.get_vector_stats(site_id=self._site_id)
         vector_stats_default_values = AreaVectorStatsSchema()
         biggest_rectangles = BiggestRectangles.get_biggest_rectangles(

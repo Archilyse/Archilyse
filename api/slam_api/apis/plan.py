@@ -373,19 +373,19 @@ class PlanUnitsView(MethodView):
 
 class HeightsSchema(Schema):
     default_wall_height = fields.Float(
-        required=True, validate=ma_validate.Range(min=0, max=10)
+        required=True, validate=ma_validate.Range(min=0, max=20)
     )
     default_door_height = fields.Float(
-        required=True, validate=ma_validate.Range(min=0, max=10)
+        required=True, validate=ma_validate.Range(min=0, max=20)
     )
     default_window_lower_edge = fields.Float(
-        required=True, validate=ma_validate.Range(min=0, max=10)
+        required=True, validate=ma_validate.Range(min=0, max=20)
     )
     default_window_upper_edge = fields.Float(
-        required=True, validate=ma_validate.Range(min=0, max=10)
+        required=True, validate=ma_validate.Range(min=0, max=20)
     )
     default_ceiling_slab_height = fields.Float(
-        required=True, validate=ma_validate.Range(min=0, max=1)
+        required=True, validate=ma_validate.Range(min=0, max=2)
     )
 
     @validates_schema

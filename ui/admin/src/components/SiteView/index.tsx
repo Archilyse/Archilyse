@@ -4,7 +4,7 @@ import { parse as parseCSV } from 'papaparse';
 import SiteModel from 'Common/types/models/Site';
 import { getFile } from 'Common/modules';
 import { Button, Link } from '@material-ui/core';
-import { SnackbarContext } from 'archilyse-ui-components';
+import { auth, SnackbarContext } from 'archilyse-ui-components';
 import removeFalsy from 'Common/modules/removeFalsy';
 import EntityView from '../EntityView';
 import Table from '../Table';
@@ -17,6 +17,7 @@ import './siteView.scss';
 
 const { CSV, EXCEL_OLD, EXCEL_NEW } = C.MIME_TYPES;
 
+export const tabHeaders = ['General', 'QA', 'IFC Status', 'Jobs'];
 const QaTemplateRenderer = () => {
   const onClick = async () => {
     const response = await ProviderRequest.getFiles(C.URLS.QA_TEMPLATE(), C.RESPONSE_TYPE.TEXT);
@@ -204,6 +205,8 @@ const SiteView = ({ parent = undefined, site, qa = undefined, isUpdated = undefi
   const [table, setTable] = useState<any>();
   const snackbar = useContext(SnackbarContext);
 
+  const roles = auth.getRoles();
+
   const defaultQaData = (qa && qa.data) || {};
   let validatedFormFields = formFields;
   if (isUpdated) validatedFormFields = formFields.filter(obj => obj.name !== 'ifc');
@@ -267,9 +270,35 @@ const SiteView = ({ parent = undefined, site, qa = undefined, isUpdated = undefi
     setTable(params.api);
   };
 
+  if (!roles || !roles.length) return null;
+  if (roles.includes(C.ROLES.TEAMMEMBER)) {
+    return (
+      <>
+        <Tabs headers={['General', 'QA']}>
+          <div className="site-general">
+            <EntityView
+              fields={validatedFormFields}
+              entity={site}
+              context="site"
+              parent={parent}
+              parentKey={'client_id'}
+              onChange={onChange}
+              onCreate={onCreate}
+              onUpdate={onUpdate}
+            />
+            <SiteMap onMapLocationSelected={onMapLocationSelected} coordinates={coordinates} />
+          </div>
+          <div className="qa">
+            <TableSheet onTableReady={onTableReady} initialRows={parseTableData(defaultQaData)} />
+          </div>
+          <div></div>
+        </Tabs>
+      </>
+    );
+  }
   return (
     <>
-      <Tabs headers={['General', 'QA', 'IFC Status', 'Jobs']}>
+      <Tabs headers={tabHeaders}>
         <div className="site-general">
           <EntityView
             fields={validatedFormFields}

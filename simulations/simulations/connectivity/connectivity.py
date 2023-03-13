@@ -1,8 +1,9 @@
 from functools import partial
-from typing import Callable, Iterable, Optional
+from typing import Iterable, Iterator, Optional
 
 import networkx
 from shapely.geometry import Point, Polygon
+from tenacity import TryAgain, retry, retry_if_exception_type
 
 from brooks.models import SimLayout
 from brooks.types import AreaType, OpeningType
@@ -11,8 +12,8 @@ from common_utils.exceptions import ConnectivityEigenFailedConvergenceException
 
 
 class ConnectivitySimulator:
-    EIGEN_MAX_ITER = 300
-    EIGEN_TOLERANCE = 1e-5
+    EIGEN_MAX_ITER = 400
+    EIGEN_TOLERANCES = (1e-5, 1e-4)
 
     def __init__(
         self,
@@ -24,14 +25,17 @@ class ConnectivitySimulator:
         self.area_type_filter = area_type_filter or set()
         self.resolution = resolution
 
-    def all_simulations(self, layout: SimLayout) -> Iterable[tuple[str, Callable]]:
+    def all_simulations(self, layout: SimLayout) -> Iterable[tuple]:
         sims = (
-            self.closeness_centrality,
-            self.betweenness_centrality,
-            self.eigen_centrality,
+            ("closeness_centrality", self.closeness_centrality),
+            ("betweenness_centrality", self.betweenness_centrality),
+            (
+                "eigen_centrality",
+                partial(self.eigen_centrality, tol=iter(self.EIGEN_TOLERANCES)),
+            ),
         )
-        for sim in sims:
-            yield sim.__name__, sim
+        for sim_name, sim in sims:
+            yield sim_name, sim
 
         #  Now the area type distances
         area_types = {a.type for a in layout.areas}
@@ -63,7 +67,8 @@ class ConnectivitySimulator:
             ).values()
         )
 
-    def eigen_centrality(self) -> list[float]:
+    @retry(retry=retry_if_exception_type(TryAgain))
+    def eigen_centrality(self, tol: Iterator[float]) -> list[float]:
         # Increases max allowed iterations and reduce a bit tolerance
         # to ensure convergence in most cases
         try:
@@ -71,10 +76,12 @@ class ConnectivitySimulator:
                 networkx.eigenvector_centrality(
                     self.connected_graph,
                     max_iter=self.EIGEN_MAX_ITER,
-                    tol=self.EIGEN_TOLERANCE,
+                    tol=next(tol),
                 ).values()
             )
         except networkx.PowerIterationFailedConvergence:
+            raise TryAgain
+        except StopIteration:
             raise ConnectivityEigenFailedConvergenceException
 
     def pois_distance2pols(self, pols: list[Polygon]) -> list[float]:

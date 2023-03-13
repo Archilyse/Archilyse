@@ -3,6 +3,7 @@ from typing import Dict, List
 from common_utils.constants import RESULT_VECTORS
 from handlers.ph_vector.ph2022 import (
     AreaVector,
+    AreaVectorSchema,
     NeufertAreaVector,
     NeufertGeometryVector,
 )
@@ -12,7 +13,7 @@ class PH2022ResultVectorHandler:
     @staticmethod
     def generate_vectors(
         site_id: int, representative_units_only: bool
-    ) -> Dict[RESULT_VECTORS, List[Dict]]:
+    ) -> Dict[RESULT_VECTORS, List[AreaVectorSchema]]:
         return {
             RESULT_VECTORS.ROOM_VECTOR_WITH_BALCONY: AreaVector(
                 site_id=site_id
@@ -24,7 +25,7 @@ class NeufertResultVectorHandler:
     @staticmethod
     def generate_vectors(
         site_id: int, representative_units_only: bool, anonymized: bool = True
-    ) -> Dict[RESULT_VECTORS, List[Dict]]:
+    ) -> Dict[RESULT_VECTORS, List[AreaVectorSchema]]:
         return {
             RESULT_VECTORS.NEUFERT_AREA_SIMULATIONS: NeufertAreaVector(
                 site_id=site_id

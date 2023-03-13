@@ -842,7 +842,7 @@ class TestRawImageRequest:
             0.1,
             1.9,
             0.3,
-            ["Must be greater than or equal to 0 and less than or equal to 10."],
+            ["Must be greater than or equal to 0 and less than or equal to 20."],
         ),
         (
             -2,
@@ -850,15 +850,15 @@ class TestRawImageRequest:
             0.1,
             1.9,
             0.3,
-            ["Must be greater than or equal to 0 and less than or equal to 10."],
+            ["Must be greater than or equal to 0 and less than or equal to 20."],
         ),
         (
             2.0,
             1.5,
             0.1,
             1.9,
-            2.0,
-            ["Must be greater than or equal to 0 and less than or equal to 1."],
+            3.0,
+            ["Must be greater than or equal to 0 and less than or equal to 2."],
         ),
     ],
 )

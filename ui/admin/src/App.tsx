@@ -20,6 +20,7 @@ import {
   Pipelines,
   Profile,
   Site,
+  SiteCopy,
   SiteNew,
   Sites,
   User,
@@ -87,6 +88,9 @@ const App = () => {
 
             <PrivateRoute path="/site/new">
               <SiteNew />
+            </PrivateRoute>
+            <PrivateRoute path="/site/:id/copy">
+              <SiteCopy />
             </PrivateRoute>
             <PrivateRoute path="/site/:id">
               <Site />

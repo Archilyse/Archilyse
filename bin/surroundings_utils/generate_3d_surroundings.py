@@ -80,12 +80,11 @@ def main(
 
     if site_id:
         site_info = SiteDBHandler.get_by(id=site_id)
-        simulation_version = SIMULATION_VERSION[site_info["simulation_version"]]
         triangles_per_layout = SLAMQuavisHandler().get_site_triangles(
             entity_info=site_info, simulation_version=simulation_version
         )
         triangles_per_surroundings_type = SiteHandler.generate_view_surroundings(
-            site_info=site_info, sample=sample
+            site_info=site_info, sample=sample, simulation_version=simulation_version
         )
         output_name = site_id
     elif simulation_id:

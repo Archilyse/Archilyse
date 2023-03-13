@@ -20,7 +20,7 @@ const Layout = props => {
   const router = useRouter();
   const splittedPath = router.pathname.split('/');
 
-  const isEntity = splittedPath.length === 3;
+  const isEntity = splittedPath.length >= 3;
   const isPlanImg =
     splittedPath.length >= 3 &&
     // URL /admin/floor/plan?floor_id=XXX has no backbutton

@@ -68,9 +68,9 @@ services:
   postgres_stag:
     container_name: "postgres_stag"
     image: gcr.io/cloudsql-docker/gce-proxy:1.32.0
-    command: "/cloud_sql_proxy -instances=${GCP_PROJECT_ID}:europe-west6:db-slam-stag=tcp:0.0.0.0:${POSTGRES_LOCAL_STAG_PORT} -credential_file=/config"
+    command: /cloud_sql_proxy -instances=${GCP_PROJECT_ID}:europe-west6:${POSTGRES_DB_INSTANCE}=tcp:0.0.0.0:${POSTGRES_LOCAL_STAG_PORT} -credential_file=/config.json
     volumes:
-      - ./configs/dev-stag-service-account.json:/config
+      - ./configs/dev-stag-service-account.json:/config.json
     ports:
       - "${POSTGRES_LOCAL_STAG_PORT}:${POSTGRES_LOCAL_STAG_PORT}"
 

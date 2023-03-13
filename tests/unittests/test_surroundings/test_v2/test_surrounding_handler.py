@@ -427,54 +427,6 @@ class _TestSlamSurroundingHandler(_TestSurroundingHandler):
             sample=sample,
         )
 
-    def test_generate_items_triangles(
-        self,
-        mocked_small_items_triangles,
-        mocked_big_items_triangles,
-        mocked_small_items_elevation_handler,
-        mocked_big_items_elevation_handler,
-        mocker,
-    ):
-        (
-            mocked_generate_small_items,
-            fake_small_items_triangles,
-        ) = mocked_small_items_triangles
-        mocked_generate_big_items, fake_big_items_triangles = mocked_big_items_triangles
-
-        fake_manual_surroundings_triangles = [mocker.MagicMock()]
-        mocked_manual_surroundings = mocker.patch.object(
-            self.instance_cls,
-            "_generate_manual_surroundings_triangles",
-            return_value=iter(fake_manual_surroundings_triangles),
-        )
-
-        site_id = 1000
-        region = REGION.CH
-        location = Point(0, 0)
-        surrounding_handler = self.get_instance(
-            site_id=site_id, region=region, location=location
-        )
-
-        triangles = list(surrounding_handler._generate_items_triangles())
-
-        assert (
-            triangles
-            == fake_small_items_triangles
-            + fake_big_items_triangles
-            + fake_manual_surroundings_triangles
-        )
-        mocked_generate_small_items.assert_called_once_with(
-            region=region,
-            bounding_box=surrounding_handler._small_items_bbox,
-            elevation_handler=mocked_small_items_elevation_handler,
-        )
-        mocked_generate_big_items.assert_called_once_with(
-            region=region,
-            bounding_box=surrounding_handler._big_items_bbox,
-            elevation_handler=mocked_big_items_elevation_handler,
-        )
-        mocked_manual_surroundings.assert_called_once_with()
-
     def test_exclusion_area_by_surrounding_type(self, mocker):
         import surroundings.v2.surrounding_handler
 
@@ -514,6 +466,45 @@ class _TestSlamSurroundingHandler(_TestSurroundingHandler):
         mocked_manual_exclusion_handler.assert_called_once_with(
             site_id=site_id,
             region=region,
+        )
+
+    def test_generate_view_surroundings(self, mocker):
+        mocker.patch.object(
+            self.instance_cls,
+            "_exclusion_area_by_surrounding_type",
+        )
+
+        manual_surroundings_triangles = [mocker.MagicMock()]
+        items_triangles = iter([mocker.MagicMock()])
+        cropped_items_triangles = [mocker.MagicMock()]
+        ground_triangles = [mocker.MagicMock()]
+
+        mocker.patch.object(
+            self.instance_cls, "_generate_items_triangles", return_value=items_triangles
+        )
+        mocker.patch.object(
+            self.instance_cls,
+            "_crop_triangles",
+            return_value=iter(cropped_items_triangles),
+        )
+        mocker.patch.object(
+            self.instance_cls,
+            "_generate_ground_triangles",
+            return_value=iter(ground_triangles),
+        )
+        mocker.patch.object(
+            self.instance_cls,
+            "_generate_manual_surroundings_triangles",
+            return_value=iter(manual_surroundings_triangles),
+        )
+
+        view_surroundings = list(self.get_instance().generate_view_surroundings())
+
+        assert (
+            view_surroundings
+            == cropped_items_triangles
+            + ground_triangles
+            + manual_surroundings_triangles
         )
 
 

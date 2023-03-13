@@ -375,9 +375,7 @@ class UnitHandler(PlanLayoutHandlerIDCacheMixin):
                 task_type=TASK_TYPE.BASIC_FEATURES,
             )
         except (DBNotFoundException, SimulationNotSuccessException) as e:
-            raise BaseSlamException(
-                "Trying to generate floor plan without result vector."
-            ) from e
+            raise BaseSlamException("Basic features are missing.") from e
 
         floor_info = self._get_floor_info_by_unit_id(unit_id=unit_id)
         floor_plan_layout = self.layout_handler_by_id(

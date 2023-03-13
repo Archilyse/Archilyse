@@ -133,22 +133,23 @@ def test_spaces_union_single_polygon_validator_should_attempt_to_convert_unit_la
 
 
 @pytest.mark.parametrize(
-    "replace_feature, expected_violation",
+    "area_type, replace_feature, expected_violation",
     [
-        (OpeningType.ENTRANCE_DOOR, None),
-        (FeatureType.STAIRS, None),
-        (FeatureType.ELEVATOR, None),
-        (FeatureType.SHAFT, ViolationType.APARTMENT_NOT_ACCESSIBLE),
+        (AreaType.ROOM, OpeningType.ENTRANCE_DOOR, None),
+        (AreaType.ROOM, FeatureType.STAIRS, None),
+        (AreaType.ROOM, FeatureType.ELEVATOR, None),
+        (AreaType.ROOM, FeatureType.SHAFT, ViolationType.APARTMENT_NOT_ACCESSIBLE),
+        (AreaType.VOID, FeatureType.SHAFT, None),
     ],
 )
 def test_apartment_is_accessible(
-    mocker, annotations_accessible_areas, replace_feature, expected_violation
+    mocker, annotations_accessible_areas, area_type, replace_feature, expected_violation
 ):
     plan_layout = ReactPlannerToBrooksMapper.get_layout(
         planner_elements=ReactPlannerData(**annotations_accessible_areas)
     )
     for area in plan_layout.areas:
-        area._type = AreaType.ROOM
+        area._type = area_type
 
     for opening in plan_layout.openings:
         opening._type = replace_feature

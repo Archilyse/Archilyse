@@ -275,3 +275,7 @@ class RasterWindowNoDataException(BaseSlamException):
 
 class PHVectorSubgroupException(BaseSlamException):
     pass
+
+
+class CustomValuatorApiException(Exception):
+    pass

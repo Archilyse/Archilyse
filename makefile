@@ -66,6 +66,8 @@ DOCKER_DEV_BUILD_PARALLEL := $(DOCKER_DEV) build --parallel \
 DOCKER_TAGS := docker tag slam_api slam_db_migrations && \
                docker tag slam_worker slam_flower
 DOCKER_ENV_ARGS := $(shell < docker/.env xargs) $(shell < docker/.env.local xargs)
+GCP_PROJECT_ID = $(shell < docker/.env.local grep GCP_PROJECT_ID | cut -d "=" -f 2)
+POSTGRES_DB_INSTANCE = $(shell < .env/.stag_args grep POSTGRES_DB_INSTANCE | cut -d "=" -f 2)
 GCP_REGISTRY_PROJECT := $(shell < docker/.env.local grep GCP_REGISTRY_PROJECT | cut -d "=" -f 2)
 BASE_FE_VERSION := $(shell < docker/.env grep BASE_FE_IMAGE_VERSION | cut -d "=" -f 2)
 BASE_BE_VERSION := $(shell < docker/.env grep BASE_IMAGE_VERSION | cut -d "=" -f 2)
@@ -444,7 +446,7 @@ annotations_migration:
 	LOGGER_LEVEL=DEBUG \
 	$(python_executable) bin/annotations/migrate_js_fixtures.py
 
-generate_3d_surroundings:  ## (Uses staging db)
+generate_3d_surroundings: db_stag_proxy_up
 	$(DOCKER_ENV_ARGS) \
 	WORKING_DIR=$(shell echo ${HOME}/slam_data/) \
 	$(STAG_ARGS) \
@@ -472,13 +474,13 @@ train_classifiers_stag: db_stag_proxy_up
 	--entrypoint python \
 	api bin/dev_helpers/train_area_classifiers.py
 
-query_report:
+query_report: db_stag_proxy_up
 	$(DOCKER_ENV_ARGS) \
 	WORKING_DIR=$(shell echo ${HOME}/slam_data/) \
 	$(STAG_ARGS) \
 	$(python_executable) bin/reports/gross_m2_by_site.py --investors
 
-era_report:
+era_report: db_stag_proxy_up
 	$(DOCKER_ENV_ARGS) \
 	WORKING_DIR=$(shell echo ${HOME}/slam_data/) \
 	$(STAG_ARGS) \
@@ -491,11 +493,11 @@ run_potential_ch:
 	CELERY_EAGER="False" \
 	$(python_executable) bin/potential/run_all_potential_switzerland.py
 
-ph_fill:
+ph2022_api_request: db_stag_proxy_up
 	$(DOCKER_ENV_ARGS) \
 	WORKING_DIR=$(shell echo ${HOME}/slam_data/) \
 	$(STAG_ARGS) \
-	$(python_executable) bin/ph_subsampled_filler.py
+	$(python_executable) bin/ph2022_api_request.py
 
 profiling:
 	$(DOCKER_ENV_ARGS) \
@@ -575,7 +577,7 @@ db_up:  ## Start up Postgres and PGBouncer
 	$(DOCKER_DEV) up --remove-orphans -d pgbouncer
 
 db_stag_proxy_up:
-	$(DOCKER_DEV) up -d postgres_stag
+	GCP_PROJECT_ID=$(GCP_PROJECT_ID) POSTGRES_DB_INSTANCE=$(POSTGRES_DB_INSTANCE) $(DOCKER_DEV) up -d postgres_stag
 
 db_stag_proxy_down:
 	$(DOCKER_DEV) down postgres_stag

@@ -55,9 +55,7 @@ class EnergyAreaReportForSite:
                     layout=PlanLayoutHandler(plan_id=plan["id"]).get_layout(
                         scaled=True, classified=True
                     ),
-                    area_ids_part_of_residential_units=cls._area_ids_part_of_residential_units(
-                        site_id=site_id
-                    ),
+                    area_ids_part_of_units=cls._area_ids_part_of_units(site_id=site_id),
                 )
                 for plan in PlanDBHandler.find(
                     building_id=building["id"], output_columns=["id"]
@@ -71,25 +69,21 @@ class EnergyAreaReportForSite:
                 )
                 floor_stats.floor_number = floor["floor_number"]
                 floor_stats.building_client_id = building["client_building_id"]
-                floor_stats.floor_height = PlanDBHandler.get_by(
-                    id=floor["plan_id"], output_columns=["default_wall_height"]
-                )["default_wall_height"]
-                floor_stats.total_era_volume = (
-                    floor_stats.total_era_area * floor_stats.floor_height
-                )
                 data_per_floor.append(floor_stats)
 
         return data_per_floor
 
     @classmethod
-    def _area_ids_part_of_residential_units(cls, site_id: int) -> set[int]:
+    def _area_ids_part_of_units(cls, site_id: int) -> set[int]:
         return {
             unit_area["area_id"]
             for unit_area in UnitAreaDBHandler.find_in(
                 unit_id=[
-                    unit_id
-                    for unit_id in UnitDBHandler.find_ids(
-                        site_id=site_id, unit_usage=UNIT_USAGE.RESIDENTIAL
+                    unit["id"]
+                    for unit in UnitDBHandler.find_in(
+                        site_id={site_id},
+                        unit_usage={UNIT_USAGE.RESIDENTIAL, UNIT_USAGE.COMMERCIAL},
+                        output_columns={"id"},
                     )
                 ],
                 output_columns=["area_id"],
@@ -145,7 +139,8 @@ class EnergyAreaReportForSite:
                         DetailedAreaInformation(
                             area_type=area_type,
                             area_size=area_size,
-                            is_era="True",
+                            era_area=area_size,
+                            era_volume=area_size * floor_data.floor_height,
                             floor_number=floor_data.floor_number,
                             building_client_id=floor_data.building_client_id,
                         )
@@ -156,7 +151,20 @@ class EnergyAreaReportForSite:
                         DetailedAreaInformation(
                             area_type=area_type,
                             area_size=area_size,
-                            is_era="False",
+                            era_area=0,
+                            era_volume=0,
+                            floor_number=floor_data.floor_number,
+                            building_client_id=floor_data.building_client_id,
+                        )
+                    )
+            for area_type, area_sizes in floor_data.era_areas_volume_only.items():
+                for area_size in area_sizes:
+                    area_informations.append(
+                        DetailedAreaInformation(
+                            area_type=area_type,
+                            area_size=area_size,
+                            era_area=0,
+                            era_volume=area_size * floor_data.floor_height,
                             floor_number=floor_data.floor_number,
                             building_client_id=floor_data.building_client_id,
                         )
@@ -166,7 +174,8 @@ class EnergyAreaReportForSite:
             "floor_number",
             "area_type",
             "area_size",
-            "is_era",
+            "era_area",
+            "era_volume",
         ]
         return DataFrame(data=area_informations)[column_order]
 

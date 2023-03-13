@@ -56,6 +56,7 @@ from tasks.deliverables_tasks import (
     generate_unit_plots_task,
     generate_vector_files_task,
 )
+from tasks.dev_helper_tasks import copy_site_task
 from tasks.workflow_tasks import WorkflowGenerator, slam_results_success, workflow
 
 site_app = Blueprint("site", __name__)
@@ -297,11 +298,15 @@ class QAValidationTask(MethodView):
             return True
 
     @staticmethod
-    def _qa_task_is_running(site_id: int) -> bool:
-        site = SiteDBHandler.get_by(
-            id=site_id, output_columns=["basic_features_status"]
-        )
+    def _qa_task_is_running(site: Dict) -> bool:
         return site["basic_features_status"] in (
+            ADMIN_SIM_STATUS.PENDING.name,
+            ADMIN_SIM_STATUS.PROCESSING.name,
+        )
+
+    @staticmethod
+    def _simulations_are_running(site: Dict) -> bool:
+        return site["full_slam_results"] in (
             ADMIN_SIM_STATUS.PENDING.name,
             ADMIN_SIM_STATUS.PROCESSING.name,
         )
@@ -320,9 +325,19 @@ class QAValidationTask(MethodView):
     @role_access_control(roles={USER_ROLE.TEAMMEMBER, USER_ROLE.TEAMLEADER})
     @site_app.response(schema=MsgSchema, status_code=HTTPStatus.OK)
     def post(self, site_id: int):
-        if self._qa_task_is_running(site_id=site_id):
+        site = SiteDBHandler.get_by(
+            id=site_id, output_columns=["basic_features_status", "full_slam_results"]
+        )
+        if self._qa_task_is_running(site=site):
             return (
                 jsonify(msg=f"QA task for site {site_id} is already running"),
+                HTTPStatus.BAD_REQUEST,
+            )
+        if self._simulations_are_running(site=site):
+            return (
+                jsonify(
+                    msg=f"Cannot start QA task while simulations for {site_id} are running."
+                ),
                 HTTPStatus.BAD_REQUEST,
             )
         if self._qa_data_is_missing(site_id=site_id):
@@ -640,3 +655,25 @@ class SiteTaskView(MethodView):
         return jsonify(
             msg=f"Successfully started task {task_name} for site with id [{site_id}]"
         )
+
+
+@site_app.route("/<int:site_id>/copy", methods=["POST"])
+class CopySiteView(MethodView):
+    class JsonArgsSchema(Schema):
+        client_target_id = fields.Int(required=True, allow_none=False)
+
+    @role_access_control(roles={USER_ROLE.ADMIN, USER_ROLE.ARCHILYSE_ONE_ADMIN})
+    @site_app.response(schema=MsgSchema, status_code=HTTPStatus.OK)
+    @site_app.arguments(
+        JsonArgsSchema,
+        required=True,
+        location="json",
+        as_kwargs=True,
+    )
+    def post(self, site_id: int, client_target_id: int):
+        copy_site_task.delay(
+            target_client_id=client_target_id,
+            site_id_to_copy=site_id,
+            copy_area_types=True,
+        )
+        return jsonify(msg=f"Site {site_id} is being copied")

@@ -105,6 +105,13 @@ class UnitAccessibleValidator(UnitAreaValidator):
         unit_layout = self.unit_handler.build_unit_from_area_ids(
             area_ids=self.new_area_ids, plan_id=self.plan_id
         )
+
+        # NOTE: This is necessary to have correct EBF computations
+        #       where VOIDs inside units are heated and thus need
+        #       to be able to be assigned to a unit.
+        if all([area.type == AreaType.VOID for area in unit_layout.areas]):
+            return violations
+
         if not (
             any(
                 (

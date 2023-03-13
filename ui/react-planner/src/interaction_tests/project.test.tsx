@@ -29,6 +29,7 @@ jest.mock('archilyse-ui-components', () => {
   /* eslint-enable */
 
   return {
+    // @ts-ignore
     ...jest.requireActual('archilyse-ui-components'),
     getUserRoles: () => [C.ROLES.ADMIN],
   };

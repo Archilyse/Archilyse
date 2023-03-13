@@ -39,7 +39,11 @@ from common_utils.constants import (
     VIEW_DIMENSION_2,
 )
 from handlers import AreaHandler
-from handlers.db import AreaDBHandler, ReactPlannerProjectsDBHandler
+from handlers.db import (
+    AreaDBHandler,
+    ManualSurroundingsDBHandler,
+    ReactPlannerProjectsDBHandler,
+)
 from handlers.db.qa_handler import (
     INDEX_ANF_AREA,
     INDEX_HNF_AREA,
@@ -112,7 +116,7 @@ def site(
     login,
     site_coordinates,
     site_region_proj_ch,
-):
+) -> dict:
     from handlers.db import SiteDBHandler
 
     return SiteDBHandler.add(
@@ -942,6 +946,9 @@ def site_834(
         )
     PlanDBHandler.update(item_pks={"id": plan["id"]}, new_values=plan_info)
     BuildingDBHandler.update(item_pks={"id": building["id"]}, new_values=building_info)
+    manual_surroundings = ManualSurroundingsDBHandler.add(
+        site_id=site["id"], surroundings={}
+    )
 
     return {
         "site": site,
@@ -949,6 +956,7 @@ def site_834(
         "floor": floor,
         "plan": plan,
         "units": units,
+        "manual_surroundings": manual_surroundings,
     }
 
 

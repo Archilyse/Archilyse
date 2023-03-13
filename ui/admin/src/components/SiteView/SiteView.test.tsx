@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { C } from 'Common/index';
 import { SiteView } from '../../../src/components';
 import { MOCK_AUTHENTICATION } from '../../../tests/utils';
+import { tabHeaders } from '.';
 
 afterEach(cleanup);
 
@@ -63,31 +65,35 @@ const MOCKED_QA = {
   data: Array(QA_ROWS).fill(MOCKED_QA_ROW),
 };
 
-it('renders correctly trying to create a new site', () => {
-  render(
-    <MemoryRouter initialEntries={[`/site/new?client_id=${MOCKED_CLIENT.id}`]}>
-      <SiteView site={{}} parent={MOCKED_CLIENT} />
-    </MemoryRouter>
-  );
-  expect(screen.getByText(/New site/)).toBeInTheDocument();
-});
+describe('Renders correctly', () => {
+  beforeEach(() => MOCK_AUTHENTICATION());
 
-it('renders correctly while trying to edit a site with no qa data', () => {
-  render(
-    <MemoryRouter>
-      <SiteView site={MOCKED_SITE} />
-    </MemoryRouter>
-  );
-  expect(screen.getByText(new RegExp(MOCKED_SITE.name))).toBeInTheDocument();
-});
+  it('Trying to create a new site', () => {
+    render(
+      <MemoryRouter initialEntries={[`/site/new?client_id=${MOCKED_CLIENT.id}`]}>
+        <SiteView site={{}} parent={MOCKED_CLIENT} />
+      </MemoryRouter>
+    );
+    expect(screen.getByText(/New site/)).toBeInTheDocument();
+  });
 
-it('renders correctly while trying to edit a site with qa data', () => {
-  render(
-    <MemoryRouter>
-      <SiteView site={MOCKED_SITE} qa={MOCKED_QA} isUpdated={true} />
-    </MemoryRouter>
-  );
-  expect(screen.getByText(new RegExp(MOCKED_SITE.name))).toBeInTheDocument();
+  it('While trying to edit a site with no qa data', () => {
+    render(
+      <MemoryRouter>
+        <SiteView site={MOCKED_SITE} />
+      </MemoryRouter>
+    );
+    expect(screen.getByText(new RegExp(MOCKED_SITE.name))).toBeInTheDocument();
+  });
+
+  it('While trying to edit a site with qa data', () => {
+    render(
+      <MemoryRouter>
+        <SiteView site={MOCKED_SITE} qa={MOCKED_QA} isUpdated={true} />
+      </MemoryRouter>
+    );
+    expect(screen.getByText(new RegExp(MOCKED_SITE.name))).toBeInTheDocument();
+  });
 });
 
 describe('ifc status tests', () => {
@@ -125,5 +131,40 @@ describe('ifc status tests', () => {
     fireEvent.click(getByTestId('ifc-status-tab'));
     await waitFor(() => container.querySelector('.ifc-status-container'));
     expect(screen.getByText(/SUCCESS/)).toBeInTheDocument();
+  });
+});
+
+describe('Tabs visibility', () => {
+  it(`As an ${C.ROLES.ADMIN}, I can see all tabs`, () => {
+    MOCK_AUTHENTICATION(C.ROLES.ADMIN);
+    render(
+      <MemoryRouter>
+        <SiteView site={MOCKED_SITE} />
+      </MemoryRouter>
+    );
+    tabHeaders.forEach(header => {
+      expect(screen.getByText(header)).toBeInTheDocument();
+    });
+  });
+
+  it(`As a ${C.ROLES.TEAMMEMBER}, I only see General & QA tab`, () => {
+    MOCK_AUTHENTICATION(C.ROLES.TEAMMEMBER);
+    const GENERAL_TAB = 'General';
+    const QA_TAB = 'QA';
+
+    render(
+      <MemoryRouter>
+        <SiteView site={MOCKED_SITE} />
+      </MemoryRouter>
+    );
+    // It should see General & QA
+    expect(screen.getByText(GENERAL_TAB)).toBeInTheDocument();
+    expect(screen.getByText(QA_TAB)).toBeInTheDocument();
+    // It should not see the other tabs
+    tabHeaders
+      .filter(header => ![QA_TAB, GENERAL_TAB].includes(header))
+      .forEach(header => {
+        expect(screen.queryByText(header)).not.toBeInTheDocument();
+      });
   });
 });

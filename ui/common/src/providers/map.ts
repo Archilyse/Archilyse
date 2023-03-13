@@ -119,7 +119,7 @@ const createGeoJSONLayer = (geojson, map) => {
   });
 
   newLayer.on('popupclose', e => {
-    const newSurrType = (document.getElementById('input_type') as HTMLInputElement).value;
+    const newSurrType = (document.getElementById('input_type') as HTMLInputElement)?.value;
     e.propagatedFrom.feature.properties.surrounding_type = newSurrType;
     if (newSurrType != SURROUNDING_TYPES.BUILDINGS) {
       delete e.propagatedFrom.feature.properties.height;

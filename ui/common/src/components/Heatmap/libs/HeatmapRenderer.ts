@@ -3,9 +3,10 @@ import { LatLngAltTuple } from '../../../types';
 import { drawHexagons } from '../../SimulationViewer/libs/SimRenderer';
 import { HeatmapHarpMapControls } from '../hooks/useHarpMap';
 
+const hexPadding = 0.05;
 class HeatmapRenderer {
   static getRadiusByResolution = (resolution: number): number => {
-    return resolution * 0.8; // random number that suits for hexagon well
+    return resolution - hexPadding; // Keeping padding
   };
 
   /**

@@ -8,7 +8,7 @@ from tasks.connectivity_tasks import get_hex_graph_and_resolution
 
 @pytest.mark.parametrize(
     "xymax, expected_resolution",
-    [(10, 0.25), (25, 0.5), (40, 0.75), (50, 1)],
+    [(10, 0.25), (25, 0.27), (40, 0.43), (50, 0.54)],
 )
 def test_connectivity_get_hex_graph_and_resolution(xymax, expected_resolution):
     space = SimSpace(footprint=box(0, 0, xymax, xymax))

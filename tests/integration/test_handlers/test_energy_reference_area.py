@@ -41,18 +41,22 @@ def test_generate_energy_reference_report(site_with_3_units):
 
         df_per_areas = read_excel(f.name, sheet_name="Detailed Area Information")
 
-        assert [
-            elem
-            for elem in df_per_areas.loc[
-                df_per_areas["area_type"] == AreaType.STOREROOM.name
-            ]["is_era"]
-        ] == [
-            True
-        ]  # Asserts that storerooms are counted as energy reference area as they are part of residential unit
+        assert (
+            sum(
+                [
+                    elem
+                    for elem in df_per_areas.loc[
+                        df_per_areas["area_type"] == AreaType.STOREROOM.name
+                    ]["era_area"]
+                ]
+            )
+            > 0
+        )  # Asserts that storerooms are counted as energy reference area as they are part of residential unit
         assert df_per_areas.to_dict().keys() == {
             "area_type",
             "area_size",
-            "is_era",
+            "era_area",
+            "era_volume",
             "floor_number",
             "building_client_id",
         }

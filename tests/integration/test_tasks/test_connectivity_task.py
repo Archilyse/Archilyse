@@ -1,5 +1,6 @@
 import json
 from collections import defaultdict
+from functools import partial
 from typing import Callable, Tuple
 
 import pytest
@@ -66,7 +67,7 @@ def test_connectivity_eigen_centrality_should_compute_for_each_unit_area(
 
     class EigenCentralitySimulator(ConnectivitySimulator):
         def all_simulations(self, layout) -> Tuple[str, Callable]:
-            yield "eigen_centrality", self.eigen_centrality
+            yield "eigen_centrality", partial(self.eigen_centrality, tol=iter((1e-5,)))
 
     mocker.patch.object(
         connectivity_module,
@@ -176,4 +177,4 @@ def test_connectivity_eigen_fails(site_with_1_unit, mocker):
             graph=hex_graph.connected_graph,
             area_type_filter=BaseClassificationScheme.CONNECTIVITY_UNWANTED_AREA_TYPES,
             resolution=0.5,
-        ).eigen_centrality()
+        ).eigen_centrality(tol=iter((1e-5,)))

@@ -9,6 +9,7 @@ from handlers.db import (
     BuildingDBHandler,
     ClientDBHandler,
     FloorDBHandler,
+    ManualSurroundingsDBHandler,
     PlanDBHandler,
     QADBHandler,
     ReactPlannerProjectsDBHandler,
@@ -142,6 +143,7 @@ class TestCopySite:
         nbr_of_annotations = len(ReactPlannerProjectsDBHandler.find())
         nbr_of_areas = len(AreaDBHandler.find())
         nbr_of_qa = len(QADBHandler.find())
+        nbr_of_manual_surr = len(ManualSurroundingsDBHandler.find())
 
         new_client = ClientDBHandler.add(name="Client2")
 
@@ -164,6 +166,7 @@ class TestCopySite:
         assert len(ReactPlannerProjectsDBHandler.find()) == 2 * nbr_of_annotations
         assert len(AreaDBHandler.find()) == 2 * nbr_of_areas
         assert len(QADBHandler.find()) == 2 * nbr_of_qa
+        assert len(ManualSurroundingsDBHandler.find()) == 2 * nbr_of_manual_surr
 
         assert mocked_plan_upload.call_args_list[0].kwargs[
             "destination_bucket"

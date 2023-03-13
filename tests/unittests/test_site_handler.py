@@ -444,3 +444,42 @@ def test_basic_features_generation_2_units_1_apartment(
     results = [res[1][0] for res in basic_features_by_unit_id]
     assert results[0] == results[1]
     assert not DeepDiff(expected, results[0], significant_digits=3)
+
+
+@pytest.mark.parametrize(
+    "sim_version",
+    [
+        SIMULATION_VERSION.PH_2022_H1,
+        SIMULATION_VERSION.PH_01_2021,
+        SIMULATION_VERSION.EXPERIMENTAL,
+    ],
+)
+def test_generate_view_surroundings_uses_right_sim_version(mocker, sim_version):
+    from surroundings import surrounding_handler
+
+    mocker.patch.object(
+        SiteHandler,
+        "_plan_footprints_per_building",
+        return_value={"foo": Polygon([(0, 0), (0, 1), (1, 1), (1, 0)])},
+    )
+    mocker.patch.object(
+        SiteHandler,
+        "get_projected_location",
+        return_value=Point(0, 0),
+    )
+    gen_view_mocked = mocker.patch.object(
+        surrounding_handler, "generate_view_surroundings"
+    )
+
+    site_info = {
+        "simulation_version": SIMULATION_VERSION.PH_01_2021.name,
+        "georef_region": REGION.CH.name,
+        "id": 1,
+    }
+    SiteHandler.generate_view_surroundings(
+        site_info=site_info, simulation_version=sim_version
+    )
+
+    # assert the simulation version parameter on the call to generate_view_surroundings
+    # is equal to sim_version despite the site_info having a different simulation version
+    assert gen_view_mocked.call_args[1]["simulation_version"] == sim_version

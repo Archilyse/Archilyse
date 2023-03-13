@@ -1,3 +1,5 @@
+from math import sqrt
+
 from brooks.classifications import CLASSIFICATIONS
 from brooks.models import SimLayout
 from brooks.types import AreaType
@@ -23,8 +25,6 @@ def connectivity_simulation_task(self, site_id: int, run_id: str):
     for unit_info, unit_layout in SiteHandler.get_unit_layouts(
         site_id=site_id, scaled=True, georeferenced=True
     ):
-        # TODO remove once classification scheme is properly initialized always
-        unit_layout.classification_scheme = classification_scheme
         obs_points, unit_results, resolution = generate_unit_simulations_results(
             area_types_filter=classification_scheme.CONNECTIVITY_UNWANTED_AREA_TYPES,
             unit_id=unit_info["id"],
@@ -63,7 +63,7 @@ def generate_unit_simulations_results(
         try:
             simulation_results[f"connectivity_{sim_name}"] = sim()
         except ConnectivityEigenFailedConvergenceException:
-            logger.warning(
+            logger.error(
                 f"connectivity_{sim_name} failed to converge for unit id {unit_id}"
             )
     return hex_graph.obs_points, simulation_results, resolution
@@ -76,12 +76,8 @@ def get_hex_graph_and_resolution(
 
     if unit_polygon.area < 450:
         resolution = 0.25
-    elif unit_polygon.area < 900:
-        resolution = 0.5
-    elif unit_polygon.area < 1900:
-        resolution = 0.75
     else:
-        resolution = 1.0
+        resolution = round(sqrt(unit_polygon.area / 15000 * sqrt(3)), 2)
 
     hex_graph = HexagonizerGraph(
         polygon=unit_polygon,

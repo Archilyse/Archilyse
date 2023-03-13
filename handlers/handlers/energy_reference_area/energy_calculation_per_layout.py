@@ -1,4 +1,5 @@
 from collections import defaultdict
+from itertools import chain
 
 from shapely.affinity import scale
 from shapely.geometry import CAP_STYLE, JOIN_STYLE, LineString, Point, Polygon
@@ -6,7 +7,6 @@ from shapely.ops import orient, unary_union
 from shapely.validation import make_valid
 
 from brooks.classifications import UnifiedClassificationScheme
-from brooks.constants import GENERIC_HEIGHTS
 from brooks.models import SimArea, SimLayout
 from brooks.types import AreaType, SeparatorType, SIACategory
 from common_utils.constants import (
@@ -21,31 +21,66 @@ from handlers.energy_reference_area.models import EnergyAreasStatsPerFloor
 class EnergyAreaStatsLayout:
     @classmethod
     def energy_area_in_layout(
-        cls, layout: SimLayout, area_ids_part_of_residential_units: set[int]
+        cls, layout: SimLayout, area_ids_part_of_units: set[int]
     ) -> EnergyAreasStatsPerFloor:
-        era_areas_by_type, non_era_areas_by_type = cls._areas_by_era_and_type(
-            layout=layout
+        (
+            era_areas_by_type,
+            non_era_areas_by_type,
+            era_areas_volume_only_by_type,
+        ) = cls._areas_by_era_and_type(
+            layout=layout, area_ids_part_of_units=area_ids_part_of_units
         )
 
         walls = [separator.footprint for separator in layout.separators]
         walls_union = unary_union(walls)
-
         era_wall_area = cls._walls_area_part_of_era(
             walls=walls,
             era_areas=[
                 area.footprint for areas in era_areas_by_type.values() for area in areas
             ],
         )
-
-        return EnergyAreasStatsPerFloor(
-            total_era_area=sum(
+        total_era_area = (
+            sum(
                 [
                     area.footprint.area
                     for areas in era_areas_by_type.values()
                     for area in areas
                 ]
             )
-            + era_wall_area,
+            + era_wall_area
+        )
+
+        # NOTE: E.g. VOIDs inside units only contribute to the volume
+        era_wall_area_for_volume = cls._walls_area_part_of_era(
+            walls=walls,
+            era_areas=[
+                area.footprint
+                for areas in chain(
+                    era_areas_by_type.values(), era_areas_volume_only_by_type.values()
+                )
+                for area in areas
+            ],
+        )
+        total_era_area_for_volume = (
+            sum(
+                [
+                    area.footprint.area
+                    for areas in chain(
+                        era_areas_by_type.values(),
+                        era_areas_volume_only_by_type.values(),
+                    )
+                    for area in areas
+                ]
+            )
+            + era_wall_area_for_volume
+        )
+
+        floor_height = (
+            layout.default_element_heights[SeparatorType.WALL][1]
+            - layout.default_element_heights[SeparatorType.WALL][0]
+        )
+        return EnergyAreasStatsPerFloor(
+            total_era_area=total_era_area,
             total_non_era_area=sum(
                 [
                     area.footprint.area
@@ -64,28 +99,38 @@ class EnergyAreaStatsLayout:
                 area_type.name: [area.footprint.area for area in areas]
                 for area_type, areas in non_era_areas_by_type.items()
             },
-            # Default value
-            floor_height=GENERIC_HEIGHTS[SeparatorType.WALL][1],
+            era_areas_volume_only={
+                area_type.name: [area.footprint.area for area in areas]
+                for area_type, areas in era_areas_volume_only_by_type.items()
+            },
+            floor_height=floor_height,
+            total_era_volume=total_era_area_for_volume * floor_height,
         )
 
     @classmethod
     def _areas_by_era_and_type(
-        cls, layout: SimLayout
+        cls, layout: SimLayout, area_ids_part_of_units: set[int]
     ) -> tuple[
-        defaultdict[AreaType, list[SimArea]], defaultdict[AreaType, list[SimArea]]
+        defaultdict[AreaType, list[SimArea]],
+        defaultdict[AreaType, list[SimArea]],
+        defaultdict[AreaType, list[SimArea]],
     ]:
         era_areas_by_type = defaultdict(list)
         non_era_areas_by_type = defaultdict(list)
-
+        era_areas_volume_only_by_type = defaultdict(list)
         for area_type, areas in layout.areas_by_type.items():
             for area in areas:
                 if cls._is_era_area(
                     area=area,
                 ):
                     era_areas_by_type[area_type].append(area)
+                elif cls._is_era_area_volume_only(
+                    area=area, is_in_unit=area.db_area_id in area_ids_part_of_units
+                ):
+                    era_areas_volume_only_by_type[AreaType.VOID].append(area)
                 else:
                     non_era_areas_by_type[area_type].append(area)
-        return era_areas_by_type, non_era_areas_by_type
+        return era_areas_by_type, non_era_areas_by_type, era_areas_volume_only_by_type
 
     @classmethod
     def _is_era_area(cls, area: SimArea):
@@ -97,6 +142,11 @@ class EnergyAreaStatsLayout:
 
         else:
             return AREA_TYPE_ERA_MAPPING[area.type.name]
+
+    @classmethod
+    def _is_era_area_volume_only(cls, area: SimArea, is_in_unit: bool) -> bool:
+        # NOTE: If a void is inside a unit it is always heated, it does not contribute to the area but to the volume!
+        return area.type == AreaType.VOID and is_in_unit
 
     @classmethod
     def _walls_area_part_of_era(

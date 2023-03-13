@@ -9,6 +9,7 @@ class EnergyAreasStatsPerFloor:
     era_wall_area: float
     era_areas: dict[str, list[float]]
     non_era_areas: dict[str, list[float]]
+    era_areas_volume_only: dict[str, list[float]]
     floor_height: float
     floor_number: Optional[int] = None
     building_client_id: Optional[str] = None
@@ -19,6 +20,7 @@ class EnergyAreasStatsPerFloor:
 class DetailedAreaInformation:
     area_type: str
     area_size: float
-    is_era: str
+    era_area: float
+    era_volume: float
     floor_number: Optional[int] = None
     building_client_id: Optional[str] = None
