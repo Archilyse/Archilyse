@@ -1,5 +1,5 @@
 import { State } from '../../models';
-import { Hole as HoleType } from '../../types';
+import { Hole as HoleType, State as StateType } from '../../types';
 import { Hole, Item, Line } from '../../class/export';
 import { OPENING_TYPE, SeparatorsType } from '../../constants';
 import MyCatalog from '../../catalog-elements/mycatalog';
@@ -20,7 +20,7 @@ export const getCleanMockState = () => {
   });
 };
 // @TODO: Add type here and see everything implode
-export const getMockState = (jsMock: any = MOCK_STATE): State =>
+export const getMockState = (jsMock: any = MOCK_STATE): StateType =>
   cloneDeep(new State({ ...jsMock, catalog: MyCatalog }));
 
 export const addLineToState = (

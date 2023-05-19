@@ -1,12 +1,21 @@
-import { MOCK_STATE } from '../tests/utils';
-import { MODE_COPY_PASTE, MODE_DRAWING_LINE, MODE_IDLE } from '../constants';
+import { MOCK_SCENE, MOCK_STATE } from '../tests/utils';
+import { MODE_COPY_PASTE, MODE_DRAWING_LINE, MODE_IDLE, OPENING_TYPE } from '../constants';
 import { ProviderHash } from '../providers';
 import { getMockState } from '../tests/utils/tests-utils';
-import { MOCK_DEMO_SCENE, MOCK_SCENE_HISTORY, MOCK_SNAP_ELEMENTS, SELECTED_LAYER_ID } from './project.testMocks';
-import { Project } from './export';
+import { Hole, Item, State } from '../types';
+import { doorHasWings } from '../utils/state-utils';
+import cloneDeep from '../utils/clone-deep';
+import {
+  MOCK_DEMO_SCENE,
+  MOCK_PREDICTION,
+  MOCK_SCENE_HISTORY,
+  MOCK_SNAP_ELEMENTS,
+  SELECTED_LAYER_ID,
+} from './project.testMocks';
+import Project from './project';
 
 describe('Project class methods', () => {
-  let state;
+  let state: State;
 
   beforeEach(() => {
     const mockState = {
@@ -123,6 +132,83 @@ describe('Project class methods', () => {
 
       expect(undo).not.toHaveBeenCalled();
       expect(updatedState.mode).toBe(MODE_IDLE);
+    });
+  });
+
+  describe('loadPrediction', () => {
+    let mockPrediction;
+
+    const EXPECTED_HOLES = [
+      { type: MOCK_PREDICTION.holes[0].properties.label.toLowerCase() },
+      { type: MOCK_PREDICTION.holes[1].properties.label.toLowerCase() },
+    ];
+
+    const EXPECTED_ITEMS = [
+      { type: MOCK_PREDICTION.items[0].properties.label.toLowerCase(), x: 758.5, y: 777.5 },
+      { type: MOCK_PREDICTION.items[1].properties.label.toLowerCase(), x: 842, y: 667.5 },
+    ];
+
+    beforeEach(() => {
+      state = getMockState({ ...MOCK_STATE, scene: MOCK_SCENE, snapMask: {} });
+
+      state.scene.layers[SELECTED_LAYER_ID].holes = {};
+      state.scene.layers[SELECTED_LAYER_ID].items = {};
+      Object.values(state.scene.layers[SELECTED_LAYER_ID].lines).forEach(line => {
+        line.holes = [];
+      });
+      mockPrediction = cloneDeep(MOCK_PREDICTION); // Otherwise there will be side-effects
+    });
+
+    it('Add holes to the state: Always without sweeping points', () => {
+      const updatedState = Project.loadPrediction(state, mockPrediction).updatedState;
+
+      const addedHoles = Object.values(updatedState.scene.layers[SELECTED_LAYER_ID].holes);
+      expect(addedHoles.length).toBe(EXPECTED_HOLES.length);
+
+      addedHoles.forEach((Hole: Hole, index: number) => {
+        const expectedHole = EXPECTED_HOLES[index];
+
+        // Door with sweeping points should be rendered as sliding doors
+        if (doorHasWings(expectedHole.type)) {
+          expect(Hole.type).toBe(OPENING_TYPE.SLIDING_DOOR);
+        } else {
+          expect(Hole.type).toBe(expectedHole.type);
+        }
+      });
+    });
+
+    it('Add items to the state', () => {
+      const updatedState = Project.loadPrediction(state, mockPrediction).updatedState;
+
+      const addedItems = Object.values(updatedState.scene.layers[SELECTED_LAYER_ID].items);
+      expect(addedItems.length).toBe(EXPECTED_ITEMS.length);
+
+      addedItems.forEach((item: Item, index: number) => {
+        const expectedItem = EXPECTED_ITEMS[index];
+
+        expect(item.type).toBe(expectedItem.type);
+        expect(item.x).toBe(expectedItem.x);
+        expect(item.y).toBe(expectedItem.y);
+      });
+    });
+
+    it('Does not add holes or items again if they are already added', () => {
+      state = Project.loadPrediction(state, mockPrediction).updatedState;
+
+      let addedHoles = Object.values(state.scene.layers[SELECTED_LAYER_ID].holes);
+      let addedItems = Object.values(state.scene.layers[SELECTED_LAYER_ID].items);
+
+      expect(addedHoles.length).toBe(EXPECTED_HOLES.length);
+      expect(addedItems.length).toBe(EXPECTED_ITEMS.length);
+
+      // If we load the prediction again
+      state = Project.loadPrediction(state, mockPrediction).updatedState;
+
+      // There should be the same number of items and holes as they are not added again
+      addedHoles = Object.values(state.scene.layers[SELECTED_LAYER_ID].holes);
+      addedItems = Object.values(state.scene.layers[SELECTED_LAYER_ID].items);
+      expect(addedHoles.length).toBe(EXPECTED_HOLES.length);
+      expect(addedItems.length).toBe(EXPECTED_ITEMS.length);
     });
   });
 });

@@ -7,11 +7,11 @@ from typing import Dict, List, Tuple
 import ifcopenshell
 from methodtools import lru_cache
 from shapely.geometry import MultiPoint, Point, Polygon
-from shapely.ops import unary_union
 
 from brooks.classifications import UnifiedClassificationScheme
 from brooks.models import SimLayout
 from brooks.types import SeparatorType
+from brooks.util.geometry_ops import remove_small_holes_and_lines
 from brooks.util.projections import project_geometry
 from brooks.utils import get_default_element_height, get_default_element_upper_edge
 from common_utils.constants import REGION
@@ -68,7 +68,10 @@ class IfcExportHandler:
             ifc_floors_by_id=ifc_floors_by_id,
             ifc_areas_by_id_and_floor_id=ifc_areas_by_id_and_floor_id,
         )
-        self.add_slabs(ifc_floors_by_id=ifc_floors_by_id)
+        self.add_floor_slabs(ifc_floors_by_id=ifc_floors_by_id)
+        self.add_ceiling_slabs(
+            ifc_floors_by_id=ifc_floors_by_id, ifc_buildings_by_id=ifc_buildings_by_id
+        )
         self.current_ifc_file.write(output_filename)
 
     def add_site(self) -> IfcSite:
@@ -161,7 +164,9 @@ class IfcExportHandler:
                 polygon=area.footprint,
                 area_type=area.type.name,
                 area_number_in_floor=i,
-                start_elevation_relative_to_floor=0,
+                start_elevation_relative_to_floor=self.get_floor_slab_height(
+                    floor_id=floor_id
+                ),
                 height=get_default_element_upper_edge(
                     element_type=SeparatorType.WALL,
                     default=layout.default_element_heights,
@@ -223,12 +228,15 @@ class IfcExportHandler:
 
             # Separators
             for separator in floor_layout.non_overlapping_separators:
-                ifc_separator = EntityIfcMapper.add_wall_railing_slab_furniture(
+                ifc_separator = EntityIfcMapper.add_generic_element(
                     ifc_file=self.current_ifc_file,
                     ifc_floor=ifc_floor,
                     context=self.context,
                     polygon=separator.footprint,
-                    start_elevation_relative_to_floor=separator.height[0],
+                    start_elevation_relative_to_floor=self.get_floor_slab_height(
+                        floor_id=floor_id
+                    )
+                    + separator.height[0],
                     height=separator.height[1] - separator.height[0],
                     element_type=ELEMENT_IFC_TYPES[separator.type],
                     Name=separator.type.name.capitalize(),
@@ -283,12 +291,15 @@ class IfcExportHandler:
                             Name=feature_type.name.capitalize(),
                         )
                     else:
-                        ifc_feature = EntityIfcMapper.add_wall_railing_slab_furniture(
+                        ifc_feature = EntityIfcMapper.add_generic_element(
                             ifc_file=self.current_ifc_file,
                             ifc_floor=ifc_floor,
                             context=self.context,
                             polygon=feature.footprint,
-                            start_elevation_relative_to_floor=feature.height[0],
+                            start_elevation_relative_to_floor=self.get_floor_slab_height(
+                                floor_id=floor_id
+                            )
+                            + feature.height[0],
                             height=feature.height[1] - feature.height[0],
                             element_type=ELEMENT_IFC_TYPES[feature.type],
                             Name=feature_type.name.capitalize(),
@@ -310,105 +321,162 @@ class IfcExportHandler:
                     elements=floor_elements,
                 )
 
-    def add_slabs(self, ifc_floors_by_id: Dict[int, IfcBuildingStorey]):
-        for _, building_floors_info in groupby(
-            self.floor_infos, lambda z: z["building_id"]
+    @cached_property
+    def floor_layout_by_building_id_and_floor_number(self):
+        layouts = {}
+        for building_id, building_floors_info in groupby(
+            sorted(self.floor_infos, key=lambda z: z["building_id"]),
+            key=lambda z: z["building_id"],
         ):
-            building_floors_info_list = [
-                floor_info for floor_info in building_floors_info
-            ]
-
-            floors_info_by_id = {
+            floor_info_by_id = {
                 floor_info["floor_number"]: floor_info
-                for floor_info in building_floors_info_list
+                for floor_info in building_floors_info
             }
 
-            layouts_by_floor_number = {
+            layouts[building_id] = {
                 floor_info["floor_number"]: self.floor_layouts_relative_by_floor_id[
                     floor_info["id"]
                 ]
-                for floor_info in building_floors_info_list
+                for floor_info in floor_info_by_id.values()
             }
+
+        return layouts
+
+    def add_floor_slabs(self, ifc_floors_by_id: Dict[int, IfcBuildingStorey]):
+        for building_id, building_floors_info in groupby(
+            sorted(self.floor_infos, key=lambda z: z["building_id"]),
+            key=lambda z: z["building_id"],
+        ):
+            floor_info_by_id = {
+                floor_info["floor_number"]: floor_info
+                for floor_info in building_floors_info
+            }
+
+            layout_by_floor_number = self.floor_layout_by_building_id_and_floor_number[
+                building_id
+            ]
 
             ifc_floor_by_floor_number = {
                 floor_info["floor_number"]: ifc_floors_by_id[floor_info["id"]]
-                for floor_info in building_floors_info_list
+                for floor_info in floor_info_by_id.values()
             }
 
-            for floor_number in sorted(layouts_by_floor_number.keys()):
-                floor_id = floors_info_by_id[floor_number]["id"]
-                lower_floor_layout = layouts_by_floor_number[floor_number]
-                upper_floor_layout = layouts_by_floor_number.get(floor_number + 1)
+            # Here we are adding the floors
+            for floor_number in sorted(layout_by_floor_number.keys()):
+                floor_id = floor_info_by_id[floor_number]["id"]
+                floor_layout = layout_by_floor_number[floor_number]
+                lower_floor_layout = layout_by_floor_number.get(floor_number - 1)
+                slab_height = self.get_floor_slab_height(floor_id=floor_id)
 
-                ifc_slabs = []
-                if floor_number == min(layouts_by_floor_number.keys()):
-                    for polygon in as_multipolygon(
-                        lower_floor_layout.footprint_ex_areas_without_floor
-                    ).geoms:
-                        ifc_slabs.append(
-                            self._add_slab(
-                                ifc_floor=ifc_floors_by_id[floor_id],
-                                polygon=polygon,
-                                name="Floor",
-                                predefined_type="BASESLAB",
-                                start_elevation_relative_to_floor=0,
-                                height=-get_default_element_height(
-                                    element_type="FLOOR_SLAB",
-                                    default=lower_floor_layout.default_element_heights,
-                                ),
-                            )
-                        )
+                slab_type = "FLOOR" if lower_floor_layout else "BASESLAB"
+                slab_name = (
+                    f"Floor Slab {floor_number}" if lower_floor_layout else "Base Slab"
+                )
 
-                if not upper_floor_layout:
-                    for polygon in as_multipolygon(
-                        lower_floor_layout.footprint_ex_areas_without_ceiling
-                    ).geoms:
-                        ifc_slabs.append(
-                            self._add_slab(
-                                ifc_floor=ifc_floors_by_id[floor_id],
-                                polygon=polygon,
-                                name="Roof",
-                                predefined_type="ROOF",
-                                start_elevation_relative_to_floor=get_default_element_height(
-                                    element_type=SeparatorType.WALL,
-                                    default=lower_floor_layout.default_element_heights,
-                                ),
-                                height=get_default_element_height(
-                                    element_type="CEILING_SLAB",
-                                    default=lower_floor_layout.default_element_heights,
-                                ),
-                            )
-                        )
-                else:
-                    for polygon in as_multipolygon(
-                        unary_union(
-                            [
-                                lower_floor_layout.footprint_ex_areas_without_ceiling,
-                                upper_floor_layout.footprint_ex_areas_without_floor,
-                            ]
-                        )
-                    ).geoms:
-                        ifc_slabs.append(
-                            self._add_slab(
-                                ifc_floor=ifc_floors_by_id[floor_id],
-                                polygon=polygon,
-                                name="Floor",
-                                predefined_type="FLOOR",
-                                start_elevation_relative_to_floor=get_default_element_height(
-                                    element_type=SeparatorType.WALL,
-                                    default=lower_floor_layout.default_element_heights,
-                                ),
-                                height=get_default_element_height(
-                                    element_type="CEILING_SLAB",
-                                    default=lower_floor_layout.default_element_heights,
-                                ),
-                            )
-                        )
+                floor_polygon = floor_layout.footprint_ex_areas_without_floor
+                if lower_floor_layout:
+                    floor_polygon = floor_polygon.difference(
+                        lower_floor_layout.footprint_areas_without_ceiling
+                    )
+                floor_polygon = remove_small_holes_and_lines(
+                    geometry=floor_polygon, allow_empty=True
+                )
+
+                ifc_slabs = [
+                    self._add_slab(
+                        ifc_floor=ifc_floors_by_id[floor_id],
+                        polygon=polygon,
+                        name=slab_name,
+                        predefined_type=slab_type,
+                        start_elevation_relative_to_floor=0,
+                        height=slab_height,
+                    )
+                    for polygon in as_multipolygon(floor_polygon).geoms
+                    if not polygon.is_empty
+                ]
+
                 EntityIfcMapper.add_elements_to_floor(
                     ifc_file=self.current_ifc_file,
                     floor=ifc_floor_by_floor_number[floor_number],
                     elements=ifc_slabs,
                 )
+
+    def add_ceiling_slabs(
+        self,
+        ifc_floors_by_id: Dict[int, IfcBuildingStorey],
+        ifc_buildings_by_id: Dict[int, IfcBuilding],
+    ):
+        for building_id, building_floors_info in groupby(
+            sorted(self.floor_infos, key=lambda z: z["building_id"]),
+            key=lambda z: z["building_id"],
+        ):
+            floor_info_by_floor_number = {
+                floor_info["floor_number"]: floor_info
+                for floor_info in building_floors_info
+            }
+
+            layout_by_floor_number = self.floor_layout_by_building_id_and_floor_number[
+                building_id
+            ]
+
+            for floor_number in sorted(layout_by_floor_number.keys()):
+                floor_id = floor_info_by_floor_number[floor_number]["id"]
+                floor_layout = layout_by_floor_number[floor_number]
+                upper_floor_layout = layout_by_floor_number.get(floor_number + 1)
+
+                roof_geometries = floor_layout.footprint_ex_areas_without_ceiling
+                if upper_floor_layout:
+                    roof_geometries = roof_geometries.difference(
+                        upper_floor_layout.footprint
+                    )
+                roof_geometries = remove_small_holes_and_lines(
+                    geometry=roof_geometries, allow_empty=True
+                )
+
+                # Only the upmost floor is creating a roof slab actually.
+                # other ceiling slabs are created as floors of the floor above
+                if upper_floor_layout:
+                    upper_floor_id = floor_info_by_floor_number[floor_number + 1]["id"]
+                    slab_type = "FLOOR"
+                    slab_name = f"Floor Slab {floor_number + 1}"
+                    slab_height = self.get_floor_slab_height(floor_id=upper_floor_id)
+                else:
+                    slab_type = "ROOF"
+                    slab_name = "Roof Slab"
+                    slab_height = self.get_ceiling_slab_height(floor_id=floor_id)
+
+                ifc_slabs = [
+                    self._add_slab(
+                        ifc_floor=ifc_floors_by_id[floor_id],
+                        polygon=polygon,
+                        name=slab_name,
+                        predefined_type=slab_type,
+                        start_elevation_relative_to_floor=get_default_element_height(
+                            element_type=SeparatorType.WALL,
+                            default=floor_layout.default_element_heights,
+                        )
+                        + self.get_floor_slab_height(floor_id=floor_id),
+                        height=slab_height,
+                    )
+                    for polygon in as_multipolygon(roof_geometries).geoms
+                    if not polygon.is_empty
+                ]
+
+                # The roof is added to the building while the generated slabs
+                # of type FLOOR are added to the floor above
+                if upper_floor_layout:
+                    upper_floor_id = floor_info_by_floor_number[floor_number + 1]["id"]
+                    EntityIfcMapper.add_elements_to_floor(
+                        ifc_file=self.current_ifc_file,
+                        floor=ifc_floors_by_id[upper_floor_id],
+                        elements=ifc_slabs,
+                    )
+                else:
+                    EntityIfcMapper.add_elements_to_building(
+                        ifc_file=self.current_ifc_file,
+                        building=ifc_buildings_by_id[building_id],
+                        elements=ifc_slabs,
+                    )
 
     def _add_slab(
         self,
@@ -419,7 +487,7 @@ class IfcExportHandler:
         height: float,
         start_elevation_relative_to_floor: float,
     ) -> IfcBuildingElement:
-        return EntityIfcMapper.add_wall_railing_slab_furniture(
+        return EntityIfcMapper.add_generic_element(
             ifc_file=self.current_ifc_file,
             ifc_floor=ifc_floor,
             context=self.context,
@@ -572,7 +640,48 @@ class IfcExportHandler:
 
     @lru_cache()
     def get_floor_altitude(self, floor_id: int) -> float:
-        return FloorHandler.get_level_baseline(floor_id=floor_id)
+        return FloorHandler.get_level_baseline(
+            floor_id=floor_id
+        ) - self.get_floor_slab_height(floor_id=floor_id)
+
+    @lru_cache()
+    def get_floor_slab_height(self, floor_id: int) -> float:
+        floor_info = self._floor_id_to_floor_info[floor_id]
+        building_id, floor_number = (
+            floor_info["building_id"],
+            floor_info["floor_number"],
+        )
+
+        floor_layout = self.floor_layout_by_building_id_and_floor_number[building_id][
+            floor_number
+        ]
+        lower_floor_layout = self.floor_layout_by_building_id_and_floor_number[
+            building_id
+        ].get(floor_number - 1)
+
+        if lower_floor_layout is None:
+            return get_default_element_height(
+                "FLOOR_SLAB", default=floor_layout.default_element_heights
+            )
+
+        return get_default_element_height(
+            "CEILING_SLAB", default=lower_floor_layout.default_element_heights
+        )
+
+    @lru_cache()
+    def get_ceiling_slab_height(self, floor_id: int) -> float:
+        floor_info = self._floor_id_to_floor_info[floor_id]
+        building_id, floor_number = (
+            floor_info["building_id"],
+            floor_info["floor_number"],
+        )
+
+        floor_layout = self.floor_layout_by_building_id_and_floor_number[building_id][
+            floor_number
+        ]
+        return get_default_element_height(
+            "CEILING_SLAB", default=floor_layout.default_element_heights
+        )
 
     # Util
 

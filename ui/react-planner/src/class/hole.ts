@@ -5,24 +5,19 @@ import NameGenerator from '../utils/name-generator';
 import * as SnapSceneUtils from '../utils/snap-scene';
 import cloneDeep from '../utils/clone-deep';
 import { nearestSnap } from '../utils/snap';
-import { getSelected, getSelectedLayer } from '../utils/state-utils';
+import { doorHasWings, getSelected, getSelectedLayer } from '../utils/state-utils';
 import {
   METRICS_EVENTS,
   MIN_HOLE_LENGTH,
   MODE_DRAGGING_HOLE,
   MODE_DRAWING_HOLE,
   MODE_IDLE,
-  OPENING_TYPE,
   PrototypesEnum,
   SeparatorsType,
 } from '../constants';
-import { Hole as HoleType, Line as LineType, State, UpdatedStateObject } from '../types';
+import { Hole as HoleType, Line as LineType, OpeningType, State, UpdatedStateObject } from '../types';
 import { ProviderMetrics } from '../providers';
 import Layer from './layer';
-
-type OpeningType = typeof OPENING_TYPE[keyof typeof OPENING_TYPE];
-
-const doorHasWings = (holeType: OpeningType) => holeType == OPENING_TYPE.DOOR || holeType == OPENING_TYPE.ENTRANCE_DOOR;
 
 const getNextRotationProperties = hole => {
   const { flip_horizontal, flip_vertical } = hole.properties;
@@ -469,6 +464,11 @@ class Hole {
     state.drawingSupport = { ...state.drawingSupport, properties: hole.properties };
 
     return { updatedState: state };
+  }
+
+  // IMPORTANT: This returns the polygon without the sweeping points
+  static getPolygon(hole: HoleType) {
+    return GeometryUtils.createPolygon(hole.coordinates);
   }
 
   static getPolygonPoints(state, lineId, snapPoint, options = { openingLengthInCm: undefined, holeID: undefined }) {

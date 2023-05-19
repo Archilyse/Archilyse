@@ -180,7 +180,7 @@ class EntityIfcMapper:
     # PHYSICAL ELEMENTS
 
     @staticmethod
-    def add_wall_railing_slab_furniture(
+    def add_generic_element(
         ifc_file,
         ifc_floor: IfcBuildingStorey,
         context: IfcRepresentationContext,
@@ -434,6 +434,17 @@ class EntityIfcMapper:
         return IfcRelationshipGenerator.add_children_to_object(
             ifc_file=ifc_file,
             ifc_object=area,
+            children=elements,
+            relationship_type=IfcRelContainedInSpatialStructure,
+        )
+
+    @staticmethod
+    def add_elements_to_building(
+        ifc_file: ifcopenshell.file, building: IfcBuilding, elements: List[IfcElement]
+    ):
+        return IfcRelationshipGenerator.add_children_to_object(
+            ifc_file=ifc_file,
+            ifc_object=building,
             children=elements,
             relationship_type=IfcRelContainedInSpatialStructure,
         )

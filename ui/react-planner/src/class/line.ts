@@ -129,6 +129,7 @@ class Line {
     }, []);
   }
 
+  // @TODO: This method does not modify state, should be outside the class
   static calculateAuxVertices(scene, mainVertices, lineProperties) {
     const [v0, v1] = GeometryUtils.orderVertices(mainVertices);
     const points = { x1: v0.x, y1: v0.y, x2: v1.x, y2: v1.y };
@@ -699,6 +700,7 @@ class Line {
     return { updatedState: state };
   }
 
+  //@TODO: All options should be inside options object, not as additional parameters
   static recreateLineShape(
     state,
     layerID,

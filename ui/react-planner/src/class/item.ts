@@ -25,15 +25,7 @@ import Area from './area';
 const MAXIMUM_OVERLAP_PERCENTAGE_ALLOWED = 0.005;
 
 class Item {
-  static create(
-    state,
-    layerID,
-    type,
-    x,
-    y,
-    rotation = undefined,
-    properties = undefined
-  ): UpdatedStateObject & { item: ItemType } {
+  static create(state, layerID, type, x, y, rotation, properties = undefined): UpdatedStateObject & { item: ItemType } {
     const itemID = IDBroker.acquireID();
 
     const item = state.catalog.factoryElement(

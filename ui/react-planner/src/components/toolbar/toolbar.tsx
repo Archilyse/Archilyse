@@ -1,10 +1,11 @@
 import { FaExpand, FaMousePointer, FaPlus, FaRulerHorizontal } from 'react-icons/fa';
-import { MdCopyAll, MdOutlineCropRotate, MdUndo } from 'react-icons/md';
+import { MdBatchPrediction, MdCopyAll, MdOutlineCropRotate, MdUndo } from 'react-icons/md';
 import { BiImport, BiRectangle } from 'react-icons/bi';
 import { bindActionCreators } from 'redux';
 import { batch, connect } from 'react-redux';
 import { IoMdHelp } from 'react-icons/io';
 import React from 'react';
+import { getUserRoles } from 'archilyse-ui-components';
 import { objectsMap } from '../../utils/objects-utils';
 import { linesActions, projectActions } from '../../actions/export';
 import {
@@ -14,6 +15,7 @@ import {
   MODE_IMPORT_ANNOTATIONS,
   MODE_RECTANGLE_TOOL,
   MODE_ROTATE_SCALE_BACKGROUND,
+  ROLES,
   SCALING_REQUIRED_MEASUREMENT_COUNT,
   SNACKBAR_DURATION_FOREVER,
 } from '../../constants';
@@ -29,12 +31,14 @@ type ToolBarProps = {
   alterate: boolean;
   scaleValidated: boolean;
   scaleAllowed: boolean;
+  predictionAllowed: boolean;
   isScaling: boolean;
   mustImportAnnotations: boolean;
   catalogToolbarOpened: boolean;
   width: number;
   height: number;
   projectActions: any;
+  planId: number;
 };
 
 const ASIDE_STYLE = {
@@ -55,16 +59,21 @@ const Toolbar = React.memo(
     alterate,
     scaleValidated,
     scaleAllowed,
+    predictionAllowed,
     isScaling,
     mustImportAnnotations,
     catalogToolbarOpened,
     width,
     height,
     projectActions,
+    planId,
   }: ToolBarProps): JSX.Element => {
     const alterateColor = alterate ? SharedStyle.MATERIAL_COLORS[500].orange : '';
 
     const canDraw = scaleValidated && mode !== MODE_IMPORT_ANNOTATIONS;
+    const userRole = getUserRoles();
+    const isAdmin = userRole.includes(ROLES.ADMIN);
+
     const sorter = [
       {
         condition: canDraw,
@@ -167,6 +176,21 @@ const Toolbar = React.memo(
         ),
       },
       {
+        condition: predictionAllowed && isAdmin,
+        dom: (
+          <ToolbarButton
+            id="get-prediction-buttonbutton"
+            active={mode === MODE_ROTATE_SCALE_BACKGROUND}
+            tooltip={'Auto-label'}
+            onClick={event => {
+              projectActions.getPredictionAsync(planId);
+            }}
+          >
+            <MdBatchPrediction />
+          </ToolbarButton>
+        ),
+      },
+      {
         condition: true,
         dom: (
           <ToolbarButton active={false} tooltip={'Fit to screen'} onClick={event => projectActions.fitToScreen()}>
@@ -241,16 +265,20 @@ const Toolbar = React.memo(
 
 function mapStateToProps(state) {
   state = state['react-planner'];
-  const { mode, alterate, scaleValidated, catalogToolbarOpened, mustImportAnnotations } = state;
-  const scaleAllowed = !projectHasAnnotations(state);
+  const somethingHasBeenDrawn = projectHasAnnotations(state);
+  const { mode, alterate, scaleValidated, catalogToolbarOpened, mustImportAnnotations, planInfo } = state;
+  const scaleAllowed = !somethingHasBeenDrawn;
+  const predictionAllowed = somethingHasBeenDrawn;
   return {
     mode,
     isScaling: isScaling(state),
     alterate,
     scaleValidated,
     scaleAllowed,
+    predictionAllowed,
     catalogToolbarOpened,
     mustImportAnnotations,
+    planId: planInfo?.id,
   };
 }
 

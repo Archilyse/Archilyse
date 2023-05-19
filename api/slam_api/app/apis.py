@@ -16,6 +16,7 @@ from slam_api.apis.file import file_app
 from slam_api.apis.floor import floor_app
 from slam_api.apis.folder import folder_app
 from slam_api.apis.group import group_app
+from slam_api.apis.layout_predictor.endpoints import layout_predictor_app
 from slam_api.apis.login import login_app
 from slam_api.apis.manual_surroundings import manual_surroundings_app
 from slam_api.apis.plan import plan_app
@@ -50,6 +51,7 @@ PRIVATE_BLUEPRINTS = (
     (competition_app, "/competition"),
     (potential_private_api, "/potential"),
     (manual_surroundings_app, "/manualsurroundings"),
+    (layout_predictor_app, "/layout_predictor"),
 )
 
 

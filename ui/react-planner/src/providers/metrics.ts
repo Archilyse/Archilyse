@@ -1,5 +1,5 @@
 // This provider assumes we are using Simple Analytics and its custom events feature: https://docs.simpleanalytics.com/events
-import { METRICS_EVENTS } from '../constants';
+import { METRICS_EVENTS, PREDICTION_FEEDBACK_EVENTS } from '../constants';
 
 type metadata = {
   plan_id: number;
@@ -11,7 +11,10 @@ const emptyFn = () => {};
 class ProviderMetrics {
   timers: Record<METRICS_EVENTS, number> | {};
   metadata: metadata;
-  sendEvent: (eventName: METRICS_EVENTS, metadata: metadata & { duration_seconds: number }) => void;
+  sendEvent: (
+    eventName: METRICS_EVENTS | PREDICTION_FEEDBACK_EVENTS,
+    metadata: metadata & { duration_seconds?: number }
+  ) => void;
   trackPage: (path: string, metadata: metadata) => void;
 
   constructor() {
@@ -39,6 +42,10 @@ class ProviderMetrics {
     const duration_seconds = (performance.now() - this.timers[eventName]) / 1000;
     this.sendEvent(eventName, { ...this.metadata, duration_seconds: parseFloat(duration_seconds.toFixed(2)) });
     delete this.timers[eventName];
+  }
+
+  trackPredictionFeedback(eventName: PREDICTION_FEEDBACK_EVENTS) {
+    this.sendEvent(eventName, { ...this.metadata });
   }
 
   clearTrackedEvents() {

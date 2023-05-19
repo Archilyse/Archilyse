@@ -2,10 +2,11 @@
 
 import csv
 import multiprocessing
+import sys
 from collections import Counter
 from multiprocessing import Pool
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Dict, Optional, Tuple
 
 import click
 import pendulum
@@ -25,6 +26,13 @@ from handlers.db import (
     UnitAreaDBHandler,
     UnitDBHandler,
 )
+
+project_root = str(Path(__file__).resolve().parent.parent.parent)
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+
+from bin.reports.common_bin_utils import parse_month  # noqa: E402
 
 
 def calculate_areas_by_plan(site_id: int) -> Tuple[int, Dict[int, Dict[str, float]]]:
@@ -202,15 +210,23 @@ def log_units_for_report(sites_info):
 
 @click.command()
 @click.option("--investors", is_flag=True)
-def report_by_site(investors: bool):
+@click.option(
+    "--month",
+    default=None,
+    help='The month to generate the summary for in the format "YYYY-MM" or a month name like "March". '
+    "If not provided, the current month is used.",
+)
+def report_by_site(investors: bool, month: Optional[str]):
+    start_date, end_date = parse_month(month)
+
     if investors:
         # This is used for the investors report, YTD gross m2 pipelined and simulated
         sites_by_id = {
             site["id"]: site
             for site in SiteDBHandler.find(
                 special_filter=(
-                    SiteDBModel.created
-                    >= pendulum.today().start_of("month").to_date_string(),
+                    SiteDBModel.created >= start_date,
+                    SiteDBModel.created <= end_date,
                 ),
                 full_slam_results=ADMIN_SIM_STATUS.SUCCESS.name,
                 output_columns=["id", "client_site_id", "client_id", "created"],

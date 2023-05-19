@@ -482,6 +482,16 @@ class SimLayout(BrooksSerializable):
             self.areas - self.outdoor_areas, include_separators=False
         )
 
+    @cached_property
+    def footprint_areas_without_ceiling(self) -> Set[SimArea]:
+        return unary_union(
+            [
+                area.footprint
+                for area in self.areas
+                if area.type in self.classification_scheme.AREAS_WITHOUT_CEILINGS
+            ]
+        )
+
     def asdict(self) -> dict:
         self.absolute_to_relative_coordinates()
 

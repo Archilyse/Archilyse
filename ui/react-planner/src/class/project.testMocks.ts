@@ -1,4 +1,5 @@
 import { MOCK_STATE } from '../tests/utils';
+import { Prediction } from '../types';
 
 export const SELECTED_LAYER_ID = 'layer-1';
 
@@ -357,4 +358,84 @@ export const MOCK_SCALING_SCENE = {
       },
     },
   },
+};
+
+export const MOCK_PREDICTION: Prediction = {
+  lines: [],
+  holes: [
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [395, 3797],
+            [483, 7669],
+            [458, 7670],
+            [270, 3799],
+            [395, 3797],
+          ],
+        ],
+      },
+      properties: {
+        label: 'DOOR',
+      },
+    },
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [306, 6115],
+            [315, 6205],
+            [340, 6202],
+            [331, 6113],
+            [306, 6115],
+          ],
+        ],
+      },
+      properties: {
+        label: 'WINDOW',
+      },
+    },
+  ],
+  items: [
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [732, 2845],
+            [785, 2845],
+            [785, 2710],
+            [732, 2710],
+            [732, 2845],
+          ],
+        ],
+      },
+      properties: {
+        label: 'BATHTUB',
+      },
+    },
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [724, 2695],
+            [960, 2695],
+            [960, 2640],
+            [724, 2640],
+            [724, 2695],
+          ],
+        ],
+      },
+      properties: {
+        label: 'KITCHEN',
+      },
+    },
+  ],
 };

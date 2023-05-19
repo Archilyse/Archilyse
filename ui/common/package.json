@@ -9,22 +9,22 @@
     "dist"
   ],
   "scripts": {
-    "dev": "webpack --config webpack.config.js --watch",
-    "test": "TZ=UTC jest",
+    "dev": "vite",
+    "test": "jest",
     "lint": "eslint src/",
-    "build": "webpack --config webpack.config.js"
+    "build": "vite build --base=/archilyse-ui-components/"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@geoman-io/leaflet-geoman-free": "2.11.2",
     "@types/geojson": "7946.0.7",
     "d3": "6.2.0",
-    "leaflet-geosearch": "3.6.0",
-    "@geoman-io/leaflet-geoman-free": "2.11.2",
     "leaflet": "1.7.1",
     "leaflet-draw": "1.0.4",
-    "swissgrid": "1.0.5",
-    "proj4": "2.7.2"
+    "leaflet-geosearch": "3.6.0",
+    "proj4": "2.7.2",
+    "swissgrid": "1.0.5"
   },
   "devDependencies": {
     "@types/leaflet": "1.5.19",

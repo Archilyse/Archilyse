@@ -389,6 +389,7 @@ export class State {
   sceneHistory = new HistoryStructure();
   catalog = new Catalog();
   catalogToolbarOpened = false;
+  showAutoLabellingFeedback = false;
   viewer2D = {};
   zoom = 0;
   projectHashCode = null;

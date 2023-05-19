@@ -1,6 +1,7 @@
 import { batch } from 'react-redux';
 import isScaling from '../utils/is-scaling';
 import cloneDeep from '../utils/clone-deep';
+import getLabellingPrediction from '../utils/get-labelling-prediction';
 import { ProviderRequest } from '../providers';
 import Project from '../class/project';
 import Layer from '../class/layer';
@@ -13,6 +14,9 @@ import {
   ENABLE_SCALING,
   ENDPOINTS,
   FIT_SCREEN,
+  GET_PREDICTION_FULFILLED,
+  GET_PREDICTION_PENDING,
+  GET_PREDICTION_REJECTED,
   GET_PROJECT_FULFILLED,
   GET_PROJECT_PENDING,
   GET_PROJECT_REJECTED,
@@ -50,6 +54,7 @@ import {
   SHOW_SNACKBAR,
   THROW_ERROR,
   THROW_WARNING,
+  TOGGLE_AUTOLABELLING_FEEDBACK,
   TOGGLE_CATALOG_TOOLBAR,
   TOGGLE_SHOW_SNAP_ELEMENTS,
   TOGGLE_SNAP,
@@ -57,8 +62,10 @@ import {
   UNSELECT_ALL,
 } from '../constants';
 import getSelectedAnnotationsSize from '../utils/get-selected-annotations-size';
-import { Area } from '../types';
+import { Area, Prediction } from '../types';
 import * as planActions from './plan-actions';
+
+const STILL_THERE_MS = 45 * 1000;
 
 export function loadProject(sceneJSON) {
   return {
@@ -95,6 +102,26 @@ export function getProjectFulfilled(payload) {
 export function getProjectRejected(error) {
   return {
     type: GET_PROJECT_REJECTED,
+    error,
+  };
+}
+
+export function getPredictionPending() {
+  return {
+    type: GET_PREDICTION_PENDING,
+  };
+}
+
+export function getPredictionFulfilled(payload) {
+  return {
+    type: GET_PREDICTION_FULFILLED,
+    payload,
+  };
+}
+
+export function getPredictionRejected(error) {
+  return {
+    type: GET_PREDICTION_REJECTED,
     error,
   };
 }
@@ -222,6 +249,12 @@ export function initCatalog(catalog) {
 export function toggleCatalogToolbar() {
   return {
     type: TOGGLE_CATALOG_TOOLBAR,
+  };
+}
+
+export function toggleAutoLabellingFeedback() {
+  return {
+    type: TOGGLE_AUTOLABELLING_FEEDBACK,
   };
 }
 
@@ -421,6 +454,63 @@ export function getProjectAsync(planId, { onFulfill, onReject } = { onFulfill: p
       return project;
     } catch (error) {
       dispatch(getProjectRejected(error));
+      onReject(error);
+      throw error;
+    }
+  };
+}
+
+export function getPredictionAsync(
+  planId,
+  { onFulfill, onReject } = { onFulfill: project => {}, onReject: error => {} }
+) {
+  let stillThereTimer;
+
+  return async function (dispatch) {
+    dispatch(getPredictionPending());
+
+    dispatch(
+      showSnackbar({
+        message: 'Auto-labelling in progress: This could take a while...',
+        severity: 'info',
+      })
+    );
+    stillThereTimer = setTimeout(() => {
+      dispatch(
+        showSnackbar({
+          message: 'Auto-labelling: Still working on it...',
+          severity: 'info',
+        })
+      );
+    }, STILL_THERE_MS);
+
+    try {
+      const prediction: Prediction = await getLabellingPrediction(planId);
+      clearTimeout(stillThereTimer);
+
+      dispatch(getPredictionFulfilled(prediction));
+      dispatch(
+        showSnackbar({
+          message: 'Auto-labelling finished successfully',
+          severity: 'success',
+          duration: 3000,
+        })
+      );
+      dispatch(toggleAutoLabellingFeedback());
+      onFulfill(prediction);
+      return prediction;
+    } catch (error) {
+      clearTimeout(stillThereTimer);
+
+      dispatch(
+        showSnackbar({
+          message: 'Error performing auto-labelling, Tech has been notified',
+          severity: 'error',
+          duration: 3000,
+        })
+      );
+
+      dispatch(getPredictionRejected(error));
       onReject(error);
       throw error;
     }

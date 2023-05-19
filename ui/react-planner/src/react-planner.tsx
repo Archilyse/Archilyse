@@ -54,6 +54,7 @@ type ReactPlannerProps = {
   width: number;
   height: number;
   isSaving: boolean;
+  isPredicting: boolean;
   stateExtractor: (state) => {};
   customContents: object;
   softwareSignature: string;
@@ -226,6 +227,7 @@ class ReactPlanner extends Component<ReactPlannerProps, any> {
   loadMetrics() {
     const { group_id } = auth.getUserInfo();
     ProviderMetrics.initMetadata({ group_id, plan_id: Number(this.props.match.params.id) });
+    ProviderMetrics.trackPageView();
   }
 
   async loadInitialData() {
@@ -260,7 +262,7 @@ class ReactPlanner extends Component<ReactPlannerProps, any> {
 
     const extractedState: any = stateExtractor(state);
 
-    const overlayStyle = this.props.isSaving ? { ...blockInteractionStyle } : {};
+    const overlayStyle = this.props.isSaving || this.props.isPredicting ? { ...blockInteractionStyle } : {};
     return (
       <>
         <div style={{ ...wrapperStyle, ...overlayStyle, height }}>
@@ -293,8 +295,13 @@ function mapStateToProps(reduxState) {
   const requestSavingStatus =
     reduxState['react-planner'].requestStatus?.[REQUEST_STATUS_BY_ACTION.SAVE_PLAN_ANNOTATIONS];
   const isSaving = requestSavingStatus?.status === RequestStatusType.PENDING;
+
+  const requestPredictionStatus = reduxState['react-planner'].requestStatus?.[REQUEST_STATUS_BY_ACTION.GET_PREDICTION];
+
+  const isPredicting = requestPredictionStatus?.status === RequestStatusType.PENDING;
   return {
     isSaving,
+    isPredicting,
     state: reduxState,
   };
 }

@@ -7,6 +7,7 @@ import { MODE_COPY_PASTE, MODE_IMPORT_ANNOTATIONS, MODE_ROTATE_SCALE_BACKGROUND,
 
 import hasCopyPasteFromAnotherPlan from '../../utils/has-copy-paste-from-another-plan';
 import isScaling from '../../utils/is-scaling';
+import PanelAutoLabellingFeedback from './panel-auto-labelling-feedback';
 import PanelBackgroundImage from './panel-background-image';
 import PanelContinuePipeline from './panel-continue-pipeline';
 import PanelCopyPasteMode from './panel-copy-paste-mode';
@@ -26,6 +27,8 @@ const STYLE = {
   overflowX: 'hidden',
   paddingBottom: '20px',
 };
+
+// @TODO: Move this file to TS
 
 const isSiteStructureLoaded = siteStructure => siteStructure && siteStructure.planId;
 const isPlanInfoLoaded = state => state.planInfo?.id;
@@ -98,12 +101,18 @@ export default function Sidebar({ state, width, height, stateExtractor }) {
     },
     {
       index: 6,
+      name: 'PanelAutoLabellingFeedback',
+      condition: state.showAutoLabellingFeedback,
+      dom: <PanelAutoLabellingFeedback />,
+    },
+    {
+      index: 7,
       name: 'PanelRotateScaleBackground',
       condition: state.mode == MODE_ROTATE_SCALE_BACKGROUND,
       dom: <PanelRotateScaleBackground />,
     },
     {
-      index: 7,
+      index: 8,
       name: 'PanelCopyPasteMode',
       condition:
         state.mode == MODE_COPY_PASTE ||
@@ -111,7 +120,7 @@ export default function Sidebar({ state, width, height, stateExtractor }) {
       dom: <PanelCopyPasteMode />,
     },
     {
-      index: 8,
+      index: 9,
       name: 'PanelCreateAreaSplitters',
       condition: isSiteStructureLoaded(state.siteStructure) && isAdmin,
       dom: <PanelCreateAreaSplitters state={state} />,

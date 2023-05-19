@@ -1,5 +1,5 @@
 from operator import itemgetter
-from typing import Iterator, Tuple, Union
+from typing import Iterator, Optional, Tuple, Union
 
 from numpy import array, dot, ndarray
 from numpy.linalg import linalg
@@ -21,6 +21,35 @@ from shapely.validation import explain_validity
 from common_utils.constants import GEOMETRIES_PRECISION
 from common_utils.exceptions import BrooksException, InvalidShapeException
 from dufresne.polygon import get_sides_as_lines_by_length
+
+
+def remove_small_holes_and_lines(
+    geometry: Union[Polygon, MultiPolygon, GeometryCollection],
+    allow_empty: bool = False,
+    min_line_width: Optional[float] = None,
+) -> Union[Polygon, MultiPolygon, GeometryCollection]:
+    geometry = remove_small_lines_from_geometry(
+        geometry=geometry, min_line_width=min_line_width
+    )
+
+    if isinstance(geometry, MultiPolygon):
+        geometry = MultiPolygon(
+            [
+                remove_small_holes_from_polygon(polygon=polygon)
+                for polygon in geometry.geoms
+            ]
+        )
+
+    elif isinstance(geometry, Polygon):
+        geometry = remove_small_holes_from_polygon(polygon=geometry)
+
+    if isinstance(geometry, GeometryCollection) and geometry.is_empty:
+        return Polygon()
+
+    if allow_empty and geometry.is_empty:
+        return Polygon()
+
+    return ensure_geometry_validity(geometry=geometry)
 
 
 def ensure_geometry_validity(
@@ -238,6 +267,18 @@ def remove_small_holes_from_polygon(polygon: Polygon) -> Polygon:
             continue
         new_interiors.append(interior)
     return Polygon(shell=polygon.exterior, holes=new_interiors)
+
+
+def remove_small_lines_from_geometry(
+    geometry: Union[Polygon, MultiPolygon, GeometryCollection],
+    min_line_width: Optional[float] = None,
+) -> Union[Polygon, MultiPolygon, GeometryCollection]:
+    if min_line_width is None:
+        min_line_width = 0.01
+
+    return buffer_unbuffer_geometry(
+        geometry=geometry, buffer=min_line_width, reverse=True
+    )
 
 
 def safe_simplify(geom: Polygon) -> Polygon:

@@ -20,7 +20,9 @@ const getAuthHeader = () => {
 };
 
 instance.interceptors.request.use(config => {
-  config.headers = getAuthHeader();
+  if (config.withCredentials) {
+    config.headers = { ...getAuthHeader(), ...config.headers };
+  }
   return config;
 });
 
@@ -34,12 +36,12 @@ export default {
     const response = await instance.patch(url, data);
     return response && response.data;
   },
-  post: async (url, data) => {
-    const response = await instance.post(url, data);
+  post: async (url, data, options) => {
+    const response = await instance.post(url, data, options);
     return response && response.data;
   },
-  put: async (url, data) => {
-    const response = await instance.put(url, data);
+  put: async (url, data, options = {}) => {
+    const response = await instance.put(url, data, options);
     return response && response.data;
   },
 };

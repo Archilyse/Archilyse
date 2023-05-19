@@ -7,6 +7,9 @@ import {
   DISABLE_SCALING,
   ENABLE_SCALING,
   FIT_SCREEN,
+  GET_PREDICTION_FULFILLED,
+  GET_PREDICTION_PENDING,
+  GET_PREDICTION_REJECTED,
   GET_PROJECT_FULFILLED,
   GET_PROJECT_PENDING,
   GET_PROJECT_REJECTED,
@@ -46,6 +49,7 @@ import {
   SHOW_SNACKBAR,
   THROW_ERROR,
   THROW_WARNING,
+  TOGGLE_AUTOLABELLING_FEEDBACK,
   TOGGLE_CATALOG_TOOLBAR,
   TOGGLE_SHOW_SNAP_ELEMENTS,
   TOGGLE_SNAP,
@@ -74,6 +78,17 @@ export default (state, action) => {
 
     case GET_PROJECT_REJECTED:
       return RequestStatus.setRejected(state, REQUEST_STATUS_BY_ACTION.GET_PLAN_ANNOTATIONS, action.error);
+
+    case GET_PREDICTION_PENDING:
+      return RequestStatus.setPending(state, REQUEST_STATUS_BY_ACTION.GET_PREDICTION);
+
+    case GET_PREDICTION_FULFILLED: {
+      state = Project.loadPrediction(state, action.payload).updatedState;
+      return RequestStatus.setFulfilled(state, REQUEST_STATUS_BY_ACTION.GET_PREDICTION);
+    }
+
+    case GET_PREDICTION_REJECTED:
+      return RequestStatus.setRejected(state, REQUEST_STATUS_BY_ACTION.GET_PREDICTION, action.error);
 
     case SAVE_PROJECT_PENDING:
       return RequestStatus.setPending(state, REQUEST_STATUS_BY_ACTION.SAVE_PLAN_ANNOTATIONS);
@@ -138,6 +153,9 @@ export default (state, action) => {
 
     case TOGGLE_CATALOG_TOOLBAR:
       return Project.toggleCatalogToolbar(state).updatedState;
+
+    case TOGGLE_AUTOLABELLING_FEEDBACK:
+      return Project.toggleAutoLabellingFeedback(state).updatedState;
 
     case TOGGLE_SNAP:
       return Project.toggleSnap(state, action.mask).updatedState;

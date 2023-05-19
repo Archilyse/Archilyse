@@ -55,6 +55,7 @@ def get_sendgrid_mail_configured(user_id: int, email_type: EmailTypes):
                 redirection_address=redirection_address,
                 body_content=EMAIL_CONTENT_BY_TYPE[email_type]["body_content"],
                 call_to_action=EMAIL_CONTENT_BY_TYPE[email_type]["call_to_action"],
+                username=user["login"],
                 body_footer=EMAIL_CONTENT_BY_TYPE[email_type]["body_footer"],
             )
         ),

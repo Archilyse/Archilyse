@@ -480,6 +480,12 @@ query_report: db_stag_proxy_up
 	$(STAG_ARGS) \
 	$(python_executable) bin/reports/gross_m2_by_site.py --investors
 
+investors_key_points_report:
+	$(DOCKER_ENV_ARGS) \
+	WORKING_DIR=$(shell echo ${HOME}/slam_data/) \
+	$(STAG_ARGS) \
+	$(python_executable) bin/reports/investors_monthly_report_summary.py --repo "deep-learning"
+
 era_report: db_stag_proxy_up
 	$(DOCKER_ENV_ARGS) \
 	WORKING_DIR=$(shell echo ${HOME}/slam_data/) \

@@ -275,7 +275,7 @@ def test_entity_ifc_mapper_add_area(
 @pytest.mark.parametrize(
     "element_type", [IfcWallStandardCase, IfcRailing, IfcSlabStandardCase, IfcFurniture]
 )
-def test_entity_ifc_mapper_add_wall_railing_slab_furniture(
+def test_entity_ifc_mapper_add_generic_element(
     mocker,
     ifc_file_dummy,
     add_ifc_axis2_placement3d_mock,
@@ -292,7 +292,7 @@ def test_entity_ifc_mapper_add_wall_railing_slab_furniture(
 
     ifc_floor_dummy = mocker.MagicMock(ObjectPlacement="ifc_floor_dummy_placement")
 
-    EntityIfcMapper.add_wall_railing_slab_furniture(
+    EntityIfcMapper.add_generic_element(
         ifc_file=ifc_file_dummy,
         ifc_floor=ifc_floor_dummy,
         context="dummy_context",

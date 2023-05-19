@@ -23,11 +23,13 @@ import isScaling from './is-scaling';
 import getSelectedAnnotationsSize from './get-selected-annotations-size';
 import isObjectEmpty from './is-object-empty';
 import getFastStateObject from './get-fast-state-object';
+import getLabellingPrediction from './get-labelling-prediction';
 
 export {
   CopyPasteUtils,
   cloneDeep,
   getImgDimensions,
+  getLabellingPrediction,
   GeometryUtils,
   MathUtils,
   SnapUtils,
@@ -56,6 +58,7 @@ export default {
   CopyPasteUtils,
   cloneDeep,
   getImgDimensions,
+  getLabellingPrediction,
   GeometryUtils,
   MathUtils,
   SnapUtils,

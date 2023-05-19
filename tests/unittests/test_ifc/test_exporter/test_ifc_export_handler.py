@@ -54,7 +54,8 @@ def test_site_ifc_handler_export_site(mocker):
         IfcExportHandler, "add_areas", return_value="areas_by_id_and_floor_id"
     )
     add_elements_mock = mocker.patch.object(IfcExportHandler, "add_elements")
-    add_slabs_mock = mocker.patch.object(IfcExportHandler, "add_slabs")
+    add_floor_slabs_mock = mocker.patch.object(IfcExportHandler, "add_floor_slabs")
+    add_ceiling_slabs_mock = mocker.patch.object(IfcExportHandler, "add_ceiling_slabs")
 
     with NamedTemporaryFile() as temp_file:
         mocker.patch.object(
@@ -78,8 +79,12 @@ def test_site_ifc_handler_export_site(mocker):
             ifc_floors_by_id=add_floors_mock.return_value,
             ifc_areas_by_id_and_floor_id=add_areas_mock.return_value,
         )
-        add_slabs_mock.assert_called_once_with(
+        add_floor_slabs_mock.assert_called_once_with(
             ifc_floors_by_id=add_floors_mock.return_value
+        )
+        add_ceiling_slabs_mock.assert_called_once_with(
+            ifc_floors_by_id=add_floors_mock.return_value,
+            ifc_buildings_by_id=add_buildings_mock.return_value,
         )
 
         temp_file.seek(0)
@@ -305,6 +310,7 @@ def test_ifc_export_handler_add_floors(mocker, mocked_floor_infos):
     mocker.patch.object(
         FloorHandler, "get_level_baseline", side_effect=[-1, 0, 1, 2, 3]
     )
+    mocker.patch.object(IfcExportHandler, "get_floor_slab_height", return_value=0.3)
 
     ifc_mapper_add_floor_mock = mocker.patch.object(
         EntityIfcMapper, "add_floor", return_value="floor_placeholder"
@@ -333,9 +339,10 @@ def test_ifc_export_handler_add_floors(mocker, mocked_floor_infos):
             for call in ifc_mapper_add_floor_mock.call_args_list
         ]
     )
+
     assert [
         call.kwargs["elevation"] for call in ifc_mapper_add_floor_mock.call_args_list
-    ] == pytest.approx([-1, 0, 1, 2, 3])
+    ] == pytest.approx([-1.3, -0.3, 0.7, 1.7, 2.7])
 
 
 def test_ifc_export_handler_add_units(mocker, mocked_floor_infos, mocked_unit_infos):
@@ -394,7 +401,8 @@ def test_ifc_export_no_units(mocker, mocked_site_info, mocked_floor_infos):
         IfcExportHandler, "add_areas", return_value="areas_by_id_and_floor_id"
     )
     add_elements_mock = mocker.patch.object(IfcExportHandler, "add_elements")
-    add_slabs_mock = mocker.patch.object(IfcExportHandler, "add_slabs")
+    add_floor_slabs_mock = mocker.patch.object(IfcExportHandler, "add_floor_slabs")
+    add_ceiling_slabs_mock = mocker.patch.object(IfcExportHandler, "add_ceiling_slabs")
     unit_info_mock = mocker.patch.object(
         IfcExportHandler, "unit_infos", mocker.PropertyMock(return_value=[])
     )
@@ -425,8 +433,12 @@ def test_ifc_export_no_units(mocker, mocked_site_info, mocked_floor_infos):
             ifc_floors_by_id=add_floors_mock.return_value,
             ifc_areas_by_id_and_floor_id=add_areas_mock.return_value,
         )
-        add_slabs_mock.assert_called_once_with(
+        add_floor_slabs_mock.assert_called_once_with(
             ifc_floors_by_id=add_floors_mock.return_value
+        )
+        add_ceiling_slabs_mock.assert_called_once_with(
+            ifc_floors_by_id=add_floors_mock.return_value,
+            ifc_buildings_by_id=add_buildings_mock.return_value,
         )
         unit_info_mock.assert_has_calls([mocker.call(), mocker.call()])
         entity_mapper_add_unit_spy.assert_not_called()
@@ -591,7 +603,7 @@ def test_ifc_export_handler_add_areas(
     # assert constants
     for call in ifc_mapper_add_area_mock.call_args_list:
         assert call.kwargs["height"] == 2.6
-        assert call.kwargs["start_elevation_relative_to_floor"] == 0
+        assert call.kwargs["start_elevation_relative_to_floor"] == 0.3
 
     # assert unit assignemnts
     expected_unit_assignments = {
@@ -673,9 +685,9 @@ def test_ifc_export_handler_add_elements_wall_railing(mocker, custom_element_hei
 
         return fake_layout
 
-    ifc_mapper_add_add_wall_railing_slab_furniture_mock = mocker.patch.object(
+    ifc_mapper_add_add_generic_element_mock = mocker.patch.object(
         EntityIfcMapper,
-        "add_wall_railing_slab_furniture",
+        "add_generic_element",
         return_value="separator_placeholder",
     )
     ifc_mapper_add_door_window = mocker.patch.object(
@@ -692,6 +704,10 @@ def test_ifc_export_handler_add_elements_wall_railing(mocker, custom_element_hei
         mocker.PropertyMock(
             return_value={0: _fake_layout(floor_id=0), 1: _fake_layout(floor_id=1)}
         ),
+    )
+    mocked_floor_slab_height = 0.55
+    mocker.patch.object(
+        IfcExportHandler, "get_floor_slab_height", return_value=mocked_floor_slab_height
     )
 
     IfcExportHandler(site_id=1337).add_elements(
@@ -715,12 +731,12 @@ def test_ifc_export_handler_add_elements_wall_railing(mocker, custom_element_hei
             call.kwargs["element_type"].__name__,
             call.kwargs["Name"],
         )
-        for call in ifc_mapper_add_add_wall_railing_slab_furniture_mock.call_args_list
+        for call in ifc_mapper_add_add_generic_element_mock.call_args_list
     }
     assert actual_added_separators == {
         (
             "fake_element_footprint_wall_0",
-            custom_element_heights[SeparatorType.WALL][0],
+            custom_element_heights[SeparatorType.WALL][0] + mocked_floor_slab_height,
             custom_element_heights[SeparatorType.WALL][1]
             - custom_element_heights[SeparatorType.WALL][0],
             "IfcWallStandardCase",
@@ -728,7 +744,7 @@ def test_ifc_export_handler_add_elements_wall_railing(mocker, custom_element_hei
         ),
         (
             "fake_element_footprint_wall_1",
-            custom_element_heights[SeparatorType.WALL][0],
+            custom_element_heights[SeparatorType.WALL][0] + mocked_floor_slab_height,
             custom_element_heights[SeparatorType.WALL][1]
             - custom_element_heights[SeparatorType.WALL][0],
             "IfcWallStandardCase",
@@ -736,7 +752,7 @@ def test_ifc_export_handler_add_elements_wall_railing(mocker, custom_element_hei
         ),
         (
             "fake_element_footprint_railing_0",
-            custom_element_heights[SeparatorType.RAILING][0],
+            custom_element_heights[SeparatorType.RAILING][0] + mocked_floor_slab_height,
             custom_element_heights[SeparatorType.RAILING][1]
             - custom_element_heights[SeparatorType.RAILING][0],
             "IfcRailing",
@@ -744,7 +760,7 @@ def test_ifc_export_handler_add_elements_wall_railing(mocker, custom_element_hei
         ),
         (
             "fake_element_footprint_railing_1",
-            custom_element_heights[SeparatorType.RAILING][0],
+            custom_element_heights[SeparatorType.RAILING][0] + mocked_floor_slab_height,
             custom_element_heights[SeparatorType.RAILING][1]
             - custom_element_heights[SeparatorType.RAILING][0],
             "IfcRailing",
@@ -752,7 +768,7 @@ def test_ifc_export_handler_add_elements_wall_railing(mocker, custom_element_hei
         ),
         (
             "fake_element_footprint_column_0",
-            custom_element_heights[SeparatorType.COLUMN][0],
+            custom_element_heights[SeparatorType.COLUMN][0] + mocked_floor_slab_height,
             custom_element_heights[SeparatorType.COLUMN][1]
             - custom_element_heights[SeparatorType.COLUMN][0],
             "IfcColumn",
@@ -760,7 +776,7 @@ def test_ifc_export_handler_add_elements_wall_railing(mocker, custom_element_hei
         ),
         (
             "fake_element_footprint_column_1",
-            custom_element_heights[SeparatorType.COLUMN][0],
+            custom_element_heights[SeparatorType.COLUMN][0] + mocked_floor_slab_height,
             custom_element_heights[SeparatorType.COLUMN][1]
             - custom_element_heights[SeparatorType.COLUMN][0],
             "IfcColumn",
@@ -857,9 +873,9 @@ def test_ifc_export_handler_add_elements_features(mocker, custom_element_heights
         fake_layout.areas = areas
         return fake_layout
 
-    ifc_mapper_add_add_wall_railing_slab_furniture_mock = mocker.patch.object(
+    ifc_mapper_add_add_generic_element_mock = mocker.patch.object(
         EntityIfcMapper,
-        "add_wall_railing_slab_furniture",
+        "add_generic_element",
         return_value="furniture_mock",
     )
     ifc_mapper_add_sanitary_terminal_mock = mocker.patch.object(
@@ -881,6 +897,11 @@ def test_ifc_export_handler_add_elements_features(mocker, custom_element_heights
         ),
     )
 
+    mocked_floor_slab_height = 0.65
+    mocker.patch.object(
+        IfcExportHandler, "get_floor_slab_height", return_value=mocked_floor_slab_height
+    )
+
     IfcExportHandler(site_id=1337).add_elements(
         ifc_floors_by_id={0: "floor_placeholder_0"},
         ifc_areas_by_id_and_floor_id={
@@ -897,13 +918,13 @@ def test_ifc_export_handler_add_elements_features(mocker, custom_element_heights
             call.kwargs["element_type"].__name__,
             call.kwargs["Name"],
         )
-        for call in ifc_mapper_add_add_wall_railing_slab_furniture_mock.call_args_list
+        for call in ifc_mapper_add_add_generic_element_mock.call_args_list
     }
 
     assert actual_furniture_calls == {
         (
             "fake_element_footprint_FeatureType.STAIRS_0",
-            custom_element_heights[FeatureType.STAIRS][0],
+            custom_element_heights[FeatureType.STAIRS][0] + mocked_floor_slab_height,
             custom_element_heights[FeatureType.STAIRS][1]
             - custom_element_heights[FeatureType.STAIRS][0],
             "IfcStair",
@@ -911,7 +932,7 @@ def test_ifc_export_handler_add_elements_features(mocker, custom_element_heights
         ),
         (
             "fake_element_footprint_FeatureType.BATHTUB_0",
-            custom_element_heights[FeatureType.BATHTUB][0],
+            custom_element_heights[FeatureType.BATHTUB][0] + mocked_floor_slab_height,
             custom_element_heights[FeatureType.BATHTUB][1]
             - custom_element_heights[FeatureType.BATHTUB][0],
             "IfcSanitaryTerminal",
@@ -919,7 +940,7 @@ def test_ifc_export_handler_add_elements_features(mocker, custom_element_heights
         ),
         (
             "fake_element_footprint_FeatureType.KITCHEN_0",
-            custom_element_heights[FeatureType.KITCHEN][0],
+            custom_element_heights[FeatureType.KITCHEN][0] + mocked_floor_slab_height,
             custom_element_heights[FeatureType.KITCHEN][1]
             - custom_element_heights[FeatureType.KITCHEN][0],
             "IfcFurniture",
@@ -927,7 +948,7 @@ def test_ifc_export_handler_add_elements_features(mocker, custom_element_heights
         ),
         (
             "fake_element_footprint_FeatureType.SHOWER_0",
-            custom_element_heights[FeatureType.SHOWER][0],
+            custom_element_heights[FeatureType.SHOWER][0] + mocked_floor_slab_height,
             custom_element_heights[FeatureType.SHOWER][1]
             - custom_element_heights[FeatureType.SHOWER][0],
             "IfcSanitaryTerminal",
@@ -935,7 +956,7 @@ def test_ifc_export_handler_add_elements_features(mocker, custom_element_heights
         ),
         (
             "fake_element_footprint_FeatureType.TOILET_0",
-            custom_element_heights[FeatureType.TOILET][0],
+            custom_element_heights[FeatureType.TOILET][0] + mocked_floor_slab_height,
             custom_element_heights[FeatureType.TOILET][1]
             - custom_element_heights[FeatureType.TOILET][0],
             "IfcSanitaryTerminal",
@@ -943,7 +964,7 @@ def test_ifc_export_handler_add_elements_features(mocker, custom_element_heights
         ),
         (
             "fake_element_footprint_FeatureType.SINK_0",
-            custom_element_heights[FeatureType.SINK][0],
+            custom_element_heights[FeatureType.SINK][0] + mocked_floor_slab_height,
             custom_element_heights[FeatureType.SINK][1]
             - custom_element_heights[FeatureType.SINK][0],
             "IfcSanitaryTerminal",
@@ -989,11 +1010,21 @@ def _fake_layout(floor_id: int, default_element_heights=None):
     fake_layout.footprint_ex_areas_without_floor.__repr__ = lambda self: (
         f"footprint_ex_areas_without_floor_{floor_id}"
     )
+    fake_layout.footprint.__repr__ = lambda self: (f"footprint_{floor_id}")
+    fake_layout.footprint_areas_without_ceiling.__repr__ = lambda self: (
+        f"footprint_areas_without_ceiling_{floor_id}"
+    )
     fake_layout.footprint_ex_areas_without_ceiling.__repr__ = lambda self: (
         f"footprint_ex_areas_without_ceiling_{floor_id}"
     )
+    fake_layout.footprint_ex_areas_without_ceiling.difference = lambda z: (
+        f"difference(footprint_ex_areas_without_ceiling_{floor_id}, {z})"
+    )
     fake_layout.footprint_ex_areas_without_ceiling.exterior = (
         f"footprint_ex_areas_without_ceiling_{floor_id}_exterior"
+    )
+    fake_layout.footprint_ex_areas_without_floor.difference = lambda z: (
+        f"difference(footprint_ex_areas_without_floor_{floor_id}, {z})"
     )
     fake_layout.footprint_ex_areas_without_floor.exterior = (
         f"footprint_ex_areas_without_floor_{floor_id}_exterior"
@@ -1015,8 +1046,14 @@ def _fake_polygon(geometry):
 
 def _fake_as_multipolygon(geom):
     multipolygon = Mock()
-    type(multipolygon).geoms = PropertyMock(return_value=[geom])
+    type(multipolygon).geoms = PropertyMock(
+        return_value=[MagicMock(__repr__=lambda z: geom, is_empty=False)]
+    )
     return multipolygon
+
+
+def _fake_cleaned_polygon(geometry, allow_empty=None):
+    return f"remove_small_holes_and_lines({repr(geometry)})"
 
 
 @pytest.fixture
@@ -1024,15 +1061,6 @@ def mocked_polygon(monkeypatch):
     from handlers.ifc.exporter import ifc_export_handler as ifc_export_handler_module
 
     return monkeypatch.setattr(ifc_export_handler_module, "Polygon", _fake_polygon)
-
-
-@pytest.fixture
-def mocked_unary_union(monkeypatch):
-    from handlers.ifc.exporter import ifc_export_handler as ifc_export_handler_module
-
-    return monkeypatch.setattr(
-        ifc_export_handler_module, "unary_union", _fake_unary_union
-    )
 
 
 @pytest.fixture
@@ -1045,12 +1073,21 @@ def mocked_as_multipolygon(monkeypatch):
 
 
 @pytest.fixture
-def mocked_add_wall_railing_slab_furniture(mocker):
+def mocked_remove_small_holes_and_lines(monkeypatch):
+    from handlers.ifc.exporter import ifc_export_handler as ifc_export_handler_module
+
+    return monkeypatch.setattr(
+        ifc_export_handler_module, "remove_small_holes_and_lines", _fake_cleaned_polygon
+    )
+
+
+@pytest.fixture
+def mocked_add_generic_element(mocker):
     from handlers.ifc.exporter.mappers import EntityIfcMapper
 
     return mocker.patch.object(
         EntityIfcMapper,
-        "add_wall_railing_slab_furniture",
+        "add_generic_element",
         return_value="slab_mock",
     )
 
@@ -1065,6 +1102,16 @@ def mocked_add_elements_to_floor(mocker):
     )
 
 
+@pytest.fixture
+def mocked_add_elements_to_building(mocker):
+    from handlers.ifc.exporter.mappers import EntityIfcMapper
+
+    return mocker.patch.object(
+        EntityIfcMapper,
+        "add_elements_to_building",
+    )
+
+
 class TestIFCExportAddSlabs:
     @staticmethod
     @pytest.mark.parametrize("use_custom_heights", [True, False])
@@ -1073,10 +1120,11 @@ class TestIFCExportAddSlabs:
         monkeypatch,
         mocked_floor_infos,
         mocked_polygon,
-        mocked_unary_union,
         mocked_as_multipolygon,
+        mocked_remove_small_holes_and_lines,
         mocked_add_elements_to_floor,
-        mocked_add_wall_railing_slab_furniture,
+        mocked_add_elements_to_building,
+        mocked_add_generic_element,
         custom_element_heights,
         use_custom_heights,
     ):
@@ -1104,10 +1152,23 @@ class TestIFCExportAddSlabs:
             ),
         )
 
-        ifc_export_handler_module.IfcExportHandler(site_id=1337).add_slabs(
+        ifc_export_handler_module.IfcExportHandler(site_id=1337).add_floor_slabs(
             ifc_floors_by_id={
                 floor_info["id"]: f"floor_placeholder_{floor_info['id']}"
                 for floor_info in mocked_floor_infos
+            },
+        )
+
+        ifc_export_handler_module.IfcExportHandler(site_id=1337).add_ceiling_slabs(
+            ifc_floors_by_id={
+                floor_info["id"]: f"floor_placeholder_{floor_info['id']}"
+                for floor_info in mocked_floor_infos
+            },
+            ifc_buildings_by_id={
+                building_id: f"building_placeholder_{building_id}"
+                for building_id in {
+                    floor_info["building_id"] for floor_info in mocked_floor_infos
+                }
             },
         )
 
@@ -1118,7 +1179,7 @@ class TestIFCExportAddSlabs:
                 call.kwargs["element_type"].__name__,
                 call.kwargs["Name"],
             )
-            for call in mocked_add_wall_railing_slab_furniture.call_args_list
+            for call in mocked_add_generic_element.call_args_list
         }
 
         actual_slab_heights = {
@@ -1127,94 +1188,174 @@ class TestIFCExportAddSlabs:
                 call.kwargs["start_elevation_relative_to_floor"],
                 call.kwargs["height"],
             )
-            for call in mocked_add_wall_railing_slab_furniture.call_args_list
+            for call in mocked_add_generic_element.call_args_list
         }
 
         assert actual_slabs == {
             (
-                "floor_placeholder_0",
-                "footprint_ex_areas_without_floor_0",
+                "floor_placeholder_1",
+                "remove_small_holes_and_lines('difference(footprint_ex_areas_without_floor_1, footprint_areas_without_ceiling_0)')",
                 "IfcSlabStandardCase",
-                "Floor",
-            ),
-            (
-                "floor_placeholder_0",
-                "footprint_ex_areas_without_ceiling_0+footprint_ex_areas_without_floor_1",
-                "IfcSlabStandardCase",
-                "Floor",
+                "Floor Slab 0",
             ),
             (
                 "floor_placeholder_1",
-                "footprint_ex_areas_without_ceiling_1+footprint_ex_areas_without_floor_2",
+                "remove_small_holes_and_lines('difference(footprint_ex_areas_without_ceiling_1, footprint_2)')",
                 "IfcSlabStandardCase",
-                "Floor",
+                "Floor Slab 1",
+            ),
+            (
+                "floor_placeholder_0",
+                "remove_small_holes_and_lines(footprint_ex_areas_without_floor_0)",
+                "IfcSlabStandardCase",
+                "Base Slab",
             ),
             (
                 "floor_placeholder_2",
-                "footprint_ex_areas_without_ceiling_2",
+                "remove_small_holes_and_lines('difference(footprint_ex_areas_without_floor_2, footprint_areas_without_ceiling_1)')",
                 "IfcSlabStandardCase",
-                "Roof",
+                "Floor Slab 1",
             ),
             (
                 "floor_placeholder_3",
-                "footprint_ex_areas_without_floor_3",
+                "remove_small_holes_and_lines(footprint_ex_areas_without_floor_3)",
                 "IfcSlabStandardCase",
-                "Floor",
+                "Base Slab",
+            ),
+            (
+                "floor_placeholder_0",
+                "remove_small_holes_and_lines('difference(footprint_ex_areas_without_ceiling_0, footprint_1)')",
+                "IfcSlabStandardCase",
+                "Floor Slab 0",
             ),
             (
                 "floor_placeholder_3",
-                "footprint_ex_areas_without_ceiling_3+footprint_ex_areas_without_floor_4",
+                "remove_small_holes_and_lines('difference(footprint_ex_areas_without_ceiling_3, footprint_4)')",
                 "IfcSlabStandardCase",
-                "Floor",
+                "Floor Slab 5",
+            ),
+            (
+                "floor_placeholder_2",
+                "remove_small_holes_and_lines(footprint_ex_areas_without_ceiling_2)",
+                "IfcSlabStandardCase",
+                "Roof Slab",
             ),
             (
                 "floor_placeholder_4",
-                "footprint_ex_areas_without_ceiling_4",
+                "remove_small_holes_and_lines(footprint_ex_areas_without_ceiling_4)",
                 "IfcSlabStandardCase",
-                "Roof",
+                "Roof Slab",
+            ),
+            (
+                "floor_placeholder_4",
+                "remove_small_holes_and_lines('difference(footprint_ex_areas_without_floor_4, footprint_areas_without_ceiling_3)')",
+                "IfcSlabStandardCase",
+                "Floor Slab 5",
             ),
         }
 
         if not use_custom_heights:
             assert actual_slab_heights == {
                 (
-                    "footprint_ex_areas_without_ceiling_3+footprint_ex_areas_without_floor_4",
-                    2.6,
-                    0.3,
-                ),
-                ("footprint_ex_areas_without_floor_0", 0, -0.3),
-                ("footprint_ex_areas_without_ceiling_4", 2.6, 0.3),
-                ("footprint_ex_areas_without_floor_3", 0, -0.3),
-                (
-                    "footprint_ex_areas_without_ceiling_1+footprint_ex_areas_without_floor_2",
-                    2.6,
+                    "remove_small_holes_and_lines('difference(footprint_ex_areas_without_floor_4, footprint_areas_without_ceiling_3)')",
+                    0,
                     0.3,
                 ),
                 (
-                    "footprint_ex_areas_without_ceiling_0+footprint_ex_areas_without_floor_1",
-                    2.6,
+                    "remove_small_holes_and_lines(footprint_ex_areas_without_floor_3)",
+                    0,
                     0.3,
                 ),
-                ("footprint_ex_areas_without_ceiling_2", 2.6, 0.3),
+                (
+                    "remove_small_holes_and_lines('difference(footprint_ex_areas_without_floor_2, footprint_areas_without_ceiling_1)')",
+                    0,
+                    0.3,
+                ),
+                (
+                    "remove_small_holes_and_lines(footprint_ex_areas_without_ceiling_2)",
+                    2.9,
+                    0.3,
+                ),
+                (
+                    "remove_small_holes_and_lines('difference(footprint_ex_areas_without_ceiling_0, footprint_1)')",
+                    2.9,
+                    0.3,
+                ),
+                (
+                    "remove_small_holes_and_lines('difference(footprint_ex_areas_without_ceiling_3, footprint_4)')",
+                    2.9,
+                    0.3,
+                ),
+                (
+                    "remove_small_holes_and_lines(footprint_ex_areas_without_floor_0)",
+                    0,
+                    0.3,
+                ),
+                (
+                    "remove_small_holes_and_lines(footprint_ex_areas_without_ceiling_4)",
+                    2.9,
+                    0.3,
+                ),
+                (
+                    "remove_small_holes_and_lines('difference(footprint_ex_areas_without_floor_1, footprint_areas_without_ceiling_0)')",
+                    0,
+                    0.3,
+                ),
+                (
+                    "remove_small_holes_and_lines('difference(footprint_ex_areas_without_ceiling_1, footprint_2)')",
+                    2.9,
+                    0.3,
+                ),
             }
         else:
             assert actual_slab_heights == {
                 (
-                    "footprint_ex_areas_without_ceiling_3+footprint_ex_areas_without_floor_4",
-                    0,
+                    "remove_small_holes_and_lines('difference(footprint_ex_areas_without_ceiling_3, footprint_4)')",
+                    756,
                     702,
                 ),
-                ("footprint_ex_areas_without_ceiling_2", 0, 702),
-                ("footprint_ex_areas_without_floor_3", 0, -756),
-                ("footprint_ex_areas_without_floor_0", 0, -756),
-                ("footprint_ex_areas_without_ceiling_4", 0, 702),
                 (
-                    "footprint_ex_areas_without_ceiling_1+footprint_ex_areas_without_floor_2",
+                    "remove_small_holes_and_lines('difference(footprint_ex_areas_without_floor_1, footprint_areas_without_ceiling_0)')",
                     0,
                     702,
                 ),
                 (
-                    "footprint_ex_areas_without_ceiling_0+footprint_ex_areas_without_floor_1",
+                    "remove_small_holes_and_lines(footprint_ex_areas_without_floor_0)",
+                    0,
+                    756,
+                ),
+                (
+                    "remove_small_holes_and_lines(footprint_ex_areas_without_ceiling_2)",
+                    702,
+                    702,
+                ),
+                (
+                    "remove_small_holes_and_lines('difference(footprint_ex_areas_without_ceiling_0, footprint_1)')",
+                    756,
+                    702,
+                ),
+                (
+                    "remove_small_holes_and_lines('difference(footprint_ex_areas_without_floor_2, footprint_areas_without_ceiling_1)')",
+                    0,
+                    702,
+                ),
+                (
+                    "remove_small_holes_and_lines('difference(footprint_ex_areas_without_ceiling_1, footprint_2)')",
+                    702,
+                    702,
+                ),
+                (
+                    "remove_small_holes_and_lines(footprint_ex_areas_without_ceiling_4)",
+                    702,
+                    702,
+                ),
+                (
+                    "remove_small_holes_and_lines(footprint_ex_areas_without_floor_3)",
+                    0,
+                    756,
+                ),
+                (
+                    "remove_small_holes_and_lines('difference(footprint_ex_areas_without_floor_4, footprint_areas_without_ceiling_3)')",
                     0,
                     702,
                 ),
@@ -1224,11 +1365,15 @@ class TestIFCExportAddSlabs:
             [call.kwargs["floor"], set(call.kwargs["elements"])]
             for call in mocked_add_elements_to_floor.call_args_list
         ]
+
         assert actual_floor_assignments == [
             ["floor_placeholder_0", {"slab_mock"}],
             ["floor_placeholder_1", {"slab_mock"}],
             ["floor_placeholder_2", {"slab_mock"}],
             ["floor_placeholder_3", {"slab_mock"}],
+            ["floor_placeholder_4", {"slab_mock"}],
+            ["floor_placeholder_1", {"slab_mock"}],
+            ["floor_placeholder_2", {"slab_mock"}],
             ["floor_placeholder_4", {"slab_mock"}],
         ]
 
@@ -1237,10 +1382,11 @@ class TestIFCExportAddSlabs:
         mocker,
         monkeypatch,
         mocked_polygon,
-        mocked_unary_union,
         mocked_as_multipolygon,
+        mocked_remove_small_holes_and_lines,
         mocked_add_elements_to_floor,
-        mocked_add_wall_railing_slab_furniture,
+        mocked_add_elements_to_building,
+        mocked_add_generic_element,
     ):
         from handlers.ifc.exporter import (
             ifc_export_handler as ifc_export_handler_module,
@@ -1271,11 +1417,19 @@ class TestIFCExportAddSlabs:
             ),
         )
 
-        ifc_export_handler_module.IfcExportHandler(site_id=1337).add_slabs(
+        ifc_export_handler_module.IfcExportHandler(site_id=1337).add_floor_slabs(
             ifc_floors_by_id={
                 floor_info["id"]: f"floor_placeholder_{floor_info['id']}"
                 for floor_info in floors_info
             },
+        )
+
+        ifc_export_handler_module.IfcExportHandler(site_id=1337).add_ceiling_slabs(
+            ifc_floors_by_id={
+                floor_info["id"]: f"floor_placeholder_{floor_info['id']}"
+                for floor_info in floors_info
+            },
+            ifc_buildings_by_id={"building_id": "building_placeholder_building_id"},
         )
 
         actual_slabs = {
@@ -1287,24 +1441,24 @@ class TestIFCExportAddSlabs:
                 call.kwargs["element_type"].__name__,
                 call.kwargs["Name"],
             )
-            for call in mocked_add_wall_railing_slab_furniture.call_args_list
+            for call in mocked_add_generic_element.call_args_list
         }
 
         assert actual_slabs == {
             (
                 "floor_placeholder_1",
-                "footprint_ex_areas_without_ceiling_1",
-                2.6,
+                "remove_small_holes_and_lines(footprint_ex_areas_without_floor_1)",
+                0,
                 0.3,
                 "IfcSlabStandardCase",
-                "Roof",
+                "Base Slab",
             ),
             (
                 "floor_placeholder_1",
-                "footprint_ex_areas_without_floor_1",
-                0,
-                -0.3,
+                "remove_small_holes_and_lines(footprint_ex_areas_without_ceiling_1)",
+                2.9,
+                0.3,
                 "IfcSlabStandardCase",
-                "Floor",
+                "Roof Slab",
             ),
         }

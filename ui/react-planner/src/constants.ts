@@ -5,6 +5,9 @@ export const LOAD_PROJECT = 'LOAD_PROJECT';
 export const GET_PROJECT_PENDING = 'GET_PROJECT_PENDING';
 export const GET_PROJECT_FULFILLED = 'GET_PROJECT_FULFILLED';
 export const GET_PROJECT_REJECTED = 'GET_PROJECT_REJECTED';
+export const GET_PREDICTION_PENDING = 'GET_PREDICTION_PENDING';
+export const GET_PREDICTION_FULFILLED = 'GET_PREDICTION_FULFILLED';
+export const GET_PREDICTION_REJECTED = 'GET_PREDICTION_REJECTED';
 export const SAVE_PROJECT_PENDING = 'SAVE_PROJECT_PENDING';
 export const SAVE_PROJECT_FULFILLED = 'SAVE_PROJECT_FULFILLED';
 export const SAVE_PROJECT_REJECTED = 'SAVE_PROJECT_REJECTED';
@@ -27,6 +30,7 @@ export const SET_SCENE_PROPERTIES = 'SET_SCENE_PROPERTIES';
 export const SET_PROJECT_HASH_CODE = 'SET_PROJECT_HASH_CODE';
 export const INIT_CATALOG = 'INIT_CATALOG';
 export const TOGGLE_CATALOG_TOOLBAR = 'TOGGLE_CATALOG_TOOLBAR';
+export const TOGGLE_AUTOLABELLING_FEEDBACK = 'TOGGLE_AUTOLABELLING_FEEDBACK';
 export const TOGGLE_SNAP = 'TOGGLE_SNAP';
 export const TOGGLE_SHOW_SNAP_ELEMENTS = 'TOGGLE_SHOW_SNAP_ELEMENTS';
 export const THROW_ERROR = 'THROW_ERROR';
@@ -175,6 +179,9 @@ export const PROJECT_ACTIONS = {
   GET_PROJECT_PENDING,
   GET_PROJECT_FULFILLED,
   GET_PROJECT_REJECTED,
+  GET_PREDICTION_PENDING,
+  GET_PREDICTION_FULFILLED,
+  GET_PREDICTION_REJECTED,
   SELECT_TOOL_EDIT,
   UNSELECT_ALL,
   SET_PROPERTIES,
@@ -193,6 +200,7 @@ export const PROJECT_ACTIONS = {
   SET_PROJECT_HASH_CODE,
   INIT_CATALOG,
   TOGGLE_CATALOG_TOOLBAR,
+  TOGGLE_AUTOLABELLING_FEEDBACK,
   TOGGLE_SNAP,
   TOGGLE_SHOW_SNAP_ELEMENTS,
   THROW_ERROR,
@@ -481,10 +489,12 @@ export const ROLES = {
   TEAMMEMBER: 'TEAMMEMBER',
   TEAMLEADER: 'TEAMLEADER',
 };
+
 export const ENDPOINTS = {
   LOGIN: () => '/auth/login',
   ANNOTATION_PLAN: (planId, { validated } = { validated: true }) =>
     validated ? `/annotation/v2/plan/${planId}?validated=true` : `/annotation/v2/plan/${planId}`,
+  ANNOTATION_PREDICTION: planId => `/annotation/v2/prediction/${planId}`,
   FLOORPLAN_IMG_PLAN: planId => `/plan/${planId}/raw_image`,
   PLAN_BY_ID: planId => `/plan/${planId}`,
   CLASSIFICATION_SCHEME: schemeName => `/constants/classification_schemes/${schemeName}`,
@@ -492,6 +502,9 @@ export const ENDPOINTS = {
   SITE_BY_ID: siteId => `/site/${siteId}`,
   PLAN_HEIGHTS: planId => `/plan/${planId}/heights`,
   CREATE_AREA_SPLITTERS: planId => `/plan/${planId}/area_splitters`,
+
+  REQUEST_PREDICTION: (planId: string) => `/layout_predictor/request-predictions/${planId}`,
+  RETRIEVE_PREDICTION: (taskId: string) => `/layout_predictor/retrieve-results/${taskId}`,
 };
 
 export const URLS = {
@@ -512,6 +525,7 @@ export const RequestStatusType = {
 export const REQUEST_STATUS_BY_ACTION = {
   FETCH_FLOOR_SCALES: 'FETCH_FLOOR_SCALES',
   GET_PLAN_ANNOTATIONS: 'GET_PLAN_ANNOTATIONS',
+  GET_PREDICTION: 'GET_PREDICITON',
   SAVE_PLAN_ANNOTATIONS: 'SAVE_PLAN_ANNOTATIONS',
 } as const;
 
@@ -628,4 +642,9 @@ export enum METRICS_EVENTS {
   DRAWING_LINE = 'drawing-line',
   DRAWING_OPENING = 'drawing-opening',
   DRAWING_ITEM = 'drawing-item',
+}
+
+export enum PREDICTION_FEEDBACK_EVENTS {
+  PREDICTION_GOOD = 'prediction_good',
+  PREDICTION_BAD = 'prediction_bad',
 }

@@ -234,7 +234,7 @@ class ReactPlannerToBrooksMapper:
         return separators, separators_by_id
 
     @classmethod
-    def _get_original_separator_geometries(
+    def get_original_separator_geometries(
         cls,
         planner_elements: ReactPlannerData,
         separator_whitelist: Iterable[SeparatorType] = _DEFAULT_SEPARATOR_TYPES,

@@ -40,7 +40,7 @@ def test_ifc_export_plan_5797(
 ):
     from handlers.ifc.exporter.mappers.entities import EntityIfcMapper
 
-    add_separator_spy = mocker.spy(EntityIfcMapper, "add_wall_railing_slab_furniture")
+    add_separator_spy = mocker.spy(EntityIfcMapper, "add_generic_element")
 
     FloorDBHandler.add(
         plan_id=plan["id"], building_id=plan["building_id"], floor_number=0

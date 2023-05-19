@@ -106,8 +106,7 @@ services:
       - "${REDIS_PORT}:${REDIS_PORT}"
 ################################################################################
   db_migrations: # Init container
-    <<: *api_common
-    <<: *env_files
+    <<: [*env_files, *api_common]
     environment:
       LOGGER_SERVICE_NAME: ${SLAM_API_LOGGER_SERVICE_NAME}
     command: --migrations
@@ -115,8 +114,7 @@ services:
       - pgbouncer
 ################################################################################
   worker:
-    <<: *worker_common
-    <<: *env_files
+    <<: [*env_files, *worker_common]
     environment:
       WORKER_NAME: "worker"
       WORKER_CONCURRENCY: 2
@@ -145,8 +143,7 @@ services:
       - ./entrypoints/worker_entrypoint.sh:/entrypoint.sh
 ################################################################################
   flower:
-    <<: *worker_common
-    <<: *env_files
+    <<: [*env_files, *worker_common]
     environment:
       FLOWER_PORT: ${FLOWER_PORT}
       LOGGER_SERVICE_NAME: ${WORKER_LOGGER_SERVICE_NAME}
@@ -217,8 +214,7 @@ services:
       - "80:80"
 
   api:
-    <<: *api_common
-    <<: *env_files
+    <<: [*env_files, *api_common]
     command: --api
     depends_on:
       - pgbouncer

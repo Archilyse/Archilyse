@@ -1,3 +1,5 @@
+import { Feature } from '@turf/turf';
+import { Polygon } from 'geojson';
 import {
   MODE_COPY_PASTE,
   MODE_DRAGGING_ITEM,
@@ -7,6 +9,7 @@ import {
   MODE_IDLE,
   MODE_RECTANGLE_TOOL,
   MODE_ROTATING_ITEM,
+  OPENING_TYPE,
   SeparatorsType,
 } from '../constants';
 import { Catalog, HistoryStructure, Scene, State } from '../models';
@@ -14,8 +17,25 @@ import hasCopyPasteBeenDragged from '../utils/has-copy-paste-been-dragged';
 import isScaling from '../utils/is-scaling';
 import getProjectHashCode from '../utils/get-project-hash-code';
 import * as history from '../utils/history';
-import { Line as LineType, Scene as SceneType, State as StateType, UpdatedStateObject } from '../types';
+import {
+  Line as LineType,
+  OpeningType,
+  Prediction,
+  Scene as SceneType,
+  State as StateType,
+  UpdatedStateObject,
+} from '../types';
 import { ProviderMetrics } from '../providers';
+import {
+  booleanPointInPolygon,
+  getCentroidFromFeature,
+  getElementLengthInPixels,
+  getElementWidthInPixels,
+  getItemPolygon,
+  getRectangleDimensionsInCm,
+  intersect,
+} from '../utils/geometry';
+import { doorHasWings } from '../utils/state-utils';
 import CopyPaste from './copy-paste';
 import RectangleSelectTool from './rectangle-tool';
 import Layer from './layer';
@@ -23,12 +43,63 @@ import Line from './line';
 import Hole from './hole';
 import Item from './item';
 
+const roundToNearestMultiple = (numToRound, multipleToRoundTo) => {
+  return Math.round(numToRound / multipleToRoundTo) * multipleToRoundTo;
+};
+
+const limitBetweenMinMax = (number, min, max) => Math.min(Math.max(number, min), max);
+
+const translateYToScene = (scene, yCoord) => {
+  return Math.abs(scene.height - yCoord);
+};
+
 const sortErrorsByCoordinates = (errorA, errorB) => {
   const aCoordinates = Number(errorA.position.coordinates.join('').replace('.', ''));
   const bCoordinates = Number(errorB.position.coordinates.join('').replace('.', ''));
   return aCoordinates - bCoordinates;
 };
 
+const findLineForHole = (sceneLines: { [key: string]: LineType }, holePolygon: Feature<Polygon>) => {
+  try {
+    return Object.values(sceneLines).find(line => {
+      const linePolygon = Line.getPolygon(line);
+      return intersect(holePolygon, linePolygon);
+    });
+  } catch (error) {
+    console.log('Error finding ling for hole', error);
+    return undefined;
+  }
+};
+
+// @TODO: Add unit tests
+const isHoleAlreadyAdded = (state: State, layerID: string, holePolygon: Feature<Polygon>) => {
+  const holeLabel = holePolygon.properties.label.toLowerCase();
+
+  return Object.values(state.scene.layers[layerID].holes).some(sceneHole => {
+    const holeLabelToAdd: OpeningType = doorHasWings(holeLabel) ? OPENING_TYPE.SLIDING_DOOR : holeLabel;
+
+    if (sceneHole.type === holeLabelToAdd) {
+      const sceneHolePolygon = Hole.getPolygon(sceneHole);
+      return intersect(holePolygon, sceneHolePolygon);
+    }
+    return false;
+  });
+};
+// @TODO: Add unit tests
+const isItemAlreadyAdded = (state: State, layerID: string, x: number, y: number): boolean => {
+  return Object.values(state.scene.layers[layerID].items).some(sceneItem => {
+    const itemWidthInPx = getElementWidthInPixels(sceneItem, state.scene.scale);
+    const itemLengthInPx = getElementLengthInPixels(sceneItem, state.scene.scale);
+    const sceneItemPolygon = getItemPolygon(
+      sceneItem.x,
+      sceneItem.y,
+      sceneItem.rotation,
+      itemWidthInPx,
+      itemLengthInPx
+    ) as Feature<Polygon>;
+    return booleanPointInPolygon([x, y], sceneItemPolygon);
+  });
+};
 export default class Project {
   static setAlterate(state: StateType, alterate): UpdatedStateObject {
     state.alterate = alterate;
@@ -63,6 +134,62 @@ export default class Project {
 
     state.scene = scene;
     state.sceneHistory = new HistoryStructure({ first: scene, last: scene });
+
+    return { updatedState: state };
+  }
+
+  static loadPrediction(state: StateType, prediction: Prediction): UpdatedStateObject {
+    const LAYER_ID = state.scene.selectedLayer;
+
+    prediction.lines.forEach((line: Feature<Polygon>) => {
+      // @TODO Add it once we have line rendering logic more refined
+    });
+
+    prediction.holes.forEach(hole => {
+      const holeLabel = hole.properties.label.toLowerCase();
+
+      const coordinates = hole.geometry.coordinates.map(coordinates => {
+        return coordinates.map(([x, y]) => {
+          const newY = translateYToScene(state.scene, y);
+          return [x, newY];
+        });
+      });
+      hole.geometry.coordinates = coordinates;
+
+      if (isHoleAlreadyAdded(state, LAYER_ID, hole)) return;
+
+      const line = findLineForHole(state.scene.layers[LAYER_ID].lines, hole);
+      if (line) {
+        let { width: length } = getRectangleDimensionsInCm(state.scene.scale, hole);
+        // @TODO: Constants here
+        length = limitBetweenMinMax(length, 5, 80);
+
+        // If we attempt to calculate sweeping points ourselves the width and orientation of the door may be wrong so we replace them by sliding doors
+        const holeType: OpeningType = doorHasWings(holeLabel) ? OPENING_TYPE.SLIDING_DOOR : holeLabel;
+
+        state = Hole.create(state, LAYER_ID, holeType, line.id, coordinates, undefined, {
+          length: { value: roundToNearestMultiple(length, 5) },
+        }).updatedState;
+      }
+    });
+
+    prediction.items.forEach(item => {
+      let [x, y]: [number, number] = getCentroidFromFeature(item) as any;
+      let { width, height: length } = getRectangleDimensionsInCm(state.scene.scale, item);
+
+      // Note there is no current max for length or width in items
+      length = limitBetweenMinMax(length, 1, Number.MAX_SAFE_INTEGER);
+      width = limitBetweenMinMax(width, 1, Number.MAX_SAFE_INTEGER);
+
+      y = translateYToScene(state.scene, y);
+
+      if (isItemAlreadyAdded(state, LAYER_ID, x, y)) return;
+
+      state = Item.create(state, LAYER_ID, item.properties.label.toLowerCase(), x, y, 0, {
+        width: { value: Math.round(width) },
+        length: { value: Math.round(length) },
+      }).updatedState;
+    });
 
     return { updatedState: state };
   }
@@ -268,6 +395,13 @@ export default class Project {
   static toggleCatalogToolbar(state): UpdatedStateObject {
     const catalogToolbarOpened = state.catalogToolbarOpened;
     state.catalogToolbarOpened = !catalogToolbarOpened;
+
+    return { updatedState: state };
+  }
+
+  static toggleAutoLabellingFeedback(state): UpdatedStateObject {
+    const showAutoLabellingFeedback = state.showAutoLabellingFeedback;
+    state.showAutoLabellingFeedback = !showAutoLabellingFeedback;
 
     return { updatedState: state };
   }

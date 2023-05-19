@@ -28,8 +28,10 @@ import {
   transformRotate,
   lineString as turfLineString,
   booleanPointOnLine,
+  booleanPointInPolygon as turfBooleanPointInPolygon,
   booleanWithin as turfBooleanWithin,
   booleanEqual as turfBooleanEqual,
+  booleanCrosses as turfBooleanCrosses,
   lineIntersect as turfLineIntersect,
   pointToLineDistance as turfPointToLineDistance,
   polygonToLine as turfPolygonToLine,
@@ -114,6 +116,9 @@ export function verticesDistance(v1, v2) {
 export function booleanIntersects(feature1: Feature<Geometry>, feature2: Feature<Geometry>) {
   return TurfBooleanIntersects(feature1, feature2);
 }
+export function booleanCrosses(feature1: Feature<Geometry>, feature2: Feature<Geometry>) {
+  return turfBooleanCrosses(feature1, feature2);
+}
 
 export function intersect(feature1: Feature<Polygon | MultiPolygon>, feature2: Feature<Polygon | MultiPolygon>) {
   return turfIntersect(feature1, feature2);
@@ -121,6 +126,10 @@ export function intersect(feature1: Feature<Polygon | MultiPolygon>, feature2: F
 
 export function booleanWithin(feature1: Feature<Geometry>, feature2: Feature<Geometry>) {
   return turfBooleanWithin(feature1, feature2);
+}
+
+export function booleanPointInPolygon(point: Position, feature: Feature<Polygon>): Boolean {
+  return turfBooleanPointInPolygon(point, feature);
 }
 
 export function booleanEqual(feature1: Feature<Geometry>, feature2: Feature<Geometry>): boolean {
@@ -430,6 +439,7 @@ export function getLinePointsFromReferenceLine({ x1, x2, y1, y2 }, referenceLine
   return getParallelLinePointsFromOffset(points, offset);
 }
 
+// @TODO: Move to `item.getPolygon`
 export function getItemPolygon(x: number, y: number, angle: number, itemWidthInPx: number, itemLengthInPx: number) {
   const minX = x - itemWidthInPx / 2;
   const minY = y - itemLengthInPx / 2;
@@ -595,6 +605,9 @@ export function getFeatureCentroid(featureCoordinates: Position[]): Position | P
   return getFeatureCoords(centroid(feature)) as Position | Position[];
 }
 
+export function getCentroidFromFeature(feature: Feature<any>) {
+  return getFeatureCoords(centroid(feature));
+}
 export function findBiggestPolygonInMultiPolygon(multiPolygon: Feature<MultiPolygon>): Feature<Polygon> {
   // If here we don't have a multipolygon it means the areas are not closed
   if (multiPolygon.geometry.type !== GEOJSON_FEATURE_TYPES.MULTIPOLYGON) return null;
@@ -706,6 +719,7 @@ export function preprocessForOperation(feature: Feature<Geometry>): Feature<Geom
 export const getPostProcessableIntersectingLines = (layer, lineID: string) => {
   const line = layer.lines[lineID];
   const [coordinates] = line.coordinates;
+
   const selectedLineHull = preprocessForOperation(getConvexHull(coordinates)) as Feature<Polygon>;
   const allLines = Object.values(layer.lines) as any;
   const intersectingLines = allLines.filter(line => {
@@ -833,6 +847,7 @@ export function getPolygonCenterLine(polygon: Feature<Polygon>): Feature<LineStr
   ]);
 }
 
+// @TODO: Rename to getAllVerticesFromPolygon
 export function getVerticesFromPolygon(
   convexHull: Feature<Polygon>,
   mainReferenceLine: LineSegment,
@@ -852,4 +867,19 @@ export function getVerticesFromPolygon(
   const vertices = getTwoClosestVerticesToLine(allVertices, mainReferenceLine);
   const auxVertices = auxLines.flatMap(line => getTwoClosestVerticesToLine(allVertices, line));
   return { vertices, auxVertices };
+}
+
+export function getRectangleDimensionsInCm(
+  scale: number,
+  rectanglePolygon: Feature<Polygon>
+): { width: number; height: number } {
+  const [minX, minY, maxX, maxY] = getBoundingBox(rectanglePolygon);
+
+  const widthInPx = Math.abs(minX - maxX);
+  const heightInPx = Math.abs(minY - maxY);
+
+  const width = convertPixelsToCMs(scale, widthInPx);
+  const height = convertPixelsToCMs(scale, heightInPx);
+
+  return { width, height };
 }
